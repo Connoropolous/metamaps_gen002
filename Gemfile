@@ -15,6 +15,11 @@ gem 'best_in_place' #in-place editing
 gem 'kaminari' # pagination
 gem 'uservoice-ruby'
 gem 'dotenv'
+gem 'httparty'
+gem 'delayed_job', '~> 4.0.2'
+gem 'delayed_job_active_record', '~> 4.0.1'
+gem 'sequenced', '~> 2.0.0'
+gem 'active_model_serializers', '~> 0.8.1'
 
 gem 'paperclip'
 gem 'aws-sdk'

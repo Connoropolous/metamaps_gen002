@@ -15,10 +15,10 @@ class MappingsController < ApplicationController
   def create
     @mapping = Mapping.new(mapping_params)
 
-    @mapping.map.touch(:updated_at)
-
     if @mapping.save
       render json: @mapping, status: :created
+      @mapping.map.touch(:updated_at)
+      Events::NewMapping.publish!(@mapping, current_user)
     else
       render json: @mapping.errors, status: :unprocessable_entity
     end
