@@ -50,6 +50,8 @@ $(document).ready(function () {
         if (Metamaps.hasOwnProperty(prop) &&
             Metamaps[prop].hasOwnProperty('init') &&
             typeof Metamaps[prop] === 'object' && 
+            !Array.isArray(Metamaps[prop]) &&     # ugh
+            Metamaps[prop] !== null &&            # double ugh
             typeof (Metamaps[prop].init) === 'function'
         ) {
             Metamaps[prop].init();
