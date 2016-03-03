@@ -49,7 +49,10 @@ $(document).ready(function () {
         // this runs the init function within each sub-object on the Metamaps one
         if (Metamaps.hasOwnProperty(prop) &&
             Metamaps[prop].hasOwnProperty('init') &&
-            typeof (Metamaps[prop].init) == 'function'
+            typeof Metamaps[prop] === 'object' && 
+            !Array.isArray(Metamaps[prop]) &&     # ugh
+            Metamaps[prop] !== null &&            # double ugh
+            typeof (Metamaps[prop].init) === 'function'
         ) {
             Metamaps[prop].init();
         }
