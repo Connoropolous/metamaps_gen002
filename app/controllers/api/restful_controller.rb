@@ -1,3 +1,5 @@
+require 'cancancan'
+
 class API::RestfulController < ActionController::Base
   include Pundit
   include PunditExtra
