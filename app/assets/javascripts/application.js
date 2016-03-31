@@ -16,3 +16,4 @@
 //= require_directory ./lib
 //= require ./webpacked/metamaps.bundle
 //= require ./Metamaps.ServerData
+//= require homepageVimeoFallback
