@@ -47,12 +47,21 @@ Metamaps.Backbone.Map = Backbone.Model.extend({
     Metamaps.Realtime.sendMapChange(this)
   },
   authorizeToEdit: function (mapper) {
-    if (mapper && (this.get('permission') === 'commons' || this.get('user_id') === mapper.get('id'))) return true
-    else return false
+    if (mapper && (
+          this.get('permission') === 'commons' ||
+          this.get('collaborator_ids').includes(mapper.get('id')) ||
+          this.get('user_id') === mapper.get('id'))) {
+      return true
+    } else {
+      return false
+    }  
   },
   authorizePermissionChange: function (mapper) {
-    if (mapper && this.get('user_id') === mapper.get('id')) return true
-    else return false
+    if (mapper && this.get('user_id') === mapper.get('id')) {
+      return true
+    } else {
+      return false
+    }
   },
   getUser: function () {
     return Metamaps.Mapper.get(this.get('user_id'))
@@ -70,6 +79,7 @@ Metamaps.Backbone.Map = Backbone.Model.extend({
     $.ajax({
       url: '/maps/' + this.id + '/contains.json',
       success: start,
+      error: errorFunc,
       async: false
     })
   },

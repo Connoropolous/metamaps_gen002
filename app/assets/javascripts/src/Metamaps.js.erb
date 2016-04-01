@@ -178,8 +178,14 @@ Metamaps.Backbone.init = function () {
 
         },
         authorizeToEdit: function (mapper) {
-            if (mapper && (this.get('permission') === "commons" || this.get('user_id') === mapper.get('id'))) return true;
-            else return false;
+          if (mapper && 
+               (this.get('calculated_permission') === "commons" ||
+                this.get('collaborator_ids').includes(mapper.get('id')) ||
+                this.get('user_id') === mapper.get('id'))) {
+            return true
+          }  else {
+            return false
+          }
         },
         authorizePermissionChange: function (mapper) {
             if (mapper && this.get('user_id') === mapper.get('id')) return true;
@@ -346,7 +352,7 @@ Metamaps.Backbone.init = function () {
             return li;
         },
         authorizeToEdit: function (mapper) {
-            if (mapper && (this.get('permission') === "commons" || this.get('user_id') === mapper.get('id'))) return true;
+            if (mapper && (this.get('calculated_permission') === "commons" || this.get('collaborator_ids').includes(mapper.get('id')) || this.get('user_id') === mapper.get('id'))) return true;
             else return false;
         },
         authorizePermissionChange: function (mapper) {
@@ -1119,7 +1125,8 @@ Metamaps.TopicCard = {
             selectingPermission = false;
             var permission = $(this).attr('class');
             topic.save({
-                permission: permission
+              permission: permission,
+              defer_to_map_id: null
             });
             $('.showcard .mapPerm').removeClass('co pu pr minimize').addClass(permission.substring(0, 2));
             $('.showcard .permissionSelect').remove();
@@ -1277,8 +1284,8 @@ Metamaps.TopicCard = {
                 nodeValues.inmaps += '<li class="hideExtra extraText"><a href="' + url + '">' + inmapsAr[i]+ '</a></li>';
             }
         }
-        nodeValues.permission = topic.get("permission");
-        nodeValues.mk_permission = topic.get("permission").substring(0, 2);
+        nodeValues.permission = topic.get("calculated_permission")
+        nodeValues.mk_permission = topic.get("calculated_permission").substring(0, 2)
         nodeValues.map_count = topic.get("map_count").toString();
         nodeValues.synapse_count = topic.get("synapse_count").toString();
         nodeValues.id = topic.isNew() ? topic.cid : topic.id;
@@ -1467,7 +1474,7 @@ Metamaps.SynapseCard = {
 
     add_perms_form: function (synapse) {
         //permissions - if owner, also allow permission editing
-        $('#editSynLowerBar').append('<div class="mapPerm ' + synapse.get("permission").substring(0, 2) + '"></div>');
+        $('#editSynLowerBar').append('<div class="mapPerm ' + synapse.get("calculated_permission").substring(0, 2) + '"></div>');
 
         // ability to change permission
         var selectingPermission = false;
@@ -1475,7 +1482,8 @@ Metamaps.SynapseCard = {
             selectingPermission = false;
             var permission = $(this).attr('class');
             synapse.save({
-                permission: permission
+                permission: permission,
+                defer_to_map_id: null
             });
             $('#edit_synapse .mapPerm').removeClass('co pu pr minimize').addClass(permission.substring(0, 2));
             $('#edit_synapse .permissionSelect').remove();
@@ -2088,14 +2096,12 @@ Metamaps.Realtime = {
         var self = Metamaps.Realtime;
 
         if (Metamaps.Active.Map && Metamaps.Active.Mapper) {
-            var commonsMap = Metamaps.Active.Map.get('permission') === 'commons';
-            var publicMap = Metamaps.Active.Map.get('permission') === 'public';
 
-            if (commonsMap) {
+            if (Metamaps.Active.Map.authorizeToEdit(Metamaps.Active.Mapper)) {
                 self.turnOn();
                 self.setupSocket();
             }
-            else if (publicMap) {
+            else {
                 self.attachMapListener();
             }
             self.room.addMessages(new Metamaps.Backbone.MessageCollection(Metamaps.Messages), true);
@@ -2114,25 +2120,11 @@ Metamaps.Realtime = {
         self.room.chat.$container.hide();
         self.room.chat.close();
     },
-    reenableRealtime: function() {
-        var confirmString = "The layout of your map has fallen out of sync with the saved copy. ";
-        confirmString += "To save your changes without overwriting the map, hit 'Cancel' and ";
-        confirmString += "then use 'Save to new map'. ";
-        confirmString += "Do you want to discard your changes and enable realtime?";
-        var c = confirm(confirmString);
-        if (c) {
-            Metamaps.Router.maps(Metamaps.Active.Map.id);
-        }
-    },
     turnOn: function (notify) {
         var self = Metamaps.Realtime;
 
         if (notify) self.sendRealtimeOn();
-        //$(".rtMapperSelf").removeClass('littleRtOff').addClass('littleRtOn');
-        //$('.rtOn').addClass('active');
-        //$('.rtOff').removeClass('active');
         self.status = true;
-        //$(".sidebarCollaborateIcon").addClass("blue");
         $(".collabCompass").show();
         self.room.chat.$container.show();
         self.room.room = 'map-' + Metamaps.Active.Map.id;
@@ -2881,21 +2873,21 @@ Metamaps.Realtime = {
         var map = Metamaps.Active.Map;
         var isActiveMap = map && data.mapId === map.id;
         if (isActiveMap) {
-            var permBefore = map.get('permission');
+            var couldEditBefore = map.authorizeToEdit(Metamaps.Active.Mapper)
             var idBefore = map.id;
             map.fetch({
                 success: function (model, response) {
 
                     var idNow = model.id;
-                    var permNow = model.get('permission');
+                    var canEditNow = model.authorizeToEdit(Metamaps.Active.Mapper);
                     if (idNow !== idBefore) {
                         Metamaps.Map.leavePrivateMap(); // this means the map has been changed to private
                     }
-                    else if (permNow === 'public' && permBefore === 'commons') {
-                        Metamaps.Map.commonsToPublic();
+                    else if (couldEditBefore && !canEditNow) {
+                        Metamaps.Map.cantEditNow()
                     }
-                    else if (permNow === 'commons' && permBefore === 'public') {
-                        Metamaps.Map.publicToCommons();
+                    else if (!couldEditBefore && canEditNow) {
+                        Metamaps.Map.canEditNow()
                     }
                     else {
                         model.fetchContained();

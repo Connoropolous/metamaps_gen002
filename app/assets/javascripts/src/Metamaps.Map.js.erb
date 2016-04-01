@@ -180,13 +180,13 @@ Metamaps.Map = {
     Metamaps.Router.home()
     Metamaps.GlobalUI.notifyUser('Sorry! That map has been changed to Private.')
   },
-  commonsToPublic: function () {
+  cantEditNow: function () {
     Metamaps.Realtime.turnOff(true); // true is for 'silence'
     Metamaps.GlobalUI.notifyUser('Map was changed to Public. Editing is disabled.')
     Metamaps.Active.Map.trigger('changeByOther')
   },
-  publicToCommons: function () {
-    var confirmString = 'This map permission has been changed to Commons! '
+  canEditNow: function () {
+    var confirmString = "You've been granted permission to edit this map. "
     confirmString += 'Do you want to reload and enable realtime collaboration?'
     var c = confirm(confirmString)
     if (c) {
@@ -419,7 +419,7 @@ Metamaps.Map.InfoBox = {
   isOpen: false,
   changing: false,
   selectingPermission: false,
-  changePermissionText: "<div class='tooltips'>As the creator, you can change the permission of this map, but the permissions of the topics and synapses on it must be changed independently.</div>",
+  changePermissionText: "<div class='tooltips'>As the creator, you can change the permission of this map, and the permission of all the topics and synapses you have authority to change will change as well.</div>",
   nameHTML: '<span class="best_in_place best_in_place_name" id="best_in_place_map_{{id}}_name" data-url="/maps/{{id}}" data-object="map" data-attribute="name" data-type="textarea" data-activator="#mapInfoName">{{name}}</span>',
   descHTML: '<span class="best_in_place best_in_place_desc" id="best_in_place_map_{{id}}_desc" data-url="/maps/{{id}}" data-object="map" data-attribute="desc" data-nil="Click to add description..." data-type="textarea" data-activator="#mapInfoDesc">{{desc}}</span>',
   init: function () {
@@ -623,19 +623,10 @@ Metamaps.Map.InfoBox = {
 
     self.selectingPermission = false
     var permission = $(this).attr('class')
-    var permBefore = Metamaps.Active.Map.get('permission')
     Metamaps.Active.Map.save({
       permission: permission
     })
     Metamaps.Active.Map.updateMapWrapper()
-    if (permBefore !== 'commons' && permission === 'commons') {
-      Metamaps.Realtime.setupSocket()
-      Metamaps.Realtime.turnOn()
-    }
-    else if (permBefore === 'commons' && permission === 'public') {
-      Metamaps.Realtime.turnOff(true); // true is to 'silence'
-    // the notification that would otherwise be sent
-    }
     shareable = permission === 'private' ? '' : 'shareable'
     $('.mapPermission').removeClass('commons public private minimize').addClass(permission)
     $('.mapPermission .permissionSelect').remove()
@@ -656,6 +647,7 @@ Metamaps.Map.InfoBox = {
       Metamaps.Maps.Active.remove(map)
       Metamaps.Maps.Featured.remove(map)
       Metamaps.Maps.Mine.remove(map)
+      Metamaps.Maps.Shared.remove(map)
       map.destroy()
       Metamaps.Router.home()
       Metamaps.GlobalUI.notifyUser('Map eliminated!')

@@ -44,8 +44,12 @@ Metamaps::Application.routes.draw do
   get 'explore/active', to: 'maps#activemaps'
   get 'explore/featured', to: 'maps#featuredmaps'
   get 'explore/mine', to: 'maps#mymaps'
+  get 'explore/shared', to: 'maps#sharedmaps'
   get 'explore/mapper/:id', to: 'maps#usermaps'
 
+  get 'maps/:id/contains', to: 'maps#contains', as: :contains
+  post 'maps/:id/upload_screenshot', to: 'maps#screenshot', as: :screenshot
+  post 'maps/:id/access', to: 'maps#access', as: :access, defaults: {format: :json} 
   
   devise_for :users, controllers: { registrations: 'users/registrations', passwords: 'users/passwords', sessions: 'devise/sessions' }, :skip => :sessions
 
