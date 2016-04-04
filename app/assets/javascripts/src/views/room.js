@@ -164,7 +164,7 @@ Metamaps.Views.room = (function () {
           });
           m.save(null, {
             success: function (model, response) {
-              self.addMessages(new Metamaps.Backbone.MessageCollection(model));
+              self.addMessages(new Metamaps.Backbone.MessageCollection(model), true);
               $(document).trigger(room.events.newMessage, [model]);
             },
             error: function (model, response) {

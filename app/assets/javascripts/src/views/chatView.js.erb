@@ -109,7 +109,7 @@ Metamaps.Views.chatView = (function () {
             this.$unread.html(this.unreadMessages);
             this.$unread.show();
         },
-        addMessage: function(message, isInitial, wasMe) {
+        addMessage: function(message, isInitial) {
 
             if (!this.isOpen && !isInitial) Private.incrementUnread.call(this);
 
@@ -133,7 +133,7 @@ Metamaps.Views.chatView = (function () {
             this.$messages.append($html);
             if (!isInitial) this.scrollMessages(200);
 
-            if (!isInitial && this.alertSound && !wasMe) this.sound.play('receivechat');
+            if (!isInitial && this.alertSound) this.sound.play('receivechat');
         },
         initialMessages: function() {
             var messages = this.messages.models;
