@@ -156,6 +156,7 @@ Metamaps.Views.room = (function () {
       room.prototype.sendChatMessage = function (data) {
         var self = this;
           //this.roomRef.child('messages').push(data);
+          if (self.chat.alertSound) self.chat.sound.play('sendchat');
           var m = new Metamaps.Backbone.Message({
             message: data.message,
             resource_id: Metamaps.Active.Map.id,
