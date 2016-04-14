@@ -37,7 +37,7 @@ Metamaps::Application.routes.draw do
   
   resources :maps, except: [:index, :new, :edit]
   get 'maps/:id/export', to: 'maps#export'
-  get 'maps/:id/events/:event', to: 'maps#events'
+  post 'maps/:id/events/:event', to: 'maps#events'
   get 'maps/:id/contains', to: 'maps#contains', as: :contains
   post 'maps/:id/upload_screenshot', to: 'maps#screenshot', as: :screenshot
 

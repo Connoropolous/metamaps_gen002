@@ -2270,7 +2270,7 @@ Metamaps.Realtime = {
         invited: Metamaps.Active.Mapper.id,
         inviter: userid
       });
-      $.get('/maps/' + Metamaps.Active.Map.id + '/events/conversation');
+      $.post('/maps/' + Metamaps.Active.Map.id + '/events/conversation');
       self.joinCall();
       Metamaps.GlobalUI.clearNotify();
     },

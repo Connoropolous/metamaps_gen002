@@ -102,7 +102,7 @@ class MapsController < ApplicationController
       end
     end
 
-    # GET maps/:id/events/:event
+    # POST maps/:id/events/:event
     def events
       map = Map.find(params[:id])
       authorize map
