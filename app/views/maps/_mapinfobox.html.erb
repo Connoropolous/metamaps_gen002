@@ -12,17 +12,18 @@
   
   <div class="mapInfoStat">
     <div class="infoStatIcon mapContributors hoverForTip">
-      <% if @map.contributors.count == 0 %>
+      <% relevantPeople = @map.permission == "commons" ? @map.contributors : @map.editors %>
+      <% if relevantPeople.count == 0 %>
         <img id="mapContribs" width="25" height="25" src="<%= asset_path('user.png'); %>" />
-      <% elsif @map.contributors.count == 1 %>
-        <img id="mapContribs" width="25" height="25" src="<%= @map.contributors[0].image.url(:thirtytwo) %>" />
-      <% elsif @map.contributors.count == 2 %>
-        <img id="mapContribs" width="25" height="25" src="<%= @map.contributors[0].image.url(:thirtytwo) %>" class="multiple mTwo" />
-      <% elsif @map.contributors.count > 2 %>
-        <img id="mapContribs" width="25" height="25" src="<%= @map.contributors[0].image.url(:thirtytwo) %>" class="multiple" />
+      <% elsif relevantPeople.count == 1 %>
+        <img id="mapContribs" width="25" height="25" src="<%= relevantPeople[0].image.url(:thirtytwo) %>" />
+      <% elsif relevantPeople.count == 2 %>
+        <img id="mapContribs" width="25" height="25" src="<%= relevantPeople[0].image.url(:thirtytwo) %>" class="multiple mTwo" />
+      <% elsif relevantPeople.count > 2 %>
+        <img id="mapContribs" width="25" height="25" src="<%= relevantPeople[0].image.url(:thirtytwo) %>" class="multiple" />
       <% end %>
-      <span><%= @map.contributors.count %></span>
-      <div class="tip"> <ul><% @map.contributors.each_with_index do |c, index| %>
+      <span><%= relevantPeople.count %></span>
+      <div class="tip"> <ul><% relevantPeople.each_with_index do |c, index| %>
            <li ><a href="/explore/mapper/<%= c.id %>" > <img class="rtUserImage" width="25" height="25" src="<%= asset_path c.image.url(:thirtytwo) %>"  />
             <%= c.name %></a> 
             </li>         

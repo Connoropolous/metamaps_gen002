@@ -88,12 +88,13 @@ class MapsController < ApplicationController
         respond_to do |format|
             format.html {
                 @allmappers = @map.contributors
+                @allcollaborators = @map.editors
                 @alltopics = @map.topics.to_a.delete_if {|t| not policy(t).show? }
                 @allsynapses = @map.synapses.to_a.delete_if {|s| not policy(s).show? }
                 @allmappings = @map.mappings.to_a.delete_if {|m| not policy(m).show? }
                 @allmessages = @map.messages.sort_by(&:created_at)
 
-                respond_with(@allmappers, @allmappings, @allsynapses, @alltopics, @allmessages, @map)
+                respond_with(@allmappers, @allcollaborators, @allmappings, @allsynapses, @alltopics, @allmessages, @map)
             }
             format.json { render json: @map }
             format.csv { redirect_to action: :export, format: :csv }
@@ -138,6 +139,7 @@ class MapsController < ApplicationController
         authorize @map
 
         @allmappers = @map.contributors
+        @allcollaborators = @map.editors
         @alltopics = @map.topics.to_a.delete_if {|t| not policy(t).show? }
         @allsynapses = @map.synapses.to_a.delete_if {|s| not policy(s).show? }
         @allmappings = @map.mappings.to_a.delete_if {|m| not policy(m).show? }
@@ -149,6 +151,7 @@ class MapsController < ApplicationController
         @json['synapses'] = @allsynapses
         @json['mappings'] = @allmappings
         @json['mappers'] = @allmappers
+        @json['collaborators'] = @allcollaborators
         @json['messages'] = @map.messages.sort_by(&:created_at)
 
         respond_to do |format|
@@ -241,6 +244,7 @@ class MapsController < ApplicationController
         removed = @map.collaborators.select { |user| not userIds.include?(user.id) }.map(&:id)
         added.each { |uid|
           um = UserMap.create({ user_id: uid.to_i, map_id: @map.id })
+          # send email here
         }
         removed.each { |uid|
           @map.user_maps.select{ |um| um.user_id == uid }.each{ |um| um.destroy }

@@ -64,6 +64,7 @@ Metamaps.Map = {
     var start = function (data) {
       Metamaps.Active.Map = new bb.Map(data.map)
       Metamaps.Mappers = new bb.MapperCollection(data.mappers)
+      Metamaps.Collaborators = new bb.MapperCollection(data.collaborators)
       Metamaps.Topics = new bb.TopicCollection(data.topics)
       Metamaps.Synapses = new bb.SynapseCollection(data.synapses)
       Metamaps.Mappings = new bb.MappingCollection(data.mappings)
@@ -477,15 +478,18 @@ Metamaps.Map.InfoBox = {
 
     var isCreator = map.authorizePermissionChange(Metamaps.Active.Mapper)
     var canEdit = map.authorizeToEdit(Metamaps.Active.Mapper)
+    var relevantPeople = map.get('permission') === 'commons' ? Metamaps.Mappers : Metamaps.Collaborators
     var shareable = map.get('permission') !== 'private'
 
     obj['name'] = canEdit ? Hogan.compile(self.nameHTML).render({id: map.id, name: map.get('name')}) : map.get('name')
     obj['desc'] = canEdit ? Hogan.compile(self.descHTML).render({id: map.id, desc: map.get('desc')}) : map.get('desc')
     obj['map_creator_tip'] = isCreator ? self.changePermissionText : ''
-    obj['contributors_class'] = Metamaps.Mappers.length > 1 ? 'multiple' : ''
-    obj['contributors_class'] += Metamaps.Mappers.length === 2 ? ' mTwo' : ''
-    obj['contributor_image'] = Metamaps.Mappers.length > 0 ? Metamaps.Mappers.models[0].get('image') : "<%= asset_path('user.png') %>"
+
+    obj['contributors_class'] = relevantPeople.length > 1 ? 'multiple' : ''
+    obj['contributors_class'] += relevantPeople.length === 2 ? ' mTwo' : ''
+    obj['contributor_image'] = relevantPeople.length > 0 ? relevantPeople.models[0].get('image') : "<%= asset_path('user.png') %>"
     obj['contributor_list'] = self.createContributorList()
+
     obj['user_name'] = isCreator ? 'You' : map.get('user_name')
     obj['created_at'] = map.get('created_at_clean')
     obj['updated_at'] = map.get('updated_at_clean')
@@ -562,11 +566,11 @@ Metamaps.Map.InfoBox = {
   },
   createContributorList: function () {
     var self = Metamaps.Map.InfoBox
-
+    var relevantPeople = Metamaps.Active.Map.get('permission') === 'commons' ? Metamaps.Mappers : Metamaps.Collaborators
     var string = ''
     string += '<ul>'
 
-    Metamaps.Mappers.each(function (m) {
+    relevantPeople.each(function (m) {
       string += '<li><a href="/explore/mapper/' + m.get('id') + '">' + '<img class="rtUserImage" width="25" height="25" src="' + m.get('image') + '" />' + m.get('name') + '</a></li>'
     })
 
@@ -576,18 +580,19 @@ Metamaps.Map.InfoBox = {
   updateNumbers: function () {
     var self = Metamaps.Map.InfoBox
     var mapper = Metamaps.Active.Mapper
+    var relevantPeople = Metamaps.Active.Map.get('permission') === 'commons' ? Metamaps.Mappers : Metamaps.Collaborators
 
     var contributors_class = ''
-    if (Metamaps.Mappers.length === 2) contributors_class = 'multiple mTwo'
-    else if (Metamaps.Mappers.length > 2) contributors_class = 'multiple'
+    if (relevantPeople.length === 2) contributors_class = 'multiple mTwo'
+    else if (relevantPeople.length > 2) contributors_class = 'multiple'
 
     var contributors_image = "<%= asset_path('user.png') %>"
-    if (Metamaps.Mappers.length > 0) {
+    if (relevantPeople.length > 0) {
       // get the first contributor and use their image
-      contributors_image = Metamaps.Mappers.models[0].get('image')
+      contributors_image = relevantPeople.models[0].get('image')
     }
     $('.mapContributors img').attr('src', contributors_image).removeClass('multiple mTwo').addClass(contributors_class)
-    $('.mapContributors span').text(Metamaps.Mappers.length)
+    $('.mapContributors span').text(relevantPeople.length)
     $('.mapContributors .tip').html(self.createContributorList())
     $('.mapTopics').text(Metamaps.Topics.length)
     $('.mapSynapses').text(Metamaps.Synapses.length)

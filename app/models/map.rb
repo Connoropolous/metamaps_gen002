@@ -48,6 +48,10 @@ class Map < ActiveRecord::Base
     return contributors
   end
 
+  def editors
+    collaborators + [self.user]
+  end
+
   def topic_count
     topics.length
   end

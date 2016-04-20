@@ -490,6 +490,8 @@ Metamaps.Backbone.init = function () {
 
     Metamaps.Mappers = Metamaps.Mappers ? new self.MapperCollection(Metamaps.Mappers) : new self.MapperCollection();
 
+    Metamaps.Collaborators = Metamaps.Collaborators ? new self.MapperCollection(Metamaps.Collaborators) : new self.MapperCollection();
+
     // this is for topic view
     Metamaps.Creators = Metamaps.Creators ? new self.MapperCollection(Metamaps.Creators) : new self.MapperCollection();
 
