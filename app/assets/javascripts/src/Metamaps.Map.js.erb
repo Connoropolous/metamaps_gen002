@@ -434,6 +434,8 @@ Metamaps.Map.InfoBox = {
 
     self.attachEventListeners()
 
+    
+
     self.generateBoxHTML = Hogan.compile($('#mapInfoBoxTemplate').html())
   },
   toggleBox: function (event) {
@@ -474,7 +476,7 @@ Metamaps.Map.InfoBox = {
 
     var map = Metamaps.Active.Map
 
-    var obj = map.pick('permission', 'contributor_count', 'topic_count', 'synapse_count')
+    var obj = map.pick('permission', 'topic_count', 'synapse_count')
 
     var isCreator = map.authorizePermissionChange(Metamaps.Active.Mapper)
     var canEdit = map.authorizeToEdit(Metamaps.Active.Mapper)
@@ -485,6 +487,7 @@ Metamaps.Map.InfoBox = {
     obj['desc'] = canEdit ? Hogan.compile(self.descHTML).render({id: map.id, desc: map.get('desc')}) : map.get('desc')
     obj['map_creator_tip'] = isCreator ? self.changePermissionText : ''
 
+    obj['contributor_count'] = relevantPeople.length
     obj['contributors_class'] = relevantPeople.length > 1 ? 'multiple' : ''
     obj['contributors_class'] += relevantPeople.length === 2 ? ' mTwo' : ''
     obj['contributor_image'] = relevantPeople.length > 0 ? relevantPeople.models[0].get('image') : "<%= asset_path('user.png') %>"
@@ -558,6 +561,85 @@ Metamaps.Map.InfoBox = {
     $('.mapInfoBox').unbind('.hideTip').bind('click.hideTip', function () {
       $('.mapContributors .tip').hide()
     })
+
+    self.addTypeahead() 
+  },
+  addTypeahead: function () {
+    var self = Metamaps.Map.InfoBox
+
+    // for autocomplete
+    var collaborators = {
+        name: 'collaborators',
+        limit: 9999,
+        display: function(s) { return s.label; },
+        templates: {
+            notFound: function(s) {
+                return Hogan.compile($('#collaboratorSearchTemplate').html()).render({
+                    value: "No results",
+                    label: "No results",
+                    rtype: "noresult",
+                    profile: "<%= asset_path('user.png') %>",
+                });
+            },
+            suggestion: function(s) {
+                return Hogan.compile($('#collaboratorSearchTemplate').html()).render(s);
+            },
+        },
+        source: new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: '/search/mappers?term=%QUERY',
+                wildcard: '%QUERY',
+            },
+        })
+    }
+
+    // for adding map collaborators, who will have edit rights
+    if (Metamaps.Active.Mapper && Metamaps.Active.Mapper.id === Metamaps.Active.Map.get('user_id')) {
+      $('.collaboratorSearchField').typeahead(
+        {
+          highlight: false,
+        },
+        [collaborators]
+      )
+      $('.collaboratorSearchField').bind('typeahead:select', self.handleResultClick)
+      $('.mapContributors .removeCollaborator').click(function () {
+        self.removeCollaborator(parseInt($(this).data('id')))
+      })
+    } 
+  },
+  removeCollaborator: function (collaboratorId) {
+    var self = Metamaps.Map.InfoBox
+    Metamaps.Collaborators.remove(Metamaps.Collaborators.get(collaboratorId))
+    var mapperIds = Metamaps.Collaborators.models.map(function (mapper) { return mapper.id })
+    $.post('/maps/' + Metamaps.Active.Map.id + '/access', { access: mapperIds })
+    self.updateNumbers()
+  },
+  addCollaborator: function (newCollaboratorId) {
+    var self = Metamaps.Map.InfoBox
+
+    if (Metamaps.Collaborators.get(newCollaboratorId)) {
+      Metamaps.GlobalUI.notifyUser('That user already has access')
+      return
+    }
+
+    function callback(mapper) {
+      Metamaps.Collaborators.add(mapper)
+      var mapperIds = Metamaps.Collaborators.models.map(function (mapper) { return mapper.id })
+      $.post('/maps/' + Metamaps.Active.Map.id + '/access', { access: mapperIds })
+      var name =  Metamaps.Collaborators.get(newCollaboratorId).get('name')
+      Metamaps.GlobalUI.notifyUser(name + ' will be notified by email')
+      self.updateNumbers()
+    }
+
+    $.getJSON('/users/' + newCollaboratorId + '.json', callback)
+  },
+  handleResultClick: function (event, item) {
+    var self = Metamaps.Map.InfoBox
+
+   self.addCollaborator(item.id)
+   $('.collaboratorSearchField').typeahead('val', '')
   },
   updateNameDescPerm: function (name, desc, perm) {
     $('.mapInfoName .best_in_place_name').html(name)
@@ -567,14 +649,24 @@ Metamaps.Map.InfoBox = {
   createContributorList: function () {
     var self = Metamaps.Map.InfoBox
     var relevantPeople = Metamaps.Active.Map.get('permission') === 'commons' ? Metamaps.Mappers : Metamaps.Collaborators
+    var activeMapperIsCreator = Metamaps.Active.Mapper && Metamaps.Active.Mapper.id === Metamaps.Active.Map.get('user_id')
     var string = ''
     string += '<ul>'
 
     relevantPeople.each(function (m) {
-      string += '<li><a href="/explore/mapper/' + m.get('id') + '">' + '<img class="rtUserImage" width="25" height="25" src="' + m.get('image') + '" />' + m.get('name') + '</a></li>'
+      var isCreator = Metamaps.Active.Map.get('user_id') === m.get('id')
+      string += '<li><a href="/explore/mapper/' + m.get('id') + '">' + '<img class="rtUserImage" width="25" height="25" src="' + m.get('image') + '" />' + m.get('name')
+      if (isCreator) string += ' (creator)' 
+      string += '</a>'
+      if (activeMapperIsCreator && !isCreator) string += '<span class="removeCollaborator" data-id="' + m.get('id') + '"></span>'
+      string += '</li>'
     })
 
     string += '</ul>'
+
+    if (activeMapperIsCreator) {
+      string += '<div class="collabSearchField"><span class="addCollab"></span><input class="collaboratorSearchField" placeholder="Add a collaborator!"></input></div>'
+    }
     return string
   },
   updateNumbers: function () {
@@ -594,6 +686,10 @@ Metamaps.Map.InfoBox = {
     $('.mapContributors img').attr('src', contributors_image).removeClass('multiple mTwo').addClass(contributors_class)
     $('.mapContributors span').text(relevantPeople.length)
     $('.mapContributors .tip').html(self.createContributorList())
+    self.addTypeahead()
+    $('.mapContributors .tip').unbind().click(function (event) {
+      event.stopPropagation()
+    })
     $('.mapTopics').text(Metamaps.Topics.length)
     $('.mapSynapses').text(Metamaps.Synapses.length)
 

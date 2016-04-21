@@ -30,7 +30,7 @@ Metamaps::Application.configure do
     port:          ENV['SMTP_PORT'],
     user_name:     ENV['SMTP_USERNAME'],
     password:      ENV['SMTP_PASSWORD'],
-    #domain:        ENV['SMTP_DOMAIN']
+    domain:        ENV['SMTP_DOMAIN'],
     authentication:       'plain',
     enable_starttls_auto: true,
     openssl_verify_mode: 'none'    }

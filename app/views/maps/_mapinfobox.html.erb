@@ -22,12 +22,24 @@
       <% elsif relevantPeople.count > 2 %>
         <img id="mapContribs" width="25" height="25" src="<%= relevantPeople[0].image.url(:thirtytwo) %>" class="multiple" />
       <% end %>
-      <span><%= relevantPeople.count %></span>
-      <div class="tip"> <ul><% relevantPeople.each_with_index do |c, index| %>
-           <li ><a href="/explore/mapper/<%= c.id %>" > <img class="rtUserImage" width="25" height="25" src="<%= asset_path c.image.url(:thirtytwo) %>"  />
-            <%= c.name %></a> 
+      <span class="count"><%= relevantPeople.count %></span>
+      <div class="tip">
+        <ul><% relevantPeople.each_with_index do |c, index| %>
+            <li>
+             <a href="/explore/mapper/<%= c.id %>" > <img class="rtUserImage" width="25" height="25" src="<%= asset_path c.image.url(:thirtytwo) %>"  />
+               <%= c.name %>
+               <% if @map.user == c %> (creator)<% end %>
+              </a>
+              <% if @map.user != c && @map.user == current_user %>
+                <span class="removeCollaborator" data-id=" + m.get('id') + "></span> 
+              <% end %>
             </li>         
-        <% end %></ul></div>
+          <% end %>
+        </ul>
+        <% if @map.user == current_user %>
+          <div class="collabSearchField"><span class="addCollab"></span><input class="collaboratorSearchField" placeholder="Add a collaborator!"></input></div>
+        <% end %>
+      </div>
     </div>
     <div class="infoStatIcon mapTopics">
       <%= @map.topics.count %>

@@ -241,10 +241,11 @@ class MapsController < ApplicationController
             not @map.collaborators.include?(user)
           end
         }
-        removed = @map.collaborators.select { |user| not userIds.include?(user.id) }.map(&:id)
+        removed = @map.collaborators.select { |user| not userIds.include?(user.id.to_s) }.map(&:id)
         added.each { |uid|
           um = UserMap.create({ user_id: uid.to_i, map_id: @map.id })
-          # send email here
+          user = User.find(uid.to_i)
+          MapMailer.invite_to_edit_email(@map, current_user, user).deliver_later
         }
         removed.each { |uid|
           @map.user_maps.select{ |um| um.user_id == uid }.each{ |um| um.destroy }
