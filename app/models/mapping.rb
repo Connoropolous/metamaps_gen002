@@ -7,6 +7,8 @@ class Mapping < ActiveRecord::Base
   belongs_to :map, :class_name => "Map", :foreign_key => "map_id", touch: true
   belongs_to :user
 
+  after_destroy :remove_defer
+
   validates :xloc, presence: true, 
     unless: Proc.new { |m| m.mappable_type == 'Synapse' }
   validates :yloc, presence: true,
@@ -26,4 +28,11 @@ class Mapping < ActiveRecord::Base
     super(:methods =>[:user_name, :user_image])
   end
 
+  private
+
+    def remove_defer(mapping)
+      mappable = mapping.mappable
+      mappable.defer_to_map_id = nil
+      mappable.save
+    end
 end
