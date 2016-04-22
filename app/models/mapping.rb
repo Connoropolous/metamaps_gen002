@@ -7,7 +7,7 @@ class Mapping < ActiveRecord::Base
   belongs_to :map, :class_name => "Map", :foreign_key => "map_id", touch: true
   belongs_to :user
 
-  after_destroy :remove_defer
+  before_destroy :remove_defer
 
   validates :xloc, presence: true, 
     unless: Proc.new { |m| m.mappable_type == 'Synapse' }
