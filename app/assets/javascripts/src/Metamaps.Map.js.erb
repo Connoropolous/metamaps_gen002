@@ -567,6 +567,8 @@ Metamaps.Map.InfoBox = {
   addTypeahead: function () {
     var self = Metamaps.Map.InfoBox
 
+    if (!Metamaps.Active.Map) return
+
     // for autocomplete
     var collaborators = {
         name: 'collaborators',
