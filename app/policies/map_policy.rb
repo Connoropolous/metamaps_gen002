@@ -4,7 +4,7 @@ class MapPolicy < ApplicationPolicy
       visible = ['public', 'commons']
       permission = 'maps.permission IN (?)'
       if user
-        shared_maps = user.user_maps.map(&:id)
+        shared_maps = user.shared_maps.map(&:id)
         scope.where(permission + ' OR maps.id IN (?) OR maps.user_id = ?', visible, shared_maps, user.id)
       else
         scope.where(permission, visible)
