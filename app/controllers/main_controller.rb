@@ -133,6 +133,8 @@ class MainController < ApplicationController
       #remove "mapper:" if appended at beginning
       term = term[7..-1] if term.downcase[0..6] == "mapper:"
       search = term.downcase + '%'
+
+      skip_policy_scope # TODO builder = policy_scope(User)
       builder = User.where('LOWER("name") like ?', search)
       @mappers = builder.order(:name)
     else
