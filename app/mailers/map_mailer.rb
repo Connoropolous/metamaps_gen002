@@ -4,7 +4,6 @@ class MapMailer < ApplicationMailer
   def invite_to_edit_email(map, inviter, invitee)
     @inviter = inviter
     @map = map
-    @url = map_url(@map)
     subject = @map.name + ' - Invitation to edit'
     mail(to: invitee.email, subject: subject)
   end
