@@ -36,7 +36,7 @@ class Synapse < ActiveRecord::Base
   # :nocov:
   def collaborator_ids
     if defer_to_map
-      defer_to_map.collaborators.map(&:id)
+      defer_to_map.editors.select{|mapper| not mapper == self.user }.map(&:id)
     else
       []
     end
