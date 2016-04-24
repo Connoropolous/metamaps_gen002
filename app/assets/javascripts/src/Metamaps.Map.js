@@ -491,7 +491,7 @@ Metamaps.Map.InfoBox = {
     obj['contributor_count'] = relevantPeople.length
     obj['contributors_class'] = relevantPeople.length > 1 ? 'multiple' : ''
     obj['contributors_class'] += relevantPeople.length === 2 ? ' mTwo' : ''
-    obj['contributor_image'] = relevantPeople.length > 0 ? relevantPeople.models[0].get('image') : Metamaps.Erb['user.png'] %>"
+    obj['contributor_image'] = relevantPeople.length > 0 ? relevantPeople.models[0].get('image') : Metamaps.Erb['user.png']
     obj['contributor_list'] = self.createContributorList()
 
     obj['user_name'] = isCreator ? 'You' : map.get('user_name')

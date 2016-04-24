@@ -96,7 +96,7 @@ Metamaps.Account = {
     var self = Metamaps.Account
 
     $('.userImageDiv canvas').remove()
-    $('.userImageDiv img').attr('src', Metamaps.Erb['user.png']) %>').show()
+    $('.userImageDiv img').attr('src', Metamaps.Erb['user.png']).show()
     $('.userImageMenu').hide()
 
     var input = $('#user_image')
