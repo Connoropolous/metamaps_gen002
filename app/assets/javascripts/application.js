@@ -24,6 +24,7 @@
 //= require ./src/views/videoView
 //= require ./src/views/room
 //= require ./src/JIT
+//= require ./src/check-canvas-support
 //= require ./src/Metamaps
 //= require ./src/Metamaps.Create
 //= require ./src/Metamaps.TopicCard
