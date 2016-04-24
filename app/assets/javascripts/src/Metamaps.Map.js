@@ -4,17 +4,18 @@
  * Metamaps.Map.js.erb
  *
  * Dependencies:
- *    Metamaps.Create
- *    Metamaps.Filter
- *    Metamaps.JIT
- *    Metamaps.Loading
- *    Metamaps.Maps
- *    Metamaps.Realtime
- *    Metamaps.Router
- *    Metamaps.Selected
- *    Metamaps.SynapseCard
- *    Metamaps.TopicCard
- *    Metamaps.Visualize
+ *  - Metamaps.Create
+ *  - Metamaps.Erb
+ *  - Metamaps.Filter
+ *  - Metamaps.JIT
+ *  - Metamaps.Loading
+ *  - Metamaps.Maps
+ *  - Metamaps.Realtime
+ *  - Metamaps.Router
+ *  - Metamaps.Selected
+ *  - Metamaps.SynapseCard
+ *  - Metamaps.TopicCard
+ *  - Metamaps.Visualize
  *  - Metamaps.Active
  *  - Metamaps.Backbone
  *  - Metamaps.GlobalUI
@@ -490,7 +491,7 @@ Metamaps.Map.InfoBox = {
     obj['contributor_count'] = relevantPeople.length
     obj['contributors_class'] = relevantPeople.length > 1 ? 'multiple' : ''
     obj['contributors_class'] += relevantPeople.length === 2 ? ' mTwo' : ''
-    obj['contributor_image'] = relevantPeople.length > 0 ? relevantPeople.models[0].get('image') : "<%= asset_path('user.png') %>"
+    obj['contributor_image'] = relevantPeople.length > 0 ? relevantPeople.models[0].get('image') : Metamaps.Erb['user.png'] %>"
     obj['contributor_list'] = self.createContributorList()
 
     obj['user_name'] = isCreator ? 'You' : map.get('user_name')
@@ -580,7 +581,7 @@ Metamaps.Map.InfoBox = {
                     value: "No results",
                     label: "No results",
                     rtype: "noresult",
-                    profile: "<%= asset_path('user.png') %>",
+                    profile: Metamaps.Erb['user.png'],
                 });
             },
             suggestion: function(s) {
@@ -680,7 +681,7 @@ Metamaps.Map.InfoBox = {
     if (relevantPeople.length === 2) contributors_class = 'multiple mTwo'
     else if (relevantPeople.length > 2) contributors_class = 'multiple'
 
-    var contributors_image = "<%= asset_path('user.png') %>"
+    var contributors_image = Metamaps.Erb['user.png']
     if (relevantPeople.length > 0) {
       // get the first contributor and use their image
       contributors_image = relevantPeople.models[0].get('image')
