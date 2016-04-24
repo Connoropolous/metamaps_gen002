@@ -25,6 +25,7 @@
 //= require ./src/views/room
 //= require ./src/JIT
 //= require ./src/Metamaps
+//= require ./src/Metamaps.SynapseCard
 //= require ./src/Metamaps.Visualize
 //= require ./src/Metamaps.Util
 //= require ./src/Metamaps.Realtime
