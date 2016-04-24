@@ -503,7 +503,7 @@ Metamaps.GlobalUI.Search = {
                     return Hogan.compile(topicheader + $('#topicSearchTemplate').html()).render({
                         value: "No results",
                         label: "No results",
-                        typeImageURL: "<%= asset_path('icons/wildcard.png') %>",
+                        typeImageURL: Metamaps.Erb['icons/wildcard.png'],
                         rtype: "noresult"
                     });
                 },
@@ -571,7 +571,7 @@ Metamaps.GlobalUI.Search = {
                         value: "No results",
                         label: "No results",
                         rtype: "noresult",
-                        profile: "<%= asset_path('user.png') %>",
+                        profile: Metamaps.Erb['user.png']
                     });
                 },
                 header: mapperheader,
