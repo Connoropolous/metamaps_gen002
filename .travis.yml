@@ -2,8 +2,15 @@ sudo: false
 language: ruby
 rvm:
   - 2.1.3
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  - (cd app/assets/javascripts && npm install)
 before_script:
   - export RAILS_ENV=test
   - cp .example-env .env
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
+script:
+  - bundle exec rspec && (cd app/assets/javascripts && npm test)
