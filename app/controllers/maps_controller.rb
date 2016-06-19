@@ -39,7 +39,7 @@ class MapsController < ApplicationController
 
     # GET /explore/mine
     def mymaps
-        return redirect_to activemaps_url if !authenticated?
+        return redirect_to explore_active_path if !authenticated?
 
         page = params[:page].present? ? params[:page] : 1
         @maps = policy_scope(
