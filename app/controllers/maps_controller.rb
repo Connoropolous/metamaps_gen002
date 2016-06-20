@@ -59,7 +59,7 @@ class MapsController < ApplicationController
     def sharedmaps
       if !authenticated?
         skip_policy_scope
-        return redirect_to activemaps_url
+        return redirect_to explore_active_path
       end
 
         page = params[:page].present? ? params[:page] : 1
