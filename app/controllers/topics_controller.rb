@@ -9,11 +9,11 @@ class TopicsController < ApplicationController
   # GET /topics/autocomplete_topic
   def autocomplete_topic
     term = params[:term]
-    if term && !term.empty?
-      @topics = policy_scope(Topic.where('LOWER("name") like ?', term.downcase + '%')).order('"name"')
-    else
-      @topics = []
-    end
+    @topics = if term && !term.empty?
+                policy_scope(Topic.where('LOWER("name") like ?', term.downcase + '%')).order('"name"')
+              else
+                []
+              end
     render json: autocomplete_array_json(@topics)
   end
 
