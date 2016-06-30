@@ -1,5 +1,4 @@
 class Api::TokensController < API::RestfulController
-
   def my_tokens
     raise Pundit::NotAuthorizedError.new unless current_user
     instantiate_collection page_collection: false, timeframe_collection: false
@@ -15,5 +14,4 @@ class Api::TokensController < API::RestfulController
   def visible_records
     current_user.tokens
   end
-
 end
