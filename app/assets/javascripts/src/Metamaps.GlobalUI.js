@@ -216,6 +216,10 @@ Metamaps.GlobalUI.CreateMap = {
     bindFormEvents: function () {
         var self = Metamaps.GlobalUI.CreateMap;
 
+        $('.new_map input').unbind('keypress').bind('keypress', function(event) {
+          if (event.keyCode === 13) self.submit()
+        })
+
         $('.new_map button.cancel').unbind().bind('click', function (event) {
             event.preventDefault();
             Metamaps.GlobalUI.closeLightbox();
