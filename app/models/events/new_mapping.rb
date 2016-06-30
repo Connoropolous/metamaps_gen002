@@ -7,12 +7,4 @@ class Events::NewMapping < Event
             map: mapping.map,
             user: user)
   end
-
-  private
-
-  # def notify_users!
-  #  unless comment_vote.user == comment_vote.comment_user
-  #    notify!(comment_vote.comment_user)
-  #  end
-  # end
 end

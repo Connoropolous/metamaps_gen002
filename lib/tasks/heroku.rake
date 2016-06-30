@@ -6,7 +6,7 @@ namespace :heroku do
     RAILS_ENV = 'production'.freeze
     Rake::Task[:environment].invoke
     list = Rails.configuration.gems.collect do |g|
-      command, *options = g.send(:install_command)
+      _command, *options = g.send(:install_command)
       options.join(' ') + "\n"
     end
 

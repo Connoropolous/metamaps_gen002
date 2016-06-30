@@ -250,7 +250,7 @@ class MapsController < ApplicationController
     end
     removed = @map.collaborators.select { |user| !userIds.include?(user.id.to_s) }.map(&:id)
     added.each do |uid|
-      um = UserMap.create(user_id: uid.to_i, map_id: @map.id)
+      UserMap.create(user_id: uid.to_i, map_id: @map.id)
       user = User.find(uid.to_i)
       MapMailer.invite_to_edit_email(@map, current_user, user).deliver_later
     end

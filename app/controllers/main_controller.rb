@@ -160,9 +160,9 @@ class MainController < ApplicationController
         desc = s.desc.nil? || s.desc == '' ? '' : s.desc.strip
         if collectedDesc.index(desc).nil?
           collectedDesc.push(desc)
-          boolean = false
+          false # return this value
         else
-          boolean = true
+          true # return this value
         end
       end
     elsif topic1id && !topic1id.empty?

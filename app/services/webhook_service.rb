@@ -4,13 +4,13 @@ class WebhookService
     HTTParty.post webhook.uri, body: payload_for(webhook, event), headers: webhook.headers
   end
 
-  private
+  class << self
+    def payload_for(webhook, event)
+      WebhookSerializer.new(webhook_object_for(webhook, event), root: false).to_json
+    end
 
-  def self.payload_for(webhook, event)
-    WebhookSerializer.new(webhook_object_for(webhook, event), root: false).to_json
-  end
-
-  def self.webhook_object_for(webhook, event)
-    "Webhooks::#{webhook.kind.classify}::#{event.kind.classify}".constantize.new(event)
+    def webhook_object_for(webhook, event)
+      "Webhooks::#{webhook.kind.classify}::#{event.kind.classify}".constantize.new(event)
+    end
   end
 end
