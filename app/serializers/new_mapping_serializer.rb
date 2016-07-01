@@ -1,5 +1,4 @@
 class NewMappingSerializer < ActiveModel::Serializer
-  embed :ids, include: true
   attributes :id,
              :xloc,
              :yloc,
