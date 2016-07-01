@@ -12,6 +12,7 @@ before_script:
   - cp .example-env .env
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
+  - bundle exec rake db:migrate
   - echo "node setup"
   - . $HOME/.nvm/nvm.sh
   - nvm install stable
