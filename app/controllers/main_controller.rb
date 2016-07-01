@@ -175,7 +175,7 @@ class MainController < ApplicationController
     end
 
     #limit to 5 results
-    @synapses = @synapses.slice(0,5)
+    @synapses = @synapses.to_a.slice(0,5)
 
     render json: autocomplete_synapse_array_json(@synapses)
   end 
