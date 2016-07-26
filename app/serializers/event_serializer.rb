@@ -1,5 +1,4 @@
 class EventSerializer < ActiveModel::Serializer
-  embed :ids, include: true
   attributes :id, :sequence_id, :kind, :map_id, :created_at
 
   has_one :actor, serializer: NewUserSerializer, root: 'users'

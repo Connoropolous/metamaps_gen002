@@ -16,6 +16,9 @@
 //= require ./orderedLibraries/underscore
 //= require ./orderedLibraries/backbone
 //= require_directory ./lib
+//= require_directory ./shims
+//= require_directory ./require
+//= require_directory ./famous
 //= require ./src/Metamaps.GlobalUI
 //= require ./src/Metamaps.Router
 //= require ./src/Metamaps.Backbone
@@ -44,6 +47,3 @@
 //= require ./src/Metamaps.Admin
 //= require ./src/Metamaps.Import
 //= require ./src/Metamaps.JIT
-//= require_directory ./shims
-//= require_directory ./require
-//= require_directory ./famous

@@ -1,5 +1,4 @@
 class NewSynapseSerializer < ActiveModel::Serializer
-  embed :ids, include: true
   attributes :id,
              :desc,
              :category,
