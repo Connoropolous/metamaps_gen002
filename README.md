@@ -13,7 +13,6 @@ Metamaps is created and maintained by a distributed, nomadic community comprised
 
 ## Community
 
-- To get connected with the community interested in Metamaps, join our [Google+ community][community].
 - To send us a personal message or request an invite to the open beta, get in touch with us at team@metamaps.cc or @metamapps on Twitter.
 - If you would like to report a bug, please check the [issues][contributing-issues] section in our [contributing instructions][contributing].
 - If you would like to get set up as a developer, that's great! Read on for help getting your development environment set up.
@@ -68,7 +67,6 @@ Copyright (c) 2015 Connor Turland
 
 [site-blog]: http://blog.metamaps.cc
 [site-beta]: http://metamaps.cc
-[community]: https://plus.google.com/u/0/communities/115060009262157699234
 [license]: https://github.com/metamaps/metamaps/blob/develop/LICENSE
 [contributing]: https://github.com/metamaps/metamaps/blob/develop/doc/CONTRIBUTING.md
 [contributing-issues]: https://github.com/metamaps/metamaps/blob/develop/doc/CONTRIBUTING.md#reporting-bugs-and-other-issues
