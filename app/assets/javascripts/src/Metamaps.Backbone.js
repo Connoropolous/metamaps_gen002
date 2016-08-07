@@ -699,17 +699,13 @@ Metamaps.Backbone.init = function () {
   // attach collection event listeners
   self.attachCollectionEvents = function () {
     Metamaps.Topics.on('add remove', function (topic) {
-      if (Metamaps.Active.Map) {
-        Metamaps.Map.InfoBox.updateNumbers()
-      }
+      Metamaps.Map.InfoBox.updateNumbers()
       Metamaps.Filter.checkMetacodes()
       Metamaps.Filter.checkMappers()
     })
 
     Metamaps.Synapses.on('add remove', function (synapse) {
-      if (Metamaps.Active.Map) {
-        Metamaps.Map.InfoBox.updateNumbers()
-      }
+      Metamaps.Map.InfoBox.updateNumbers()
       Metamaps.Filter.checkSynapses()
       Metamaps.Filter.checkMappers()
     })
