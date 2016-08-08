@@ -44,11 +44,16 @@ Metamaps.Listeners = {
           }
           break
         case 69: // if e or E is pressed
-          if (e.ctrlKey && Metamaps.Active.Topic) {
-            self.centerAndReveal(Metamaps.Selected.Nodes, {
-              center: true,
-              reveal: false
-            })
+          if (e.ctrlKey) {
+            e.preventDefault()
+            if (Metamaps.Active.Topic) {
+              self.centerAndReveal(Metamaps.Selected.Nodes, {
+                center: true,
+                reveal: false
+              })
+            } else if (Metamaps.Active.Map) {
+              Metamaps.JIT.zoomExtents(null, Metamaps.Visualize.mGraph.canvas)
+            }
           }
           break
         case 72: // if h or H is pressed
@@ -65,16 +70,9 @@ Metamaps.Listeners = {
             Metamaps.Control.removeSelectedEdges()
           }
           break
-        case 79: // if o or O is pressed
-          if (e.ctrlKey) {
-            e.preventDefault()
-            if (Metamaps.Active.Map) {
-              Metamaps.JIT.zoomExtents(null, Metamaps.Visualize.mGraph.canvas)
-            }
-          }
-          break
         case 82: // if r or R is pressed
           if (e.ctrlKey && Metamaps.Active.Topic) {
+            e.preventDefault()
             self.centerAndReveal(Metamaps.Selected.Nodes, {
               center: false,
               reveal: true
@@ -83,6 +81,7 @@ Metamaps.Listeners = {
           break
         case 84: // if t or T is pressed
           if (e.ctrlKey && Metamaps.Active.Topic) {
+            e.preventDefault()
             self.centerAndReveal(Metamaps.Selected.Nodes, {
               center: true,
               reveal: true
