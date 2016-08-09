@@ -110,12 +110,12 @@ Metamaps.Listeners = {
     var node = nodes[nodes.length - 1]
     if (opts.center && opts.reveal) {
       Metamaps.Topic.centerOn(node.id, function() {
-        Metamaps.Topic.fetchRelatives(node)
+        Metamaps.Topic.fetchRelatives(nodes)
       })
     } else if (opts.center) {
       Metamaps.Topic.centerOn(node.id)
     } else if (opts.reveal) {
-      Metamaps.Topic.fetchRelatives(node)
+      Metamaps.Topic.fetchRelatives(nodes)
     }
   }
 }; // end Metamaps.Listeners

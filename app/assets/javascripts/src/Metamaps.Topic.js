@@ -111,7 +111,11 @@ Metamaps.Topic = {
       })
     }
   },
-  fetchRelatives: function (node, metacode_id) {
+  fetchRelatives: function (nodes, metacode_id) {
+    var self = this
+
+    var node = $.isArray(nodes) ? nodes[0] : nodes
+
     var topics = Metamaps.Topics.map(function (t) { return t.id })
     var topics_string = topics.join()
 
@@ -162,13 +166,16 @@ Metamaps.Topic = {
           }
         })
       })
+      if ($.isArray(nodes) && nodes.length > 1) {
+        self.fetchRelatives(nodes.slice(1), metacode_id)
+      }
     }
 
     var paramsString = metacode_id ? 'metacode=' + metacode_id + '&' : ''
     paramsString += 'network=' + topics_string + '&creators=' + creators_string
 
     $.ajax({
-      type: 'Get',
+      type: 'GET',
       url: '/topics/' + topic.id + '/relatives.json?' + paramsString,
       success: successCallback,
       error: function () {}
