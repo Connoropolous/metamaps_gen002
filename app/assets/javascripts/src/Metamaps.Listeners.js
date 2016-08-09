@@ -103,10 +103,13 @@ Metamaps.Listeners = {
   centerAndReveal: function(nodes, opts) {
     if (nodes.length < 1) return
     var node = nodes[nodes.length - 1]
-    if (opts.center) {
+    if (opts.center && opts.reveal) {
+      Metamaps.Topic.centerOn(node.id, function() {
+        Metamaps.Topic.fetchRelatives(node)
+      })
+    } else if (opts.center) {
       Metamaps.Topic.centerOn(node.id)
-    }
-    if (opts.reveal) {
+    } else if (opts.reveal) {
       Metamaps.Topic.fetchRelatives(node)
     }
   }
