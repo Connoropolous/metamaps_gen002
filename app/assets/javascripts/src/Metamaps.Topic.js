@@ -105,7 +105,9 @@ Metamaps.Topic = {
       Metamaps.Visualize.mGraph.onClick(nodeid, {
         hideLabels: false,
         duration: 1000,
-        onComplete: callback
+        onComplete: function () {
+          if (callback) callback()
+        }
       })
     }
   },
