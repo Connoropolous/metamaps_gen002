@@ -109,6 +109,8 @@ Metamaps.Topic = {
           if (callback) callback()
         }
       })
+      Metamaps.Router.navigate('/topics/' + nodeid)
+      Metamaps.Active.Topic = Metamaps.Topics.get(nodeid)
     }
   },
   fetchRelatives: function (nodes, metacode_id) {
