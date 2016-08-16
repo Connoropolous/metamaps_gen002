@@ -88,8 +88,8 @@ class MapsController < ApplicationController
 
   # GET maps/new
   def new
-    @map = Map.new(:name => "Untitled Map", :permission => "public", :arranged => true)
-    authorize @map, :create?
+    @map = Map.new(name: "Untitled Map", permission: "public", arranged: true)
+    authorize @map
 
     respond_to do |format|
       format.html do
