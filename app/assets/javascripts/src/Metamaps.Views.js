@@ -80,9 +80,24 @@ Metamaps.Views.init = function () {
         that.el.appendChild(view.render().el)
       })
       this.$el.append('<div class="clearfloat"></div>')
+      
+      if (this.collection.length >= 20 && this.collection.page != "loadedAll") {
+        this.$el.append('<button class="button loadMore">load more</button>')
+        this.$el.append('<div class="clearfloat"></div>')
+      }
+      
       $('#exploreMaps').empty().html(this.el) 
+      this.$el.find('.loadMore').click(that.loadMore.bind(that))
       if (cb) cb()
       Metamaps.Loading.hide()
+    },
+    loadMore: function () {
+      if (this.collection.page != "loadedAll") {
+        this.collection.getMaps();
+      }
+      else {
+        this.$el.find('.loadMore').hide()
+      }
     },
     handleSuccess: function (cb) {
       if (this.collection && this.collection.id === 'mapper') {
