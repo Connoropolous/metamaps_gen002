@@ -57,11 +57,11 @@ Metamaps.Views.init = function () {
       this.listenTo(this.collection, 'successOnFetch', this.handleSuccess)
       this.listenTo(this.collection, 'errorOnFetch', this.handleError)
     },
-    render: function (mapperObj, cbArg) {
+    render: function (mapperObj, cb) {
       var that = this
 
       if (typeof mapperObj === 'function') {
-        var cb = mapperObj
+        cb = mapperObj
         mapperObj = null
       }
 
