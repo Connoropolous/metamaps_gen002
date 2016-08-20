@@ -1,6 +1,6 @@
 module Api
   module V1
-    class MapSerializer < ActiveModel::Serializer
+    class MapSerializer < ApplicationSerializer
       attributes :id,
         :name,
         :desc,
@@ -9,11 +9,19 @@ module Api
         :created_at,
         :updated_at
 
-      has_many :topics, serializer: TopicSerializer
-      has_many :synapses, serializer: SynapseSerializer
-      has_many :mappings, serializer: MappingSerializer
-      has_many :contributors, root: :users, serializer: UserSerializer
-      has_many :collaborators, root: :users, serializer: UserSerializer
+      def self.embeddable
+        {
+          topics: {},
+          synapses: {},
+          mappings: {},
+          contributors: { serializer: UserSerializer },
+          collaborators: { serializer: UserSerializer }
+        }
+      end
+
+      self.class_eval do
+        embed_dat
+      end
     end
   end
 end

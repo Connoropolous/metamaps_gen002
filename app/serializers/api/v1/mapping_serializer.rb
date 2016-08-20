@@ -1,21 +1,24 @@
 module Api
   module V1
-    class MappingSerializer < ActiveModel::Serializer
+    class MappingSerializer < ApplicationSerializer
       attributes :id,
-        :xloc,
-        :yloc,
         :created_at,
         :updated_at,
         :mappable_id,
         :mappable_type
 
-      has_one :user, serializer: UserSerializer
-      has_one :map, serializer: MapSerializer
+      attribute :xloc, if: -> { object.mappable_type == 'Topic' }
+      attribute :yloc, if: -> { object.mappable_type == 'Topic' }
 
-      def filter(keys)
-        keys.delete(:xloc) unless object.mappable_type == 'Topic'
-        keys.delete(:yloc) unless object.mappable_type == 'Topic'
-        keys
+      def self.embeddable
+        {
+          user: {},
+          map: {}
+        }
+      end
+
+      self.class_eval do
+        embed_dat
       end
     end
   end

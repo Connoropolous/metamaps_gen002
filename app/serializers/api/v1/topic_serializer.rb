@@ -1,6 +1,6 @@
 module Api
   module V1
-    class TopicSerializer < ActiveModel::Serializer
+    class TopicSerializer < ApplicationSerializer
       attributes :id,
         :name,
         :desc,
@@ -9,8 +9,16 @@ module Api
         :created_at,
         :updated_at
 
-      has_one :user, serializer: UserSerializer
-      has_one :metacode, serializer: MetacodeSerializer
+      def self.embeddable
+        {
+          user: {},
+          metacode: {}
+        }
+      end
+
+      self.class_eval do
+        embed_dat
+      end
     end
   end
 end

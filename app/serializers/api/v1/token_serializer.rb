@@ -1,6 +1,6 @@
 module Api
   module V1
-    class TokenSerializer < ActiveModel::Serializer
+    class TokenSerializer < ApplicationSerializer
       attributes :id,
         :token,
         :description,

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class EventSerializer < ActiveModel::Serializer
+    class EventSerializer < ApplicationSerializer
       attributes :id, :sequence_id, :kind, :map_id, :created_at
 
       has_one :actor, serializer: UserSerializer, root: 'users'

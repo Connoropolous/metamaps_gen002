@@ -34,6 +34,16 @@ module Api
         "Api::V1::#{resource_name.camelize}Serializer".constantize
       end
 
+      def default_scope
+        {
+          embeds: embeds
+        }
+      end
+
+      def embeds
+        (params[:embed] || '').split(',').map(&:to_sym)
+      end
+
       def token_user
         token = params[:access_token]
         access_token = Token.find_by_token(token)
