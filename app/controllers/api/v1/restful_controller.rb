@@ -7,7 +7,7 @@ module Api
       snorlax_used_rest!
 
       load_and_authorize_resource only: [:show, :update, :destroy]
-
+      
       def create
         instantiate_resource
         resource.user = current_user
@@ -34,6 +34,18 @@ module Api
         "Api::V1::#{resource_name.camelize}Serializer".constantize
       end
 
+      def respond_with_resource(scope: default_scope, serializer: resource_serializer, root: serializer_root)
+        if resource.errors.empty?
+          render json: resource, scope: scope, serializer: serializer, root: root
+        else
+          respond_with_errors
+        end
+      end
+
+      def respond_with_collection(resources: collection, scope: default_scope, serializer: resource_serializer, root: serializer_root)
+        render json: resources, scope: scope, each_serializer: serializer, root: root, meta: pagination(resources), meta_key: :page
+      end
+
       def default_scope
         {
           embeds: embeds
@@ -58,6 +70,40 @@ module Api
 
       def permitted_params
         @permitted_params ||= PermittedParams.new(params)
+      end
+
+      def serializer_root
+        'data'
+      end
+
+      def pagination(collection)
+        per = (params[:per] || 25).to_i
+        current_page = params[:page].to_i
+        total_pages = (collection.total_count / per).to_i + 1
+        prev_page = current_page > 1 ? current_page - 1 : 0
+        next_page = current_page < total_pages ? current_page + 1 : 0
+        {
+          current_page: current_page,
+          next_page: next_page,
+          prev_page: prev_page,
+          total_pages: total_pages,
+          total_count: collection.total_count
+        }
+      end
+
+      def instantiate_collection
+        collection = accessible_records
+        collection = yield collection if block_given?
+        collection = collection.page(params[:page]).per(params[:per])
+        self.collection = collection
+      end
+
+      def visible_records
+        policy_scope(resource_class)
+      end
+
+      def public_records
+        policy_scope(resource_class)
       end
     end
   end
