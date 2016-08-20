@@ -1,4 +1,4 @@
-class NewTopicSerializer < ActiveModel::Serializer
+class TopicSerializer < ActiveModel::Serializer
   attributes :id,
              :name,
              :desc,
@@ -7,6 +7,6 @@ class NewTopicSerializer < ActiveModel::Serializer
              :created_at,
              :updated_at
 
-  has_one :user, serializer: NewUserSerializer
-  has_one :metacode, serializer: NewMetacodeSerializer
+  has_one :user, serializer: UserSerializer
+  has_one :metacode, serializer: MetacodeSerializer
 end

@@ -1,8 +1,8 @@
 class EventSerializer < ActiveModel::Serializer
   attributes :id, :sequence_id, :kind, :map_id, :created_at
 
-  has_one :actor, serializer: NewUserSerializer, root: 'users'
-  has_one :map, serializer: NewMapSerializer
+  has_one :actor, serializer: UserSerializer, root: 'users'
+  has_one :map, serializer: MapSerializer
 
   def actor
     object.user || object.eventable.try(:user)

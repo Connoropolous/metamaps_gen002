@@ -1,4 +1,4 @@
-class NewMappingSerializer < ActiveModel::Serializer
+class MappingSerializer < ActiveModel::Serializer
   attributes :id,
              :xloc,
              :yloc,
@@ -7,8 +7,8 @@ class NewMappingSerializer < ActiveModel::Serializer
              :mappable_id,
              :mappable_type
 
-  has_one :user, serializer: NewUserSerializer
-  has_one :map, serializer: NewMapSerializer
+  has_one :user, serializer: UserSerializer
+  has_one :map, serializer: MapSerializer
 
   def filter(keys)
     keys.delete(:xloc) unless object.mappable_type == 'Topic'

@@ -1,4 +1,4 @@
-class NewMetacodeSerializer < ActiveModel::Serializer
+class MetacodeSerializer < ActiveModel::Serializer
   attributes :id,
              :name,
              :manual_icon,
