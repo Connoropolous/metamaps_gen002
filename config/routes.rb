@@ -9,13 +9,15 @@ Metamaps::Application.routes.draw do
   get 'search/mappers', to: 'main#searchmappers', as: :searchmappers
   get 'search/synapses', to: 'main#searchsynapses', as: :searchsynapses
 
-  namespace :api, path: '/api/v1', defaults: { format: :json } do
-    resources :maps, only: [:create, :show, :update, :destroy]
-    resources :synapses, only: [:create, :show, :update, :destroy]
-    resources :topics, only: [:create, :show, :update, :destroy]
-    resources :mappings, only: [:create, :show, :update, :destroy]
-    resources :tokens, only: [:create, :destroy] do
-      get :my_tokens, on: :collection
+  namespace :api, path: '/api', default: { format: :json } do
+    namespace :v1, path: '/v1' do
+      resources :maps, only: [:create, :show, :update, :destroy]
+      resources :synapses, only: [:create, :show, :update, :destroy]
+      resources :topics, only: [:create, :show, :update, :destroy]
+      resources :mappings, only: [:create, :show, :update, :destroy]
+      resources :tokens, only: [:create, :destroy] do
+        get :my_tokens, on: :collection
+      end
     end
   end
 
