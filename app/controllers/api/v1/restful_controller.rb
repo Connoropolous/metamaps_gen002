@@ -6,14 +6,26 @@ module Api
 
       snorlax_used_rest!
 
-      load_and_authorize_resource only: [:show, :update, :destroy]
-      
+      before_action :load_resource, only: [:show, :update, :destroy]
+      after_action :verify_authorized
+
+      def index
+        authorize resource_class
+        instantiate_collection
+        respond_with_collection
+      end
+
       def create
         instantiate_resource
-        resource.user = current_user
+        resource.user = current_user if current_user.present?
         authorize resource
         create_action
         respond_with_resource
+      end
+
+      def destroy
+        destroy_action
+        head :no_content
       end
 
       private
@@ -28,6 +40,11 @@ module Api
 
       def current_user
         super || token_user || doorkeeper_user || nil
+      end
+
+      def load_resource
+        super
+        authorize resource
       end
 
       def resource_serializer
@@ -78,7 +95,7 @@ module Api
 
       def pagination(collection)
         per = (params[:per] || 25).to_i
-        current_page = params[:page].to_i
+        current_page = (params[:page] || 1).to_i
         total_pages = (collection.total_count / per).to_i + 1
         prev_page = current_page > 1 ? current_page - 1 : 0
         next_page = current_page < total_pages ? current_page + 1 : 0

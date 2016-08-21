@@ -1,0 +1,21 @@
+#%RAML 1.0
+---
+title: Metamaps
+version: v1
+baseUri: http://metamaps.cc/api/v1
+mediaType: application/json
+
+traits:
+  - pageable: !include traits/pageable.raml
+  - orderable: !include traits/orderable.raml
+  - searchable: !include traits/searchable.raml
+
+schemas:
+  - topic: !include schemas/topic.json
+
+resourceTypes:
+  - base: !include resourceTypes/base.raml
+  - item: !include resourceTypes/item.raml
+  - collection: !include resourceTypes/collection.raml
+
+/topics: !include apis/topics.raml

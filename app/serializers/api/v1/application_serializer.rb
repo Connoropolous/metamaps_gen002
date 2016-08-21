@@ -12,7 +12,6 @@ module Api
       def self.embed_dat
         embeddable.each_pair do |key, opts|
           attr = opts.delete(:attr) || key
-          binding.pry if key == :topic2
           if attr.to_s.pluralize == attr.to_s
             attribute "#{attr.to_s.singularize}_ids".to_sym, opts.merge(unless: -> { embeds.include?(key) }) do
               object.send(attr).map(&:id)
