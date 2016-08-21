@@ -375,7 +375,13 @@
 .mapPage .mapInfoIcon {
 	top: 0;
 }
-
+.starMap {
+  width: auto;
+  padding-right: 8px;
+}
+.unauthenticated .mapPage .starMap {
+  display: none;
+}
 /* end infoAndHelp */
 
 
@@ -698,6 +704,10 @@
     background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
     background-position: -64px 0;
 }
+.exploreMapsCenter .starredMaps .exploreMapsIcon {
+    background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
+    background-position: -64px 0;
+}
 .myMaps:hover .exploreMapsIcon, .myMaps.active .exploreMapsIcon {
     background-position: 0 -32px;
 }
@@ -705,6 +715,9 @@
     background-position: -32px -32px;
 }
 .featuredMaps:hover .exploreMapsIcon, .featuredMaps.active .exploreMapsIcon {
+    background-position: -64px -32px;
+}
+.starredMaps:hover .exploreMapsIcon, .starredMaps.active .exploreMapsIcon {
     background-position: -64px -32px;
 }
 .sharedMaps:hover .exploreMapsIcon, .sharedMaps.active .exploreMapsIcon {

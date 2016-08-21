@@ -49,12 +49,18 @@ Metamaps.Map = {
       return false
     })
 
+    $('.starMap').click(function () {
+      if ($(this).text() === 'star') self.star()
+      else self.unstar()
+    })
+
     $('.sidebarFork').click(function () {
       self.fork()
     })
 
     Metamaps.GlobalUI.CreateMap.emptyForkMapForm = $('#fork_map').html()
 
+    self.updateStar()
     self.InfoBox.init()
     self.CheatSheet.init()
 
@@ -70,6 +76,7 @@ Metamaps.Map = {
       Metamaps.Synapses = new bb.SynapseCollection(data.synapses)
       Metamaps.Mappings = new bb.MappingCollection(data.mappings)
       Metamaps.Messages = data.messages
+      Metamaps.Stars = data.stars
       Metamaps.Backbone.attachCollectionEvents()
 
       var map = Metamaps.Active.Map
@@ -85,6 +92,8 @@ Metamaps.Map = {
       if (map.get('permission') === 'commons') {
         $('.wrapper').addClass('commonsMap')
       }
+
+      Metamaps.Map.updateStar()     
 
       // set filter mapper H3 text
       $('#filter_by_mapper h3').html('MAPPERS')
@@ -133,6 +142,25 @@ Metamaps.Map = {
       Metamaps.Map.InfoBox.close()
       Metamaps.Realtime.endActiveMap()
     }
+  },
+  updateStar: function () {
+    if (!Metamaps.Active.Mapper || !Metamaps.Stars) return
+    // update the star/unstar icon
+    if (Metamaps.Stars.find(function (s) { return s.user_id === Metamaps.Active.Mapper.id })) {
+      $('.starMap').html('unstar')
+    } else {
+      $('.starMap').html('star')
+    }
+  },
+  star: function () {
+    if (!Metamaps.Active.Map) return
+    $.post('/maps/' + Metamaps.Active.Map.id + '/star')
+    $('.starMap').html('unstar') 
+  },
+  unstar: function () {
+    if (!Metamaps.Active.Map) return
+    $.post('/maps/' + Metamaps.Active.Map.id + '/unstar')
+    $('.starMap').html('star') 
   },
   fork: function () {
     Metamaps.GlobalUI.openLightbox('forkmap')

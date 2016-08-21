@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_many :maps
   has_many :mappings
   has_many :tokens
+  has_many :stars
   has_many :user_maps, dependent: :destroy
   has_many :shared_maps, through: :user_maps, source: :map
 
