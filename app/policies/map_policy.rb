@@ -62,7 +62,7 @@ class MapPolicy < ApplicationPolicy
   end
 
   def unstar?
-    user.present? && record.user == user
+    user.present?
   end
 
   def screenshot?
