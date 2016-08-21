@@ -96,23 +96,75 @@ module Api
       def pagination(collection)
         per = (params[:per] || 25).to_i
         current_page = (params[:page] || 1).to_i
-        total_pages = (collection.total_count / per).to_i + 1
+        total_pages = (collection.total_count.to_f / per).ceil
         prev_page = current_page > 1 ? current_page - 1 : 0
         next_page = current_page < total_pages ? current_page + 1 : 0
+
+        base_url = request.base_url + request.path
+        nxt = request.query_parameters.merge(page: next_page).map{|x| x.join('=')}.join('&')
+        prev = request.query_parameters.merge(page: prev_page).map{|x| x.join('=')}.join('&')
+        last = request.query_parameters.merge(page: total_pages).map{|x| x.join('=')}.join('&')
+        response.headers['Link'] = [
+          %(<#{base_url}?#{nxt}>; rel="next"),
+          %(<#{base_url}?#{prev}>; rel="prev"),
+          %(<#{base_url}?#{last}>; rel="last")
+        ].join(',')
+        response.headers['X-Total-Pages'] = collection.total_pages.to_s
+        response.headers['X-Total-Count'] = collection.total_count.to_s
+        response.headers['X-Per-Page'] = per.to_s
+
         {
           current_page: current_page,
           next_page: next_page,
           prev_page: prev_page,
           total_pages: total_pages,
-          total_count: collection.total_count
+          total_count: collection.total_count,
+          per: per
         }
       end
 
       def instantiate_collection
         collection = accessible_records
         collection = yield collection if block_given?
+        collection = search_by_q(collection) if params[:q]
+        collection = order_by_sort(collection) if params[:sort]
         collection = collection.page(params[:page]).per(params[:per])
         self.collection = collection
+      end
+
+      # override this method to explicitly set searchable columns
+      def searchable_columns
+        columns = resource_class.columns.select do |column|
+          column.type == :text || column.type == :string
+        end
+        columns.map(&:name)
+      end
+
+      # thanks to http://stackoverflow.com/questions/4430578
+      def search_by_q(collection)
+        table = resource_class.arel_table
+        safe_query = "%#{params[:q].gsub(/[%_]/, '\\\\\0')}%"
+        search_column = -> (column) { table[column].matches(safe_query) }
+
+        condition = searchable_columns.reduce(nil) do |prev, column|
+          next search_column.(column) if prev.nil?
+          search_column.(column).or(prev)
+        end
+        puts collection.where(condition).to_sql
+        collection.where(condition)
+      end
+
+      def order_by_sort(collection)
+        builder = collection
+        sorts = params[:sort].split(',')
+        sorts.each do |sort|
+          direction = sort.starts_with?('-') ? 'desc' : 'asc'
+          sort = sort.sub(/^-/, '')
+          if resource_class.columns.map(&:name).include?(sort)
+            builder = builder.order(sort => direction)
+          end
+        end
+        return builder
       end
 
       def visible_records
