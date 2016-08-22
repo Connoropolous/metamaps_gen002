@@ -46,13 +46,9 @@
       if (Metamaps.Active.Mapper) {
         Metamaps.GlobalUI.hideDiv('#yield')
 
-        Metamaps.Header.changeSection(!!Metamaps.Active.Mapper, 'active')
-        Metamaps.GlobalUI.showDiv('#exploreMapsHeader')
-        Metamaps.GlobalUI.showDiv('#exploreMaps')
-        $('#exploreMaps').scrollTop(0)
-
-        Metamaps.GlobalUI.Search.open()
-        Metamaps.GlobalUI.Search.lock()
+        //Metamaps.Header.changeSection(!!Metamaps.Active.Mapper, 'active')
+        Metamaps.GlobalUI.showDiv('#explore')
+        //$('#exploreMaps').scrollTop(0)
 
         Metamaps.Views.exploreMaps.setCollection(Metamaps.Maps.Active)
         if (Metamaps.Maps.Active.length === 0) {
@@ -62,11 +58,8 @@
         }
       } else {
         // logged out home page
-        Metamaps.GlobalUI.hideDiv('#exploreMapsHeader')
-        Metamaps.GlobalUI.hideDiv('#exploreMaps')
+        Metamaps.GlobalUI.hideDiv('#explore')
         Metamaps.GlobalUI.showDiv('#yield')
-        Metamaps.GlobalUI.Search.unlock()
-        //Metamaps.GlobalUI.Search.close(0, true)
         Metamaps.Router.timeoutId = setTimeout(navigate, 500)
       }
 
@@ -143,15 +136,8 @@
         }
       }
 
-      Metamaps.GlobalUI.Search.open()
-      Metamaps.GlobalUI.Search.lock()
-      Metamaps.GlobalUI.showDiv('#exploreMaps')
-      Metamaps.GlobalUI.showDiv('#exploreMapsHeader')
-      $('#exploreMaps').scrollTop(0)
-      if (id) {
-        Metamaps.Header.fetchUserThenChangeSection(!!Metamaps.Active.Mapper, id)
-      }
-      else Metamaps.Header.changeSection(!!Metamaps.Active.Mapper, section)
+      Metamaps.GlobalUI.showDiv('#explore')
+      //$('#exploreMaps').scrollTop(0)
       Metamaps.GlobalUI.hideDiv('#yield')
       Metamaps.GlobalUI.hideDiv('#infovis')
       Metamaps.GlobalUI.hideDiv('#instructions')
@@ -174,8 +160,7 @@
       // can edit this map '.canEditMap'
 
       Metamaps.GlobalUI.hideDiv('#yield')
-      Metamaps.GlobalUI.hideDiv('#exploreMaps')
-      Metamaps.GlobalUI.hideDiv('#exploreMapsHeader')
+      Metamaps.GlobalUI.hideDiv('#explore')
 
       // clear the visualization, if there was one, before showing its div again
       if (Metamaps.Visualize.mGraph) {
@@ -186,9 +171,6 @@
       Metamaps.GlobalUI.showDiv('#infovis')
       Metamaps.Topic.end()
       Metamaps.Active.Topic = null
-
-      //Metamaps.GlobalUI.Search.unlock()
-      //Metamaps.GlobalUI.Search.close(0, true)
 
       Metamaps.Loading.show()
       Metamaps.Map.end()
@@ -206,8 +188,7 @@
       $('.wrapper').addClass('topicPage')
 
       Metamaps.GlobalUI.hideDiv('#yield')
-      Metamaps.GlobalUI.hideDiv('#exploreMaps')
-      Metamaps.GlobalUI.hideDiv('#exploreMapsHeader')
+      Metamaps.GlobalUI.hideDiv('#explore')
 
       // clear the visualization, if there was one, before showing its div again
       if (Metamaps.Visualize.mGraph) {
