@@ -197,9 +197,6 @@
       Metamaps.Map.end()
       Metamaps.Active.Map = null
 
-      //Metamaps.GlobalUI.Search.unlock()
-      //Metamaps.GlobalUI.Search.close(0, true)
-
       Metamaps.Topic.end()
       Metamaps.Topic.launch(id)
     }
