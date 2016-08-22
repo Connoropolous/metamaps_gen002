@@ -46,9 +46,7 @@
       if (Metamaps.Active.Mapper) {
         Metamaps.GlobalUI.hideDiv('#yield')
 
-        //Metamaps.Header.changeSection(!!Metamaps.Active.Mapper, 'active')
         Metamaps.GlobalUI.showDiv('#explore')
-        //$('#exploreMaps').scrollTop(0)
 
         Metamaps.Views.exploreMaps.setCollection(Metamaps.Maps.Active)
         if (Metamaps.Maps.Active.length === 0) {
@@ -137,7 +135,6 @@
       }
 
       Metamaps.GlobalUI.showDiv('#explore')
-      //$('#exploreMaps').scrollTop(0)
       Metamaps.GlobalUI.hideDiv('#yield')
       Metamaps.GlobalUI.hideDiv('#infovis')
       Metamaps.GlobalUI.hideDiv('#instructions')
