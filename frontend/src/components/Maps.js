@@ -9,7 +9,10 @@ class Maps extends Component {
     const { maps, currentUser, section, displayStyle, user, moreToLoad, loadMore } = this.props
     let mapElements
 
-    if (displayStyle == 'grid') {
+    if (maps.models.length === 0) {
+      mapElements = <div className='noMaps'>There are no maps to see here.</div>
+    }
+    else if (displayStyle == 'grid') {
       mapElements = maps.models.map(function (map) {
         return <MapCard key={ map.id } map={ map } currentUser={ currentUser } />
       })
@@ -28,7 +31,7 @@ class Maps extends Component {
             { currentUser && !user ? <div className="map newMap"><a href="/maps/new"><div className="newMapImage"></div><span>Create new map...</span></a></div> : null }
             { mapElements }
             <div className='clearfloat'></div>
-            { moreToLoad ? 
+            { moreToLoad && section !== 'live' ? 
                 [<button className="button loadMore" onClick={ loadMore }>load more</button>, <div className='clearfloat'></div>]
                 : null }
           </div>

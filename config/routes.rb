@@ -11,6 +11,7 @@ Metamaps::Application.routes.draw do
     get 'mine'
     get 'shared'
     get 'starred'
+    get 'live'
     get 'mapper/:id', action: 'mapper'
   end
 

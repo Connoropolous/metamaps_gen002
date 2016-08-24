@@ -61,6 +61,15 @@ class ExploreController < ApplicationController
     end
   end
 
+  # GET /explore/live
+  def live
+    @maps = map_scope(Map)
+
+    respond_to do |format|
+      format.html
+    end
+  end
+
   # GET /explore/mapper/:id
   def mapper
     @user = User.find(params[:id])

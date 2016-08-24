@@ -71,7 +71,7 @@ class MapsController < ApplicationController
       end
     end
   end
-
+  
   # DELETE maps/:id
   def destroy
     @map.delete
