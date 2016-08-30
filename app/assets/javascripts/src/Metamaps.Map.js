@@ -160,6 +160,7 @@ Metamaps.Map = {
     if (!Metamaps.Active.Map) return
     $.post('/maps/' + Metamaps.Active.Map.id + '/star')
     Metamaps.Stars.push({ user_id: Metamaps.Active.Mapper.id, map_id: Metamaps.Active.Map.id })
+    Metamaps.Maps.Starred.add(Metamaps.Active.Map)
     self.updateStar()
   },
   unstar: function () {
@@ -168,7 +169,8 @@ Metamaps.Map = {
     if (!Metamaps.Active.Map) return
     $.post('/maps/' + Metamaps.Active.Map.id + '/unstar')
     Metamaps.Stars = Metamaps.Stars.filter(function (s) { return s.user_id != Metamaps.Active.Mapper.id })
-    self.updateStar()    
+    Metamaps.Maps.Starred.remove(Metamaps.Active.Map)
+    self.updateStar() 
   },
   fork: function () {
     Metamaps.GlobalUI.openLightbox('forkmap')
