@@ -68,8 +68,8 @@ class Header extends Component {
       
             {mapper ? (
               <div className='exploreMapsButton active mapperButton'>
-                <img className='exploreMapperImage' width='24' height='24' src={this.props.userAvatar} />
-                <div className='exploreMapperName'>{this.props.userName}&rsquo;s Maps</div>
+                <img className='exploreMapperImage' width='24' height='24' src={this.props.user.image} />
+                <div className='exploreMapperName'>{this.props.user.name}&rsquo;s Maps</div>
                 <div className='clearfloat'></div>
               </div>
             ) : null }
@@ -83,8 +83,7 @@ class Header extends Component {
 Header.propTypes = {
   signedIn: PropTypes.bool.isRequired,
   section: PropTypes.string.isRequired,
-  userAvatar: PropTypes.string,
-  userName: PropTypes.string
+  user: PropTypes.object
 }
 
 export default Header
