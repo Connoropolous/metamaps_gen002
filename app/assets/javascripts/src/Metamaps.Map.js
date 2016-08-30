@@ -50,8 +50,8 @@ Metamaps.Map = {
     })
 
     $('.starMap').click(function () {
-      if ($(this).text() === 'star') self.star()
-      else self.unstar()
+      if ($(this).is('.starred')) self.unstar()
+      else self.star()
     })
 
     $('.sidebarFork').click(function () {
@@ -147,20 +147,28 @@ Metamaps.Map = {
     if (!Metamaps.Active.Mapper || !Metamaps.Stars) return
     // update the star/unstar icon
     if (Metamaps.Stars.find(function (s) { return s.user_id === Metamaps.Active.Mapper.id })) {
-      $('.starMap').html('unstar')
+      $('.starMap').addClass('starred')
+      $('.starMap .tooltipsAbove').html('Unstar')
     } else {
-      $('.starMap').html('star')
+      $('.starMap').removeClass('starred')
+      $('.starMap .tooltipsAbove').html('Star')
     }
   },
   star: function () {
+    var self = Metamaps.Map
+
     if (!Metamaps.Active.Map) return
     $.post('/maps/' + Metamaps.Active.Map.id + '/star')
-    $('.starMap').html('unstar') 
+    Metamaps.Stars.push({ user_id: Metamaps.Active.Mapper.id, map_id: Metamaps.Active.Map.id })
+    self.updateStar()
   },
   unstar: function () {
+    var self = Metamaps.Map
+
     if (!Metamaps.Active.Map) return
     $.post('/maps/' + Metamaps.Active.Map.id + '/unstar')
-    $('.starMap').html('star') 
+    Metamaps.Stars = Metamaps.Stars.filter(function (s) { return s.user_id != Metamaps.Active.Mapper.id })
+    self.updateStar()    
   },
   fork: function () {
     Metamaps.GlobalUI.openLightbox('forkmap')

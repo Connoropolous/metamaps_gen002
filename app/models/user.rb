@@ -79,6 +79,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def starred_map?(map) 
+    return !!self.stars.index{|s| s.map_id == map.id }
+  end
+
   def settings
     # make sure we always return a UserPreference instance
     self[:settings] = UserPreference.new if self[:settings].nil?
