@@ -52,7 +52,7 @@ class Header extends Component {
                 href="/explore/starred"
                 linkClass={activeClass("starred")}
                 data-router="true"
-                text="Starred"
+                text="Starred By Me"
               />
               <MapLink show={explore}
                 href={signedIn ? "/" : "/explore/active"}
