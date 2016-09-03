@@ -43,33 +43,13 @@ class Topic < ActiveRecord::Base
   end
 
   scope :relatives1, ->(topic_id = nil, user = nil) {
-     visible = %w(public commons)
-     permission = 'synapses.permission IN (?)'
-     if user
-       synapse_permission = permission + ' OR synapses.defer_to_map_id IN (?) OR synapses.user_id = ?' 
-       return includes(:topics1)
-         .where('synapses.node1_id = ? AND (' + synapse_permission + ')', topic_id, visible, user.shared_maps.map(&:id), user.id)
-         .references(:synapses)
-     else
-       return includes(:topics1)
-         .where('synapses.node1_id = ? AND (' + permission + ')', topic_id, visible)
-         .references(:synapses)
-     end
+    synapses = Pundit.policy_scope(user, Synapse.where(node1_id: topic_id))
+    includes(:topics1).where(id: synapses.map(&:node1_id))
   }
 
   scope :relatives2, ->(topic_id = nil, user = nil) {
-     visible = %w(public commons)
-     permission = 'synapses.permission IN (?)'
-     if user
-       synapse_permission = permission + ' OR synapses.defer_to_map_id IN (?) OR synapses.user_id = ?' 
-       return includes(:topics2)
-         .where('synapses.node2_id = ? AND (' + synapse_permission + ')', topic_id, visible, user.shared_maps.map(&:id), user.id)
-         .references(:synapses)
-     else
-       return includes(:topics2)
-         .where('synapses.node2_id = ? AND (' + permission + ')', topic_id, visible)
-         .references(:synapses)
-     end
+    synapses = Pundit.policy_scope(user, Synapse.where(node2_id: topic_id))
+    includes(:topics2).where(id: synapses.map(&:node2_id))
   }
 
   delegate :name, to: :user, prefix: true
