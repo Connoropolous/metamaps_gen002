@@ -11,6 +11,7 @@ module Api
 
       def self.embeddable
         {
+          user: {},
           topics: {},
           synapses: {},
           mappings: {},

@@ -4,28 +4,28 @@ get:
     200:
       body:
         application/json:
-          example: !include ../examples/synapses.json
+          example: !include ../examples/maps.json
 post:
   body:
     application/json:
       properties:
-        desc:
+        name:
           description: name
-        category:
-          description: 'from-to' or 'both'
+        desc:
+          description: description
         permission:
           description: commons, public, or private
-        topic1_id:
+        screenshot:
+          description: url to a screenshot of the map
+        contributor_ids:
           description: the topic being linked from
-        topic2_id:
+        collaborator_ids:
           description: the topic being linked to
-        user_id:
-          description: the creator of the topic
   responses:
     201:
       body:
         application/json:
-          example: !include ../examples/synapse.json
+          example: !include ../examples/map.json
 /{id}:
   type: item
   get:
@@ -33,49 +33,49 @@ post:
       200:
         body:
           application/json:
-            example: !include ../examples/synapse.json
+            example: !include ../examples/map.json
   put:
     body:
       application/json:
         properties:
-          desc:
+          name:
             description: name
-          category:
-            description: 'from-to' or 'both'
+          desc:
+            description: description
           permission:
             description: commons, public, or private
-          topic1_id:
+          screenshot:
+            description: url to a screenshot of the map
+          contributor_ids:
             description: the topic being linked from
-          topic2_id:
+          collaborator_ids:
             description: the topic being linked to
-          user_id:
-            description: the creator of the topic
     responses:
       200:
         body:
           application/json:
-            example: !include ../examples/synapse.json
+            example: !include ../examples/map.json
   patch:
     body:
       application/json:
         properties:
-          desc:
+          name:
             description: name
-          category:
-            description: 'from-to' or 'both'
+          desc:
+            description: description
           permission:
             description: commons, public, or private
-          topic1_id:
+          screenshot:
+            description: url to a screenshot of the map
+          contributor_ids:
             description: the topic being linked from
-          topic2_id:
+          collaborator_ids:
             description: the topic being linked to
-          user_id:
-            description: the creator of the topic
     responses:
       200:
         body:
           application/json:
-            example: !include ../examples/synapse.json
+            example: !include ../examples/map.json
   delete:
     responses:
       204:
