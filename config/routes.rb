@@ -21,6 +21,17 @@ Metamaps::Application.routes.draw do
       post :login, to: 'sessions#create'
       delete :logout, to: 'sessions#destroy'
     end
+    namespace :v1, path: '/v1' do
+      # api v1 routes all lead to a deprecation error method
+      # see app/controllers/api/v1/deprecated_controller.rb
+      resources :maps, only: [:create, :show, :update, :destroy]
+      resources :synapses, only: [:create, :show, :update, :destroy]
+      resources :topics, only: [:create, :show, :update, :destroy]
+      resources :mappings, only: [:create, :show, :update, :destroy]
+      resources :tokens, only: [:create, :destroy] do
+        get :my_tokens, on: :collection
+      end
+    end
   end
 
   resources :messages, only: [:show, :create, :update, :destroy]
