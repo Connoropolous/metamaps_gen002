@@ -1,5 +1,5 @@
 module Api
-  module V1
+  module V2
     class EventSerializer < ApplicationSerializer
       attributes :id, :sequence_id, :kind, :map_id, :created_at
 

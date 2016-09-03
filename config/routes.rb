@@ -10,7 +10,7 @@ Metamaps::Application.routes.draw do
   get 'search/synapses', to: 'main#searchsynapses', as: :searchsynapses
 
   namespace :api, path: '/api', default: { format: :json } do
-    namespace :v1, path: '/v1' do
+    namespace :v2, path: '/v2' do
       resources :maps, only: [:index, :create, :show, :update, :destroy]
       resources :synapses, only: [:index, :create, :show, :update, :destroy]
       resources :topics, only: [:index, :create, :show, :update, :destroy]

@@ -1,5 +1,5 @@
 module Api
-  module V1
+  module V2
     class TokensController < RestfulController
       def my_tokens
         raise Pundit::NotAuthorizedError unless current_user

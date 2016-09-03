@@ -1,5 +1,5 @@
 module Api
-  module V1
+  module V2
     class RestfulController < ActionController::Base
       include Pundit
       include PunditExtra
@@ -48,7 +48,7 @@ module Api
       end
 
       def resource_serializer
-        "Api::V1::#{resource_name.camelize}Serializer".constantize
+        "Api::V2::#{resource_name.camelize}Serializer".constantize
       end
 
       def respond_with_resource(scope: default_scope, serializer: resource_serializer, root: serializer_root)

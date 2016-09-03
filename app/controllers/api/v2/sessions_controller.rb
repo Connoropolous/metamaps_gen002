@@ -1,5 +1,5 @@
 module Api
-  module V1
+  module V2
     class SessionsController < ApplicationController
       def create
         @user = User.find_by(email: params[:email])

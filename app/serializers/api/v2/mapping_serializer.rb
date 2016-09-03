@@ -1,5 +1,5 @@
 module Api
-  module V1
+  module V2
     class MappingSerializer < ApplicationSerializer
       attributes :id,
         :created_at,
