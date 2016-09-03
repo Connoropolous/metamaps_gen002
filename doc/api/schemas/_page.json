@@ -20,6 +20,10 @@
     "total_count": {
       "type": "integer",
       "minimum": 0
+    },
+    "per": {
+      "type": "integer",
+      "minimum": 0
     }
   },
   "required": [
@@ -27,7 +31,8 @@
     "next_page",
     "prev_page",
     "total_pages",
-    "total_count"
+    "total_count",
+    "per"
   ]
 }
 
