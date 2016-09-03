@@ -1,6 +1,6 @@
 require 'open-uri'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :topics
   has_many :synapses
   has_many :maps
