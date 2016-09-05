@@ -18,8 +18,6 @@ Metamaps::Application.routes.draw do
       resources :tokens, only: [:create, :destroy] do
         get :my_tokens, on: :collection
       end
-      post :login, to: 'sessions#create'
-      delete :logout, to: 'sessions#destroy'
     end
     namespace :v1, path: '/v1' do
       # api v1 routes all lead to a deprecation error method
