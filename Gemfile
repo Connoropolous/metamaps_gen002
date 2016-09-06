@@ -31,7 +31,6 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jbuilder'
 gem 'rails3-jquery-autocomplete'
-gem 'babel-transpiler'
 
 group :assets do
   gem 'coffee-rails'

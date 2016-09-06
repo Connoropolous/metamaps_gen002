@@ -51,10 +51,6 @@ GEM
     aws-sdk-v1 (1.66.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
-    babel-source (5.8.35)
-    babel-transpiler (0.7.0)
-      babel-source (>= 4.0, < 6)
-      execjs (~> 2.0)
     bcrypt (3.1.11)
     best_in_place (3.1.0)
       actionpack (>= 3.2)
@@ -293,7 +289,6 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   aws-sdk (< 2.0)
-  babel-transpiler
   best_in_place
   better_errors
   binding_of_caller

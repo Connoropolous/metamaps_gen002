@@ -11,7 +11,6 @@ before_script:
   - export RAILS_ENV=test
   - cp .example-env .env
   - bundle exec rake db:create
-  - bundle exec rake db:environment:set
   - bundle exec rake db:schema:load
   - echo "node setup"
   - . $HOME/.nvm/nvm.sh
