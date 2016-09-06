@@ -10,10 +10,7 @@
     },
     "category": {
       "type": "string",
-      "oneOf": [
-        "from-to",
-        "both"
-      ]
+      "pattern": "(from-to|both)"
     },
     "permission": {
       "$ref": "_permission.json"

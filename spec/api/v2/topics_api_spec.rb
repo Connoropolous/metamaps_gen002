@@ -45,7 +45,7 @@ RSpec.describe 'topics API', type: :request do
     let(:collection) { get_json_example(:topics) }
 
     it 'resource matches schema' do
-      expect(resource).to match_json_schema(:_topic)
+      expect(resource).to match_json_schema(:topic)
     end
 
     it 'collection matches schema' do

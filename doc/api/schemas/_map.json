@@ -59,8 +59,8 @@
     "id",
     "name",
     "desc",
-    "link",
     "permission",
+    "screenshot",
     "created_at",
     "updated_at"
   ]

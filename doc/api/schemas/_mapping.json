@@ -12,12 +12,6 @@
       "type": "string",
       "pattern": "(Topic|Synapse)"
     },
-    "map_id": {
-      "$ref": "_id.json"
-    },
-    "user_id:" {
-      "$ref": "_id.json"
-    },
     "xloc": {
       "type": "integer"
     },
@@ -29,6 +23,12 @@
     },
     "updated_at": {
       "$ref": "_datetimestamp.json"
+    },
+    "map_id": {
+      "$ref": "_id.json"
+    },
+    "user_id": {
+      "$ref": "_id.json"
     }
   },
   "required": [
