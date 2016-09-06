@@ -11,6 +11,7 @@ RSpec.describe 'mappings API', type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:mappings)
+    expect(JSON.parse(response.body)['data'].count).to eq 5
   end
 
   it 'GET /api/v2/mappings/:id' do
@@ -18,6 +19,7 @@ RSpec.describe 'mappings API', type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:mapping)
+    expect(JSON.parse(response.body)['data']['id']).to eq mapping.id
   end
 
   it 'POST /api/v2/mappings' do
@@ -25,6 +27,7 @@ RSpec.describe 'mappings API', type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:mapping)
+    expect(Mapping.count).to eq 2
   end
 
   it 'PATCH /api/v2/mappings/:id' do
@@ -38,6 +41,7 @@ RSpec.describe 'mappings API', type: :request do
     delete "/api/v2/mappings/#{mapping.id}", params: { access_token: token }
 
     expect(response).to have_http_status(:no_content)
+    expect(Mapping.count).to eq 0
   end
 
   context 'RAML example' do

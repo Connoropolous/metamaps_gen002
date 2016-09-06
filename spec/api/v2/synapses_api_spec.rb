@@ -11,6 +11,7 @@ RSpec.describe 'synapses API', type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:synapses)
+    expect(JSON.parse(response.body)['data'].count).to eq 5
   end
 
   it 'GET /api/v2/synapses/:id' do
@@ -18,6 +19,7 @@ RSpec.describe 'synapses API', type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:synapse)
+    expect(JSON.parse(response.body)['data']['id']).to eq synapse.id
   end
 
   it 'POST /api/v2/synapses' do
@@ -25,6 +27,7 @@ RSpec.describe 'synapses API', type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:synapse)
+    expect(Synapse.count).to eq 2
   end
 
   it 'PATCH /api/v2/synapses/:id' do
@@ -38,6 +41,7 @@ RSpec.describe 'synapses API', type: :request do
     delete "/api/v2/synapses/#{synapse.id}", params: { access_token: token }
 
     expect(response).to have_http_status(:no_content)
+    expect(Synapse.count).to eq 0
   end
 
   context 'RAML example' do
