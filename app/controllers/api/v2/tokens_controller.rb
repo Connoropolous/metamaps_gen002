@@ -3,7 +3,7 @@ module Api
     class TokensController < RestfulController
       def my_tokens
         authorize resource_class
-        instantiate_collection page_collection: false, timeframe_collection: false
+        instantiate_collection
         respond_with_collection
       end
     end
