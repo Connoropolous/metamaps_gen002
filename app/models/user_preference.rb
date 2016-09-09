@@ -3,8 +3,9 @@ class UserPreference
 
   def initialize
     array = []
-    Metacode.all.find_each do |m|
-      array.push(m.id.to_s)
+    %w(Con Event Group Idea Insight Intention Need Opportunity Person Pro Problem Project Question Wildcard).each do |m|
+      metacode = Metacode.find_by_name(m)
+      array.push(metacode.id.to_s) if metacode
     end
     @metacodes = array
   end
