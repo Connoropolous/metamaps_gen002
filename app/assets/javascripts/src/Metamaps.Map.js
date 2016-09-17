@@ -136,7 +136,7 @@ Metamaps.Map = {
       $('.rightclickmenu').remove()
       Metamaps.TopicCard.hideCard()
       Metamaps.SynapseCard.hideCard()
-      Metamaps.Create.newTopic.hide()
+      Metamaps.Create.newTopic.hide(true) // true means force (and override pinned)
       Metamaps.Create.newSynapse.hide()
       Metamaps.Filter.close()
       Metamaps.Map.InfoBox.close()

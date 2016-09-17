@@ -223,10 +223,14 @@ Metamaps.Create = {
       Metamaps.Create.newTopic.beingCreated = true
       Metamaps.Create.newTopic.name = ''
     },
-    hide: function () {
-      if (!Metamaps.Create.newTopic.pinned) {
+    hide: function (force) {
+      if (force || !Metamaps.Create.newTopic.pinned) {
         $('#new_topic').fadeOut('fast')
         Metamaps.Create.newTopic.beingCreated = false
+      }
+      if (force) {
+        $('.pinCarousel').removeClass('isPinned')
+        Metamaps.Create.newTopic.pinned = false
       }
       $('#topic_name').typeahead('val', '')
     }
