@@ -80,7 +80,7 @@ class User < ApplicationRecord
   end
 
   def starred_map?(map) 
-    return !!self.stars.index{|s| s.map_id == map.id }
+    return self.stars.where(map_id: map.id).exists?
   end
 
   def settings
