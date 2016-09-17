@@ -6,6 +6,7 @@ class Map < ActiveRecord::Base
   has_many :topics, through: :topicmappings, source: :mappable, source_type: 'Topic'
   has_many :synapses, through: :synapsemappings, source: :mappable, source_type: 'Synapse'
   has_many :messages, as: :resource, dependent: :destroy
+  has_many :stars
 
   has_many :user_maps, dependent: :destroy
   has_many :collaborators, through: :user_maps, source: :user
@@ -18,7 +19,7 @@ class Map < ActiveRecord::Base
     thumb: ['188x126#', :png]
     #:full => ['940x630#', :png]
   },
-                                 default_url: 'https://s3.amazonaws.com/metamaps-assets/site/missing-map.png'
+  default_url: 'https://s3.amazonaws.com/metamaps-assets/site/missing-map-white.png'
 
   validates :name, presence: true
   validates :arranged, inclusion: { in: [true, false] }

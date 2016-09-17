@@ -49,12 +49,18 @@ Metamaps.Map = {
       return false
     })
 
+    $('.starMap').click(function () {
+      if ($(this).is('.starred')) self.unstar()
+      else self.star()
+    })
+
     $('.sidebarFork').click(function () {
       self.fork()
     })
 
     Metamaps.GlobalUI.CreateMap.emptyForkMapForm = $('#fork_map').html()
 
+    self.updateStar()
     self.InfoBox.init()
     self.CheatSheet.init()
 
@@ -70,6 +76,7 @@ Metamaps.Map = {
       Metamaps.Synapses = new bb.SynapseCollection(data.synapses)
       Metamaps.Mappings = new bb.MappingCollection(data.mappings)
       Metamaps.Messages = data.messages
+      Metamaps.Stars = data.stars
       Metamaps.Backbone.attachCollectionEvents()
 
       var map = Metamaps.Active.Map
@@ -85,6 +92,8 @@ Metamaps.Map = {
       if (map.get('permission') === 'commons') {
         $('.wrapper').addClass('commonsMap')
       }
+
+      Metamaps.Map.updateStar()     
 
       // set filter mapper H3 text
       $('#filter_by_mapper h3').html('MAPPERS')
@@ -109,6 +118,9 @@ Metamaps.Map = {
 
       Metamaps.Realtime.startActiveMap()
       Metamaps.Loading.hide()
+      
+      // for mobile
+      $('#header_content').html(map.get('name'))
     }
 
     $.ajax({
@@ -130,6 +142,36 @@ Metamaps.Map = {
       Metamaps.Map.InfoBox.close()
       Metamaps.Realtime.endActiveMap()
     }
+  },
+  updateStar: function () {
+    if (!Metamaps.Active.Mapper || !Metamaps.Stars) return
+    // update the star/unstar icon
+    if (Metamaps.Stars.find(function (s) { return s.user_id === Metamaps.Active.Mapper.id })) {
+      $('.starMap').addClass('starred')
+      $('.starMap .tooltipsAbove').html('Unstar')
+    } else {
+      $('.starMap').removeClass('starred')
+      $('.starMap .tooltipsAbove').html('Star')
+    }
+  },
+  star: function () {
+    var self = Metamaps.Map
+
+    if (!Metamaps.Active.Map) return
+    $.post('/maps/' + Metamaps.Active.Map.id + '/star')
+    Metamaps.Stars.push({ user_id: Metamaps.Active.Mapper.id, map_id: Metamaps.Active.Map.id })
+    Metamaps.Maps.Starred.add(Metamaps.Active.Map)
+    Metamaps.GlobalUI.notifyUser('Map is now starred')
+    self.updateStar()
+  },
+  unstar: function () {
+    var self = Metamaps.Map
+
+    if (!Metamaps.Active.Map) return
+    $.post('/maps/' + Metamaps.Active.Map.id + '/unstar')
+    Metamaps.Stars = Metamaps.Stars.filter(function (s) { return s.user_id != Metamaps.Active.Mapper.id })
+    Metamaps.Maps.Starred.remove(Metamaps.Active.Map)
+    self.updateStar() 
   },
   fork: function () {
     Metamaps.GlobalUI.openLightbox('forkmap')
@@ -433,11 +475,15 @@ Metamaps.Map.InfoBox = {
     })
     $('body').click(self.close)
 
-    self.attachEventListeners()
-
-    
+    self.attachEventListeners() 
 
     self.generateBoxHTML = Hogan.compile($('#mapInfoBoxTemplate').html())
+    
+    var querystring = window.location.search.replace(/^\?/, '')
+    if (querystring == 'new') { 
+      self.open()
+      $('.mapInfoBox').addClass('mapRequestTitle')
+    }
   },
   toggleBox: function (event) {
     var self = Metamaps.Map.InfoBox
@@ -535,6 +581,10 @@ Metamaps.Map.InfoBox = {
       var name = $(this).html()
       Metamaps.Active.Map.set('name', name)
       Metamaps.Active.Map.trigger('saved')
+      // mobile menu
+      $('#header_content').html(name)
+      $('.mapInfoBox').removeClass('mapRequestTitle')
+      document.title = name + ' | Metamaps'
     })
 
     $('.mapInfoDesc .best_in_place_desc').unbind('ajax:success').bind('ajax:success', function () {
@@ -645,6 +695,7 @@ Metamaps.Map.InfoBox = {
    $('.collaboratorSearchField').typeahead('val', '')
   },
   updateNameDescPerm: function (name, desc, perm) {
+    $('.mapInfoBox').removeClass('mapRequestTitle')
     $('.mapInfoName .best_in_place_name').html(name)
     $('.mapInfoDesc .best_in_place_desc').html(desc)
     $('.mapInfoBox .mapPermission').removeClass('commons public private').addClass(perm)
@@ -673,6 +724,8 @@ Metamaps.Map.InfoBox = {
     return string
   },
   updateNumbers: function () {
+    if (!Metamaps.Active.Map) return
+
     var self = Metamaps.Map.InfoBox
     var mapper = Metamaps.Active.Mapper
     var relevantPeople = Metamaps.Active.Map.get('permission') === 'commons' ? Metamaps.Mappers : Metamaps.Collaborators

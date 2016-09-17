@@ -1,4 +1,4 @@
-var Metamaps = {}; // this variable declaration defines a Javascript object that will contain all the variables and functions used by us, broken down into 'sub-modules' that look something like this
+var Metamaps = window.Metamaps || {}; // this variable declaration defines a Javascript object that will contain all the variables and functions used by us, broken down into 'sub-modules' that look something like this
 /*
 
 * unless you are on a page with the Javascript InfoVis Toolkit (Topic or Map) the only section in the metamaps
@@ -43,31 +43,40 @@ Metamaps.Active = {
 Metamaps.Maps = {};
 
 $(document).ready(function () {
-  function init() {
-    for (var prop in Metamaps) {
-
-        // this runs the init function within each sub-object on the Metamaps one
-        if (Metamaps.hasOwnProperty(prop) &&
-            Metamaps[prop] != null &&
-            Metamaps[prop].hasOwnProperty('init') &&
-            typeof (Metamaps[prop].init) == 'function'
-        ) {
-            Metamaps[prop].init();
-        }
-    }
+  // initialize all the modules
+  for (var prop in Metamaps) {
+      // this runs the init function within each sub-object on the Metamaps one
+      if (Metamaps.hasOwnProperty(prop) &&
+          Metamaps[prop] != null &&
+          Metamaps[prop].hasOwnProperty('init') &&
+          typeof (Metamaps[prop].init) == 'function'
+      ) {
+          Metamaps[prop].init()
+      }
   }
+  // load whichever page you are on
+  if (Metamaps.currentSection === "explore") {
+      var capitalize = Metamaps.currentPage.charAt(0).toUpperCase() + Metamaps.currentPage.slice(1)
 
-    // initialize the famous ui
-    var callFamous = function(){
-        if (Metamaps.Famous) {
-            Metamaps.Famous.build();
-            init();
-        }
-        else {
-            setTimeout(callFamous, 100);
-        }
-    }
-    callFamous();
+      Metamaps.Views.exploreMaps.setCollection( Metamaps.Maps[capitalize] )
+      if (Metamaps.currentPage === "mapper") {
+          Metamaps.Views.exploreMaps.fetchUserThenRender()
+      }
+      else {
+          Metamaps.Views.exploreMaps.render()
+      }
+      Metamaps.GlobalUI.showDiv('#explore')
+  }
+  else if (Metamaps.currentSection === "" && Metamaps.Active.Mapper) {
+      Metamaps.Views.exploreMaps.setCollection(Metamaps.Maps.Active)
+      Metamaps.Views.exploreMaps.render()
+      Metamaps.GlobalUI.showDiv('#explore')
+  }
+  else if (Metamaps.Active.Map || Metamaps.Active.Topic) {
+    Metamaps.Loading.show()
+    Metamaps.JIT.prepareVizData()
+    Metamaps.GlobalUI.showDiv('#infovis')
+  }
 });
 
 Metamaps.GlobalUI = {
@@ -79,6 +88,8 @@ Metamaps.GlobalUI = {
         self.Search.init();
         self.CreateMap.init();
         self.Account.init();
+        
+        if ($('#toast').html().trim()) self.notifyUser($('#toast').html())
 
         //bind lightbox clicks
         $('.openLightbox').click(function (event) {
@@ -94,6 +105,7 @@ Metamaps.GlobalUI = {
 
         var myCollection = Metamaps.Maps.Mine ? Metamaps.Maps.Mine : [];
         var sharedCollection = Metamaps.Maps.Shared ? Metamaps.Maps.Shared : [];
+        var starredCollection = Metamaps.Maps.Starred ? Metamaps.Maps.Starred : [];
         var mapperCollection = [];
         var mapperOptionsObj = {id: 'mapper', sortBy: 'updated_at' };
         if (Metamaps.Maps.Mapper) {
@@ -104,10 +116,22 @@ Metamaps.GlobalUI = {
         var activeCollection = Metamaps.Maps.Active ? Metamaps.Maps.Active : [];
         Metamaps.Maps.Mine = new Metamaps.Backbone.MapsCollection(myCollection, {id: 'mine', sortBy: 'updated_at' });
         Metamaps.Maps.Shared = new Metamaps.Backbone.MapsCollection(sharedCollection, {id: 'shared', sortBy: 'updated_at' });
+        Metamaps.Maps.Starred = new Metamaps.Backbone.MapsCollection(starredCollection, {id: 'starred', sortBy: 'updated_at' });
         // 'Mapper' refers to another mapper
         Metamaps.Maps.Mapper = new Metamaps.Backbone.MapsCollection(mapperCollection, mapperOptionsObj);
         Metamaps.Maps.Featured = new Metamaps.Backbone.MapsCollection(featuredCollection, {id: 'featured', sortBy: 'updated_at' });
         Metamaps.Maps.Active = new Metamaps.Backbone.MapsCollection(activeCollection, {id: 'active', sortBy: 'updated_at' });
+    },
+    showDiv: function (selector) {
+      $(selector).show()
+      $(selector).animate({
+        opacity: 1
+      }, 200, 'easeOutCubic')
+    },
+    hideDiv: function (selector) {
+      $(selector).animate({
+        opacity: 0
+      }, 200, 'easeInCubic', function () { $(this).hide() })
     },
     openLightbox: function (which) {
         var self = Metamaps.GlobalUI;
@@ -164,33 +188,20 @@ Metamaps.GlobalUI = {
     notifyUser: function (message, leaveOpen) {
         var self = Metamaps.GlobalUI;
 
-        function famousReady() {
-          Metamaps.Famous.toast.surf.setContent(message);
-          Metamaps.Famous.toast.show();
-          clearTimeout(self.notifyTimeOut);
-          if (!leaveOpen) {
-              self.notifyTimeOut = setTimeout(function () {
-                  Metamaps.Famous.toast.hide();
-              }, 8000);
-          }
-        }
-
-        // initialize the famous ui
-        var callFamous = function(){
-            if (Metamaps.Famous && Metamaps.Famous.toast) {
-                famousReady();
-            }
-            else {
-                setTimeout(callFamous, 100);
-            }
-        }
-        callFamous();
+         $('#toast').html(message)
+         self.showDiv('#toast')
+         clearTimeout(self.notifyTimeOut);
+         if (!leaveOpen) {
+             self.notifyTimeOut = setTimeout(function () {
+                 self.hideDiv('#toast')
+             }, 8000);
+         }
     },
     clearNotify: function() {
         var self = Metamaps.GlobalUI;
 
         clearTimeout(self.notifyTimeOut);
-        Metamaps.Famous.toast.hide();
+        self.hideDiv('#toast')
     },
     shareInvite: function(inviteLink) {
         window.prompt("To copy the invite link, press: Ctrl+C, Enter", inviteLink);
@@ -470,6 +481,9 @@ Metamaps.GlobalUI.Search = {
         }
     },
     close: function (closeAfter, bypass) {
+        // for now
+        return
+
         var self = Metamaps.GlobalUI.Search;
 
         self.timeOut = setTimeout(function () {

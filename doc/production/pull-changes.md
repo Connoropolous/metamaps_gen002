@@ -23,9 +23,9 @@ Now that you have the code, run these commands:
     source .env
 
     bundle install
-    (cd frontend && npm install && npm run build)
+    npm install
     rake db:migrate
-    rake assets:precompile
+    rake assets:precompile # includes `npm run build`
     rake perms:fix
     passenger-config restart-app .
 

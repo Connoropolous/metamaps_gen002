@@ -1,1 +1,2 @@
-METAMAPS_VERSION = '2.8.5'.freeze
+METAMAPS_VERSION = '2.9.0'.freeze
+METAMAPS_LAST_UPDATED = 'Sept 1, 2016'.freeze

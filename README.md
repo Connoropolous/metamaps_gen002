@@ -1,7 +1,7 @@
 Metamaps
 =======
 
-[![Build Status](https://travis-ci.org/metamaps/metamaps.svg)](https://travis-ci.org/metamaps/metamaps)
+[![Build Status](https://travis-ci.org/metamaps/metamaps.svg?branch=develop)](https://travis-ci.org/metamaps/metamaps)
 
 ## What is Metamaps?
 

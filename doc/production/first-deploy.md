@@ -60,18 +60,16 @@ Run this in the metamaps directory, still as metamaps:
     # create, load schema, seed
     rake db:setup
 
-#### Install js frontend code
+#### Install node & ES6 modules
 
     sudo aptitude install nodejs npm
     sudo ln -s /usr/bin/nodejs /usr/bin/node
-    cd frontend
     npm install
     npm run build
 
 #### Nginx and SSL
 
-Now set up nginx - config stored on Linode, including relevant 
-environment variables.
+Now set up nginx - config stored on Linode, including relevant environment variables.
 
 Get an SSL certificate and encrypt it for the realtime video.
 

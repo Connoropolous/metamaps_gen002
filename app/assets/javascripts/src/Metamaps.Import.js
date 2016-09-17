@@ -29,6 +29,7 @@ Metamaps.Import = {
 
     $('body').bind('paste', function (e) {
       if (e.target.tagName === 'INPUT') return
+      if (e.target.tagName === 'TEXTAREA') return
 
       var text = e.originalEvent.clipboardData.getData('text/plain')
 
@@ -275,7 +276,7 @@ Metamaps.Import = {
       name: name,
       metacode_id: metacode.id,
       permission: permission || Metamaps.Active.Map.get('permission'),
-      desc: desc,
+      desc: desc || "",
       link: link
     })
     Metamaps.Topics.add(topic)
@@ -295,7 +296,7 @@ Metamaps.Import = {
     Metamaps.Famous.viz.hideInstructions()
   },
 
-  createSynapseWithParameters: function (description, category, permission,
+  createSynapseWithParameters: function (desc, category, permission,
     topic1, topic2) {
     var node1 = topic1.get('node')
     var node2 = topic2.get('node')
@@ -306,7 +307,7 @@ Metamaps.Import = {
     } // if
 
     var synapse = new Metamaps.Backbone.Synapse({
-      desc: description,
+      desc: desc || "",
       category: category,
       permission: permission,
       node1_id: topic1.id,

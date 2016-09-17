@@ -5,7 +5,6 @@
  *
  * Dependencies:
  *  - Metamaps.Active
- *  - Metamaps.Famous
  *  - Metamaps.GlobalUI
  *  - Metamaps.JIT
  *  - Metamaps.Loading
@@ -42,18 +41,13 @@
           Metamaps.Router.navigate('')
         }, 300)
       }
+
       // all this only for the logged in home page
       if (Metamaps.Active.Mapper) {
-        Metamaps.Famous.yield.hide()
+        $('.homeButton a').attr('href', '/')
+        Metamaps.GlobalUI.hideDiv('#yield')
 
-        Metamaps.Famous.explore.set('active')
-        Metamaps.Famous.maps.resetScroll() // sets the scroll back to the top
-        Metamaps.Famous.explore.show()
-
-        Metamaps.Famous.maps.show()
-
-        Metamaps.GlobalUI.Search.open()
-        Metamaps.GlobalUI.Search.lock()
+        Metamaps.GlobalUI.showDiv('#explore')
 
         Metamaps.Views.exploreMaps.setCollection(Metamaps.Maps.Active)
         if (Metamaps.Maps.Active.length === 0) {
@@ -63,18 +57,13 @@
         }
       } else {
         // logged out home page
-        Metamaps.Famous.yield.show()
-
-        Metamaps.Famous.explore.hide()
-
-        Metamaps.GlobalUI.Search.unlock()
-        Metamaps.GlobalUI.Search.close(0, true)
-
-        Metamaps.Famous.maps.hide()
+        Metamaps.GlobalUI.hideDiv('#explore')
+        Metamaps.GlobalUI.showDiv('#yield')
         Metamaps.Router.timeoutId = setTimeout(navigate, 500)
       }
 
-      Metamaps.Famous.viz.hide()
+      Metamaps.GlobalUI.hideDiv('#infovis')
+      Metamaps.GlobalUI.hideDiv('#instructions')
       Metamaps.Map.end()
       Metamaps.Topic.end()
       Metamaps.Active.Map = null
@@ -87,7 +76,7 @@
       // either 'featured', 'mapper', or 'active'
       var capitalize = section.charAt(0).toUpperCase() + section.slice(1)
 
-      if (section === 'shared' || section === 'featured' || section === 'active') {
+      if (section === 'shared' || section === 'featured' || section === 'active' || section === 'starred') {
         document.title = 'Explore ' + capitalize + ' Maps | Metamaps'
       } else if (section === 'mapper') {
         $.ajax({
@@ -101,6 +90,7 @@
         document.title = 'Explore My Maps | Metamaps'
       }
 
+      if (Metamaps.Active.Mapper && section != 'mapper') $('.homeButton a').attr('href', '/explore/' + section)
       $('.wrapper').removeClass('homePage mapPage topicPage')
       $('.wrapper').addClass('explorePage')
 
@@ -127,7 +117,7 @@
         if (Metamaps.Router.currentPage === 'mapper') {
           path += '/' + Metamaps.Maps.Mapper.mapperId
         }
-
+        
         Metamaps.Router.navigate(path)
       }
       var navigateTimeout = function () {
@@ -146,17 +136,10 @@
         }
       }
 
-      Metamaps.GlobalUI.Search.open()
-      Metamaps.GlobalUI.Search.lock()
-
-      Metamaps.Famous.yield.hide()
-
-      Metamaps.Famous.maps.resetScroll() // sets the scroll back to the top
-      Metamaps.Famous.maps.show()
-      Metamaps.Famous.explore.set(section, id)
-      Metamaps.Famous.explore.show()
-
-      Metamaps.Famous.viz.hide()
+      Metamaps.GlobalUI.showDiv('#explore')
+      Metamaps.GlobalUI.hideDiv('#yield')
+      Metamaps.GlobalUI.hideDiv('#infovis')
+      Metamaps.GlobalUI.hideDiv('#instructions')
       Metamaps.Map.end()
       Metamaps.Topic.end()
       Metamaps.Active.Map = null
@@ -175,9 +158,8 @@
       // another class will be added to wrapper if you
       // can edit this map '.canEditMap'
 
-      Metamaps.Famous.yield.hide()
-      Metamaps.Famous.maps.hide()
-      Metamaps.Famous.explore.hide()
+      Metamaps.GlobalUI.hideDiv('#yield')
+      Metamaps.GlobalUI.hideDiv('#explore')
 
       // clear the visualization, if there was one, before showing its div again
       if (Metamaps.Visualize.mGraph) {
@@ -185,12 +167,9 @@
         Metamaps.Visualize.mGraph.plot()
         Metamaps.JIT.centerMap(Metamaps.Visualize.mGraph.canvas)
       }
-      Metamaps.Famous.viz.show()
+      Metamaps.GlobalUI.showDiv('#infovis')
       Metamaps.Topic.end()
       Metamaps.Active.Topic = null
-
-      Metamaps.GlobalUI.Search.unlock()
-      Metamaps.GlobalUI.Search.close(0, true)
 
       Metamaps.Loading.show()
       Metamaps.Map.end()
@@ -207,9 +186,8 @@
       $('.wrapper').removeClass('homePage explorePage mapPage')
       $('.wrapper').addClass('topicPage')
 
-      Metamaps.Famous.yield.hide()
-      Metamaps.Famous.maps.hide()
-      Metamaps.Famous.explore.hide()
+      Metamaps.GlobalUI.hideDiv('#yield')
+      Metamaps.GlobalUI.hideDiv('#explore')
 
       // clear the visualization, if there was one, before showing its div again
       if (Metamaps.Visualize.mGraph) {
@@ -217,12 +195,9 @@
         Metamaps.Visualize.mGraph.plot()
         Metamaps.JIT.centerMap(Metamaps.Visualize.mGraph.canvas)
       }
-      Metamaps.Famous.viz.show()
+      Metamaps.GlobalUI.showDiv('#infovis')
       Metamaps.Map.end()
       Metamaps.Active.Map = null
-
-      Metamaps.GlobalUI.Search.unlock()
-      Metamaps.GlobalUI.Search.close(0, true)
 
       Metamaps.Topic.end()
       Metamaps.Topic.launch(id)
@@ -265,6 +240,6 @@
       pushState: true,
       root: '/'
     })
-    $(document).on('click', 'a:not([data-bypass])', Metamaps.Router.intercept)
+    $(document).on('click', 'a[data-router="true"]', Metamaps.Router.intercept)
   }
 })()

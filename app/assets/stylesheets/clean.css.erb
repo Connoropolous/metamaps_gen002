@@ -24,21 +24,10 @@
     backface-visibility: visible !important;
 }
 
-#famousOverlay {
-  position:absolute;
-  top: 0;
+#yield {
+  position: absolute;
   width: 100%;
   height: 100%;
-  margin:0;
-  z-index: 0;
-}
-
-#yield {
-    display:none;
-}
-
-#toast {
-    display: none;
 }
 
 /*.animations {
@@ -64,10 +53,14 @@
 .mapPage .mapElementHidden {
     display:none;
 }
+.topicPage .starMap {
+  display: none;
+}
 
 /* loading */
 
 #loading {
+  display: none;
 	width: 28px;
 	height: 28px;
 	position: fixed;
@@ -120,8 +113,6 @@
 	top: 10px;
 	left: 24px;
 	z-index:3;
-	box-shadow: 0px 1px 1.5px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24);
-	border-radius: 2px;
 }
 .explorePage .upperLeftUI {
 	box-shadow: none;
@@ -131,23 +122,24 @@
     display:none;
 }
 .homeButton {
-	width: 40px;
-    height: 32px;
-    background-color: #757575;
-    background-image: url(<%= asset_data_uri('home_light.png') %>);
-    background-repeat: no-repeat;
-    background-position: center center;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
     float:left;
+    margin-right: 16px;
 }
 .homeButton:hover {
-    background-image: url(<%= asset_data_uri('home_light.png') %>);
+
 }
 .homeButton a {
     display:block;
-    width: 40px;
-    height: 32px;
+    color: #747474;
+    font-family: "vinyl", sans-serif;
+    font-style: italic;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 38px;
+}
+.homeButton a:hover {
+  color: #616161;
 }
 
 /* end upperLeftUI */
@@ -338,15 +330,6 @@
 .homeWrapper.homePartners {
     padding: 64px 0 280px;
     height: 96px;
-    background: url(<%= asset_data_uri('partner_logos.png') %>) no-repeat 0 64px;
-}
-
-.github-fork-ribbon-wrapper {
-    display:none;
-}
-
-.homePage .github-fork-ribbon-wrapper {
-    display: block;
 }
 
 /* end home page */
@@ -357,7 +340,8 @@
     right: 70px;
 }
 .mapPage .openCheatsheet .tooltipsAbove, .topicPage .openCheatsheet .tooltipsAbove {
-    left: 29px;
+  right: 1px;
+  left: auto;
 }
 
 .unauthenticated .homePage .infoAndHelp {
@@ -398,7 +382,25 @@
 .mapPage .mapInfoIcon {
 	top: 0;
 }
+.starMap {
+  background-image: url(<%= asset_data_uri('starmap_sprite.png') %>);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  width: 32px;
+}
+.starMap:hover {
+  background-position: 0 -32px !important;
+}
+ .starMap.starred {
+  background-position: 0 -64px;
+}
+.starMap.starred:hover {
+  background-position: 0 0;
+}
 
+.unauthenticated .mapPage .starMap {
+  display: none;
+}
 /* end infoAndHelp */
 
 
@@ -456,7 +458,7 @@
 }
 
 .zoomExtents:hover .tooltips, .zoomIn:hover .tooltips, .zoomOut:hover .tooltips, .takeScreenshot:hover .tooltips, .sidebarFilterIcon:hover .tooltipsUnder, .sidebarForkIcon:hover .tooltipsUnder, .addMap:hover .tooltipsUnder, .authenticated .sidebarAccountIcon:hover .tooltipsUnder,
- .mapInfoIcon:hover .tooltipsAbove, .openCheatsheet:hover .tooltipsAbove, .chat-button:hover .tooltips {
+ .mapInfoIcon:hover .tooltipsAbove, .openCheatsheet:hover .tooltipsAbove, .chat-button:hover .tooltips, .starMap:hover .tooltipsAbove {
     display: block;
 }
 
@@ -540,6 +542,13 @@
     top: 10px;
 }
 
+.starMap .tooltipsAbove {
+    left: -2px;
+}
+.starMap.starred .tooltipsAbove {
+    left: -8px;
+}
+
 .openCheatsheet .tooltipsAbove {
     left: -4px;
 }
@@ -577,7 +586,7 @@
     right: 37% !important;
 }
 
-.mapInfoIcon div:after, .openCheatsheet div:after {
+.mapInfoIcon div:after, .openCheatsheet div:after, .starMap div:after {
    content: '';
     position: absolute;
     top: 76%;
@@ -611,26 +620,56 @@
 
 /* end mapControls */
 
-
-
 /* explore maps */
+
+#explore {
+  display: none;
+}
+
+#exploreMaps {
+  padding: 0 5%;
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#exploreMaps > div {
+  margin-top: 110px;
+}
+
+.button.loadMore {
+  margin: 10px auto 20px;
+  display: block;
+}
+
+.appsPage #exploreMapsHeader {
+  display: block;
+}
+
+#exploreMapsHeader {
+  position: absolute;
+  width: 100%;
+}
 
 .exploreMapsBar {
   z-index:2;
   background-color:#FAFAFA;
+  height: 42px;
+  padding-top: 52px;
 }
 
 .exploreMapsMenu {
   display: block;
   width: 100%;
-  margin-top:52px;
   height:42px;
   background-color:#EEEEEE;
   box-shadow: 0px 3px 3px rgba(0,0,0,0.23), 0 3px 3px rgba(0,0,0,0.16);
+  text-align: center;
 }
 
 .exploreMapsCenter {
-    z-index: 3 !important;
+   display: block;
 }
 
 .exploreMapsButton {
@@ -640,7 +679,7 @@
 	font-family: 'din-medium';
 	font-size: 14px;
 	height: 14px;
-	padding: 14px 16px 12px 40px;
+	padding: 14px 8px 12px 40px;
     border-bottom: 2px solid rgba(0,0,0,0);
 	display: inline-block;
     cursor: pointer;
@@ -679,31 +718,38 @@
 }
 .exploreMapsCenter .myMaps .exploreMapsIcon {
     background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
-    background-position: 0 0;
+    background-position: -32px 0;
 }
 .exploreMapsCenter .sharedMaps .exploreMapsIcon {
     background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
-    background-position: -96px 0;
+    background-position: -128px 0;
 }
 .exploreMapsCenter .activeMaps .exploreMapsIcon {
     background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
-    background-position: -32px 0;
+    background-position: 0 0;
 }
 .exploreMapsCenter .featuredMaps .exploreMapsIcon {
     background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
-    background-position: -64px 0;
+    background-position: -96px 0;
+}
+.exploreMapsCenter .starredMaps .exploreMapsIcon {
+    background-image: url(<%= asset_data_uri 'exploremaps_sprite.png' %>);
+    background-position: -96px 0;
 }
 .myMaps:hover .exploreMapsIcon, .myMaps.active .exploreMapsIcon {
-    background-position: 0 -32px;
-}
-.activeMaps:hover .exploreMapsIcon, .activeMaps.active .exploreMapsIcon {
     background-position: -32px -32px;
 }
+.activeMaps:hover .exploreMapsIcon, .activeMaps.active .exploreMapsIcon {
+    background-position: 0 -32px;
+}
 .featuredMaps:hover .exploreMapsIcon, .featuredMaps.active .exploreMapsIcon {
-    background-position: -64px -32px;
+    background-position: -96px -32px;
+}
+.starredMaps:hover .exploreMapsIcon, .starredMaps.active .exploreMapsIcon {
+    background-position: -96px -32px;
 }
 .sharedMaps:hover .exploreMapsIcon, .sharedMaps.active .exploreMapsIcon {
-    background-position: -96px -32px;
+    background-position: -128px -32px;
 }
 
 .mapsWrapper {
@@ -713,10 +759,33 @@
 
 /* end explore maps */
 
+/* instructions */
+
+#instructions {
+  width: 220px;
+  height: 80px;
+  font-family: 'din-regular', helvetica, sans-serif;
+  font-size: 32px;
+  display: none;
+  text-align: center;
+  color: #999999;
+  z-index: 0;
+  top: 50%;
+  position: absolute;
+  left: 50%;
+  margin-top: -40px;
+  margin-left: -110px;
+}
+
+/* end instructions */
 
 /* toast */
 
 .toast {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
     background-color: #323232;
     color: #F5F5F5;
     padding: 16px;

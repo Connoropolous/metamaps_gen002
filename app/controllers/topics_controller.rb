@@ -24,10 +24,8 @@ class TopicsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @alltopics = [@topic].concat(policy_scope(Topic.relatives1(@topic.id)).to_a).concat(policy_scope(Topic.relatives2(@topic.id)).to_a)
+        @alltopics = [@topic].concat(policy_scope(Topic.relatives(@topic.id, current_user)).to_a)
         @allsynapses = policy_scope(Synapse.for_topic(@topic.id)).to_a
-        puts @alltopics.length
-        puts @allsynapses.length
         @allcreators = @alltopics.map(&:user).uniq
         @allcreators += @allsynapses.map(&:user).uniq
 
@@ -42,7 +40,7 @@ class TopicsController < ApplicationController
     @topic = Topic.find(params[:id])
     authorize @topic
 
-    @alltopics = [@topic].concat(policy_scope(Topic.relatives1(@topic.id)).to_a).concat(policy_scope(Topic.relatives2(@topic.id)).to_a)
+    @alltopics = [@topic].concat(policy_scope(Topic.relatives(@topic.id, current_user)).to_a)
     @allsynapses = policy_scope(Synapse.for_topic(@topic.id))
 
     @allcreators = @alltopics.map(&:user).uniq
@@ -66,13 +64,14 @@ class TopicsController < ApplicationController
 
     topicsAlreadyHas = params[:network] ? params[:network].split(',').map(&:to_i) : []
 
-    @alltopics = policy_scope(Topic.relatives1(@topic.id)).to_a.concat(policy_scope(Topic.relatives2(@topic.id)).to_a).uniq
-    @alltopics.delete_if do |topic|
+    alltopics = policy_scope(Topic.relatives(@topic.id, current_user)).to_a
+    alltopics.delete_if { |topic| topic.metacode_id != params[:metacode].to_i } if params[:metacode].present?
+    alltopics.delete_if do |topic|
       !topicsAlreadyHas.index(topic.id).nil?
     end
 
     @json = Hash.new(0)
-    @alltopics.each do |t|
+    alltopics.each do |t|
       @json[t.metacode.id] += 1
     end
 
@@ -88,7 +87,8 @@ class TopicsController < ApplicationController
 
     topicsAlreadyHas = params[:network] ? params[:network].split(',').map(&:to_i) : []
 
-    alltopics = policy_scope(Topic.relatives1(@topic.id)).to_a.concat(policy_scope(Topic.relatives2(@topic.id)).to_a).uniq
+    alltopics = policy_scope(Topic.relatives(@topic.id)).to_a
+    alltopics.delete_if { |topic| topic.metacode_id != params[:metacode].to_i } if params[:metacode].present?
     alltopics.delete_if do |topic|
       !topicsAlreadyHas.index(topic.id.to_s).nil?
     end

@@ -111,10 +111,12 @@ Metamaps.JIT = {
     })
 
     if (self.vizData.length == 0) {
-      Metamaps.Famous.viz.showInstructions()
+      $('#instructions div').hide()
+      $('#instructions div.addTopic').show()
+      Metamaps.GlobalUI.showDiv('#instructions')
       Metamaps.Visualize.loadLater = true
     }
-    else Metamaps.Famous.viz.hideInstructions()
+    else Metamaps.GlobalUI.hideDiv('#instructions')
 
     Metamaps.Visualize.render()
   }, // prepareVizData
@@ -335,26 +337,10 @@ Metamaps.JIT = {
           Metamaps.JIT.onDragCancelHandler(node, eventInfo, e, false)
         },
         // Implement the same handler for touchscreens
-        onTouchStart: function (node, eventInfo, e) {
-          Metamaps.Visualize.mGraph.events.touched = true
-
-          var canvas = Metamaps.Visualize.mGraph.canvas
-
-          Metamaps.Touch.touchPos = eventInfo.getPos()
-          Metamaps.Touch.touchPos.x *= canvas.scaleOffsetX
-          Metamaps.Touch.touchPos.y *= canvas.scaleOffsetY
-          Metamaps.Touch.touchPos.x += canvas.translateOffsetX
-          Metamaps.Touch.touchPos.y += canvas.translateOffsetY
-
-          touchDragNode = node
-        },
+        onTouchStart: function (node, eventInfo, e) {},
         // Implement the same handler for touchscreens
         onTouchMove: function (node, eventInfo, e) {
-          if (Metamaps.Touch.touchDragNode) {
-            Metamaps.JIT.onDragMoveTopicHandler(Metamaps.Touch.touchDragNode, eventInfo, e)
-          } else {
-            Metamaps.JIT.touchPanZoomHandler(eventInfo, e)
-          }
+          Metamaps.JIT.onDragMoveTopicHandler(node, eventInfo, e)
         },
         // Implement the same handler for touchscreens
         onTouchEnd: function (node, eventInfo, e) {},
@@ -732,54 +718,6 @@ Metamaps.JIT = {
     Metamaps.Control.deselectAllEdges()
     Metamaps.Control.deselectAllNodes()
   }, // escKeyHandler
-  touchPanZoomHandler: function (eventInfo, e) {
-    if (e.touches.length == 1) {
-      var thispos = Metamaps.Touch.touchPos,
-        currentPos = eventInfo.getPos(),
-        canvas = Metamaps.Visualize.mGraph.canvas,
-        ox = canvas.translateOffsetX,
-        oy = canvas.translateOffsetY,
-        sx = canvas.scaleOffsetX,
-        sy = canvas.scaleOffsetY
-      currentPos.x *= sx
-      currentPos.y *= sy
-      currentPos.x += ox
-      currentPos.y += oy
-      // var x = currentPos.x - thispos.x,
-      //    y = currentPos.y - thispos.y
-      var x = currentPos.x - thispos.x,
-        y = currentPos.y - thispos.y
-      Metamaps.Touch.touchPos = currentPos
-      Metamaps.Visualize.mGraph.canvas.translate(x * 1 / sx, y * 1 / sy)
-    } else if (e.touches.length == 2) {
-      var touch1 = e.touches[0]
-      var touch2 = e.touches[1]
-
-      var dist = Metamaps.Util.getDistance({
-        x: touch1.clientX,
-        y: touch1.clientY
-      }, {
-        x: touch2.clientX,
-        y: touch2.clientY
-      })
-
-      if (!lastDist) {
-        lastDist = dist
-      }
-
-      var scale = dist / lastDist
-
-      if (8 >= Metamaps.Visualize.mGraph.canvas.scaleOffsetX * scale && Metamaps.Visualize.mGraph.canvas.scaleOffsetX * scale >= 1) {
-        Metamaps.Visualize.mGraph.canvas.scale(scale, scale)
-      }
-      if (Metamaps.Visualize.mGraph.canvas.scaleOffsetX < 0.5) {
-        Metamaps.Visualize.mGraph.canvas.viz.labels.hideLabels(true)
-      } else if (Metamaps.Visualize.mGraph.canvas.scaleOffsetX > 0.5) {
-        Metamaps.Visualize.mGraph.canvas.viz.labels.hideLabels(false)
-      }
-      lastDist = dist
-    }
-  }, // touchPanZoomHandler
   onDragMoveTopicHandler: function (node, eventInfo, e) {
     var self = Metamaps.JIT
 
@@ -1082,7 +1020,18 @@ Metamaps.JIT = {
     }
     return 'nothing'; // case 4?
   }, //  handleSelectionBeforeDragging
+  getNodeXY: function(node) {
+    if (typeof node.pos.x === "number" && typeof node.pos.y === "number") {
+      return node.pos
+    } else if (typeof node.pos.theta === "number" && typeof node.pos.rho === "number") {
+      return new $jit.Polar(node.pos.theta, node.pos.rho).getc(true)
+    } else {
+      console.error('getNodeXY: unrecognized node pos format')
+      return {}
+    }
+  },
   selectWithBox: function (e) {
+    var self = this
     var sX = Metamaps.Mouse.boxStartCoordinates.x,
       sY = Metamaps.Mouse.boxStartCoordinates.y,
       eX = Metamaps.Mouse.boxEndCoordinates.x,
@@ -1094,11 +1043,17 @@ Metamaps.JIT = {
     }
 
     // select all nodes that are within the box
-    Metamaps.Visualize.mGraph.graph.eachNode(function (n) {
-      var x = n.pos.x,
-        y = n.pos.y
+    Metamaps.Visualize.mGraph.graph.eachNode(function(n) {
+      var pos = self.getNodeXY(n)
+      var x = pos.x,
+          y = pos.y
 
-      if ((sX < x && x < eX && sY < y && y < eY) || (sX > x && x > eX && sY > y && y > eY) || (sX > x && x > eX && sY < y && y < eY) || (sX < x && x < eX && sY > y && y > eY)) {
+      // depending on which way the person dragged the box, check that
+      // x and y are between the start and end values of the box
+      if ((sX < x && x < eX && sY < y && y < eY) ||
+          (sX > x && x > eX && sY > y && y > eY) ||
+          (sX > x && x > eX && sY < y && y < eY) ||
+          (sX < x && x < eX && sY > y && y > eY)) {
         if (e.shiftKey) {
           if (n.selected) {
             Metamaps.Control.deselectNode(n)
@@ -1123,10 +1078,12 @@ Metamaps.JIT = {
       }
     })
     edgesToToggle.forEach(function (edge) {
-      var fromNodeX = edge.nodeFrom.pos.x
-      var fromNodeY = -1 * edge.nodeFrom.pos.y
-      var toNodeX = edge.nodeTo.pos.x
-      var toNodeY = -1 * edge.nodeTo.pos.y
+      var fromNodePos = self.getNodeXY(edge.nodeFrom)
+      var fromNodeX = fromNodePos.x
+      var fromNodeY = -1 * fromNodePos.y
+      var toNodePos = self.getNodeXY(edge.nodeTo)
+      var toNodeX = toNodePos.x
+      var toNodeY = -1 * toNodePos.y
 
       var maxX = fromNodeX
       var maxY = fromNodeY
@@ -1313,10 +1270,11 @@ Metamaps.JIT = {
 
     if (Metamaps.Active.Map) menustring += '<li class="rc-hide"><div class="rc-icon"></div>Hide until refresh<div class="rc-keyboard">Ctrl+H</div></li>'
     if (Metamaps.Active.Map && Metamaps.Active.Mapper) menustring += '<li class="rc-remove ' + disabled + '"><div class="rc-icon"></div>Remove from map<div class="rc-keyboard">Ctrl+M</div></li>'
+    if (Metamaps.Active.Topic) menustring += '<li class="rc-remove"><div class="rc-icon"></div>Remove from view<div class="rc-keyboard">Ctrl+M</div></li>'
     if (Metamaps.Active.Map && Metamaps.Active.Mapper) menustring += '<li class="rc-delete ' + disabled + '"><div class="rc-icon"></div>Delete<div class="rc-keyboard">Ctrl+D</div></li>'
 
     if (Metamaps.Active.Topic) {
-      menustring += '<li class="rc-center"><div class="rc-icon"></div>Center this topic</li>'
+      menustring += '<li class="rc-center"><div class="rc-icon"></div>Center this topic<div class="rc-keyboard">Alt+E</div></li>'
     }
     menustring += '<li class="rc-popout"><div class="rc-icon"></div>Open in new tab</li>'
     if (Metamaps.Active.Mapper) {
@@ -1341,10 +1299,10 @@ Metamaps.JIT = {
       // set up the get sibling menu as a "lazy load"
       // only fill in the submenu when they hover over the get siblings list item
       var siblingMenu = '<ul id="fetchSiblingList"> \
-                                <li class="fetchAll">All</li> \
+                                <li class="fetchAll">All<div class="rc-keyboard">Alt+R</div></li> \
                                 <li id="loadingSiblings"></li> \
                             </ul>'
-      menustring += '<li class="rc-siblings"><div class="rc-icon"></div>Get siblings' + siblingMenu + '<div class="expandLi"></div></li>'
+      menustring += '<li class="rc-siblings"><div class="rc-icon"></div>Reveal siblings' + siblingMenu + '<div class="expandLi"></div></li>'
     }
 
     menustring += '</ul>'
@@ -1397,7 +1355,7 @@ Metamaps.JIT = {
     }
 
     // remove the selected things from the map
-    if (authorized) {
+    if (Metamaps.Active.Topic || authorized) {
       $('.rc-remove').click(function () {
         $('.rightclickmenu').remove()
         Metamaps.Control.removeSelectedEdges()
@@ -1440,11 +1398,11 @@ Metamaps.JIT = {
     })
 
     // fetch relatives
-    var fetched = false
+    var fetch_sent = false
     $('.rc-siblings').hover(function () {
-      if (!fetched) {
+      if (!fetch_sent) {
         Metamaps.JIT.populateRightClickSiblings(node)
-        fetched = true
+        fetch_sent = true
       }
     })
     $('.rc-siblings .fetchAll').click(function () {
@@ -1457,13 +1415,6 @@ Metamaps.JIT = {
     var self = Metamaps.JIT
 
     // depending on how many topics are selected, do different things
-    /*if (Metamaps.Selected.Nodes.length > 1) {
-        // we don't bother filling the submenu with 
-        // specific numbers, because there are too many topics
-        // selected to find those numbers
-        $('#loadingSiblings').remove()
-        return
-    }*/
 
     var topic = node.getData('topic')
 
@@ -1494,7 +1445,7 @@ Metamaps.JIT = {
     }
 
     $.ajax({
-      type: 'Get',
+      type: 'GET',
       url: '/topics/' + topic.id + '/relative_numbers.json?network=' + topics_string,
       success: successCallback,
       error: function () {}
@@ -1567,6 +1518,7 @@ Metamaps.JIT = {
 
     if (Metamaps.Active.Map) menustring += '<li class="rc-hide"><div class="rc-icon"></div>Hide until refresh<div class="rc-keyboard">Ctrl+H</div></li>'
     if (Metamaps.Active.Map && Metamaps.Active.Mapper) menustring += '<li class="rc-remove ' + disabled + '"><div class="rc-icon"></div>Remove from map<div class="rc-keyboard">Ctrl+M</div></li>'
+    if (Metamaps.Active.Topic) menustring += '<li class="rc-remove"><div class="rc-icon"></div>Remove from view<div class="rc-keyboard">Ctrl+M</div></li>'
     if (Metamaps.Active.Map && Metamaps.Active.Mapper) menustring += '<li class="rc-delete ' + disabled + '"><div class="rc-icon"></div>Delete<div class="rc-keyboard">Ctrl+D</div></li>'
 
     if (Metamaps.Active.Map && Metamaps.Active.Mapper) menustring += '<li class="rc-spacer"></li>'
