@@ -38,6 +38,7 @@
     "webpack": "^1.13.1"
   },
   "devDependencies": {
+    "babel-eslint": "^6.1.2",
     "eslint": "^3.5.0",
     "eslint-config-standard": "^6.0.1",
     "eslint-plugin-promise": "^2.0.1",
