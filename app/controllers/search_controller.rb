@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class MainController < ApplicationController
+class SearchController < ApplicationController
   include TopicsHelper
   include MapsHelper
   include UsersHelper
