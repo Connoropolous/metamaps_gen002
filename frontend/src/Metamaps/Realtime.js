@@ -48,6 +48,7 @@ const Realtime = {
       console.log('connected')
       if (!self.disconnected) {
         self.startActiveMap()
+        self.subscribeToLiveMaps()
       } else self.disconnected = false
     })
     self.socket.on('disconnect', function () {
@@ -100,6 +101,21 @@ const Realtime = {
       }
       $('body').prepend(self.room.chat.$container)
     } // if Active.Mapper
+  },
+  subscribeToLiveMaps: function () {
+    var self = Metamaps.Realtime
+    // Handles livemaps array on the UI
+    self.socket.emit('requestLiveMaps')
+    self.socket.on('receiveLiveMaps', function (maps) {
+      Metamaps.Maps.Live.add(maps)
+    })
+    self.socket.on('map_went_live', function (map) {
+      Metamaps.Maps.Live.add(map)
+    })
+    self.socket.on('map_no_longer_live', function (data) {
+      var map = Metamaps.Maps.Live.get(data.id)
+      Metamaps.Maps.Live.remove(map)
+    })
   },
   addJuntoListeners: function () {
     var self = Realtime
@@ -488,6 +504,7 @@ const Realtime = {
       username: Active.Mapper.get('name'),
       userimage: Active.Mapper.get('image'),
       mapid: Active.Map.id
+      map: Active.Map.attributes
     })
 
     socket.on(myId + '-' + Active.Map.id + '-invitedToCall', self.invitedToCall) // new call

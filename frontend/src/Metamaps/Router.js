@@ -84,7 +84,8 @@ const _Router = Backbone.Router.extend({
     // either 'featured', 'mapper', or 'active'
     var capitalize = section.charAt(0).toUpperCase() + section.slice(1)
 
-    if (section === 'shared' || section === 'featured' || section === 'active' || section === 'starred') {
+    const sections = ['shared', 'featured', 'active', 'starred', 'live']
+    if (sections.indexOf(section) !== -1) {
       document.title = 'Explore ' + capitalize + ' Maps | Metamaps'
     } else if (section === 'mapper') {
       $.ajax({
@@ -131,7 +132,7 @@ const _Router = Backbone.Router.extend({
     var navigateTimeout = function () {
       self.timeoutId = setTimeout(navigate, 300)
     }
-    if (Metamaps.Maps[capitalize].length === 0) {
+    if (section !== 'live' && Metamaps.Maps[capitalize].length === 0) {
       Metamaps.Loading.show()
       setTimeout(function () {
         Metamaps.Maps[capitalize].getMaps(navigate) // this will trigger an explore maps render

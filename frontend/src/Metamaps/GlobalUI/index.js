@@ -54,6 +54,7 @@ const GlobalUI = {
     Metamaps.Maps.Mapper = new Metamaps.Backbone.MapsCollection(mapperCollection, mapperOptionsObj)
     Metamaps.Maps.Featured = new Metamaps.Backbone.MapsCollection(featuredCollection, { id: 'featured', sortBy: 'updated_at' })
     Metamaps.Maps.Active = new Metamaps.Backbone.MapsCollection(activeCollection, { id: 'active', sortBy: 'updated_at' })
+    Metamaps.Maps.Live = new Metamaps.Backbone.MapsCollection([], { id: 'live', sortBy: 'name' })
   },
   showDiv: function (selector) {
     $(selector).show()

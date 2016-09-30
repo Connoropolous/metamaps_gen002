@@ -28,7 +28,7 @@ class Header extends Component {
       return forClass
     }
 
-    const explore = section == "mine" || section == "active" || section == "starred" || section == "shared" || section == "featured"
+    const explore = ["mine", "active", "starred", "shared", "featured", "live"].includes(section)
     const mapper = section == "mapper"
 
     return (
@@ -67,6 +67,13 @@ class Header extends Component {
                 text="Featured Maps"
               />
 
+              <MapLink show={explore}
+                href="/explore/live"
+                linkClass={activeClass("live")}
+                data-router="true"
+                text="Live Maps"
+              />
+        
               {mapper ? (
                 <div className='exploreMapsButton active mapperButton'>
                   <img className='exploreMapperImage' width='24' height='24' src={this.props.user.image} />
