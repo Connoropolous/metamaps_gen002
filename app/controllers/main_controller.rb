@@ -12,7 +12,7 @@ class MainController < ApplicationController
           skip_policy_scope
           render 'main/home'
         else
-          @maps = policy_scope(Map).order(updated_at: :desc).page(1).per(20)
+          @maps = policy_scope(Map.where.not(name: 'Untitled Map')).order(updated_at: :desc).page(1).per(20)
           render 'explore/active'
         end
       end
