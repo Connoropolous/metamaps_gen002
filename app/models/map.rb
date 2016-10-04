@@ -88,6 +88,10 @@ class Map < ApplicationRecord
     updated_at.strftime('%m/%d/%Y')
   end
 
+  def starred_by_user?(user)
+    user.stars.where(map: self).exists?
+  end
+
   def as_json(_options = {})
     json = super(methods: [:user_name, :user_image, :topic_count, :synapse_count, :contributor_count, :collaborator_ids, :screenshot_url], except: [:screenshot_content_type, :screenshot_file_size, :screenshot_file_name, :screenshot_updated_at])
     json[:created_at_clean] = created_at_str
