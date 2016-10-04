@@ -39,15 +39,8 @@ class Map < ApplicationRecord
     Perm.short(permission)
   end
 
-  # return an array of the contributors to the map
   def contributors
-    contributors = []
-
-    mappings.each do |m|
-      contributors.push(m.user) unless contributors.include?(m.user)
-    end
-
-    contributors
+    mappings.map(&:user).uniq
   end
 
   def editors
