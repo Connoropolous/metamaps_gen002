@@ -6,10 +6,10 @@
 <div id="metacodeOptions">
 <ul>
   <li>
-    <span>Most Used</span>
+    <span>Recently Used</span>
     <div class="expandMetacodeSet"></div>
     <ul>
-    	<% user_most_used_metacodes().each do |m| %>
+    	<% user_recent_metacodes().each do |m| %>
 		  <li data-id="<%= m.id.to_s %>">
 		    <img width="24" height="24" src="<%= asset_path m.icon %>" alt="<%= m.name %>" />
 		    <div class="mSelectName"><%= m.name %></div>
@@ -19,10 +19,10 @@
     </ul>
   </li>
   <li>
-    <span>Recently Used</span>
+    <span>Most Used</span>
     <div class="expandMetacodeSet"></div>
     <ul>
-    	<% user_recent_metacodes().each do |m| %>
+    	<% user_most_used_metacodes().each do |m| %>
 		  <li data-id="<%= m.id.to_s %>">
 		    <img width="24" height="24" src="<%= asset_path m.icon %>" alt="<%= m.name %>" />
 		    <div class="mSelectName"><%= m.name %></div>

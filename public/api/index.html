@@ -1,0 +1,595 @@
+<!DOCTYPE HTML><html><head><title>Metamaps API documentation</title><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="generator" content="https://github.com/raml2html/raml2html 4.0.0-beta5"><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script><script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script type="text/javascript">
+      $(document).ready(function() {
+        $('.page-header pre code, .top-resource-description pre code, .modal-body pre code').each(function(i, block) {
+          hljs.highlightBlock(block);
+        });
+
+        $('[data-toggle]').click(function() {
+          var selector = $(this).data('target') + ' pre code';
+          $(selector).each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
+        });
+
+        // open modal on hashes like #_action_get
+        $(window).bind('hashchange', function(e) {
+          var anchor_id = document.location.hash.substr(1); //strip #
+          var element = $('#' + anchor_id);
+
+          // do we have such element + is it a modal?  --> show it
+          if (element.length && element.hasClass('modal')) {
+            element.modal('show');
+          }
+        });
+
+        // execute hashchange on first page load
+        $(window).trigger('hashchange');
+
+        // remove url fragment on modal hide
+        $('.modal').on('hidden.bs.modal', function() {
+          try {
+            if (history && history.replaceState) {
+                history.replaceState({}, '', '#');
+            }
+          } catch(e) {}
+        });
+      });
+    </script><style>
+      .hljs {
+        background: transparent;
+      }
+      .parent {
+        color: #999;
+      }
+      .list-group-item > .badge {
+        float: none;
+        margin-right: 6px;
+      }
+      .panel-title > .methods {
+        float: right;
+      }
+      .badge {
+        border-radius: 0;
+        text-transform: uppercase;
+        width: 70px;
+        font-weight: normal;
+        color: #f3f3f6;
+        line-height: normal;
+      }
+      .badge_get {
+        background-color: #63a8e2;
+      }
+      .badge_post {
+        background-color: #6cbd7d;
+      }
+      .badge_put {
+        background-color: #22bac4;
+      }
+      .badge_delete {
+        background-color: #d26460;
+      }
+      .badge_patch {
+        background-color: #ccc444;
+      }
+      .list-group, .panel-group {
+        margin-bottom: 0;
+      }
+      .panel-group .panel+.panel-white {
+        margin-top: 0;
+      }
+      .panel-group .panel-white {
+        border-bottom: 1px solid #F5F5F5;
+        border-radius: 0;
+      }
+      .panel-white:last-child {
+        border-bottom-color: white;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+      .panel-white .panel-heading {
+        background: white;
+      }
+      .tab-pane ul {
+        padding-left: 2em;
+      }
+      .tab-pane h1 {
+        font-size: 1.3em;
+      }
+      .tab-pane h2 {
+        font-size: 1.2em;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #ddd;
+      }
+      .tab-pane h3 {
+        font-size: 1.1em;
+      }
+      .tab-content {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+      }
+      #sidebar {
+        margin-top: 30px;
+        padding-right: 5px;
+        overflow: auto;
+        height: 90%;
+      }
+      .top-resource-description {
+        border-bottom: 1px solid #ddd;
+        background: #fcfcfc;
+        padding: 15px 15px 0 15px;
+        margin: -15px -15px 10px -15px;
+      }
+      .resource-description {
+        border-bottom: 1px solid #fcfcfc;
+        background: #fcfcfc;
+        padding: 15px 15px 0 15px;
+        margin: -15px -15px 10px -15px;
+      }
+      .resource-description p:last-child {
+        margin: 0;
+      }
+      .list-group .badge {
+        float: left;
+      }
+      .method_description {
+        margin-left: 85px;
+      }
+      .method_description p:last-child {
+        margin: 0;
+      }
+      .list-group-item {
+        cursor: pointer;
+      }
+      .list-group-item:hover {
+        background-color: #f5f5f5;
+      }
+
+      pre code {
+        overflow: auto;
+        word-wrap: normal;
+        white-space: pre;
+      }
+    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>Metamaps API documentation <small>version v2</small></h1><p>https://metamaps.cc/api/v2</p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="topics" class="panel-title">/topics</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_topics"><span class="parent"></span>/topics</a> <span class="methods"><a href="#topics_get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#topics_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_topics" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#topics_get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#topics_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="topics_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/topics</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#topics_get_request" data-toggle="tab">Request</a></li><li><a href="#topics_get_response" data-toggle="tab">Response</a></li><li><a href="#topics_get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="topics_get_request"><h3>Query Parameters</h3><ul><li><strong>q</strong>: <em>(string)</em><p>Search text columns for this string. A query of <code>"example"</code> will be passed to SQL as <code>LIKE %example%</code>. The searchable columns are:<pre>name, desc, link</pre></p></li><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>user,metacode</pre></p></li><li><strong>sort</strong>: <em>(string)</em><p>The name of the comma-separated fields to sort by, prefixed by "-" to sort descending</p></li><li><strong>page</strong>: <em>(integer - default: 1)</em><p>The page number</p></li><li><strong>per</strong>: <em>(integer - default: 25)</em><p>Number of records per page</p></li></ul></div><div class="tab-pane" id="topics_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": [
+    {
+      "id": 670,
+      "name": "Metamaps.cc Website",
+      "desc": "Metamaps is a great website; check it out below!",
+      "link": "https://metamaps.cc",
+      "permission": "commons",
+      "created_at": "2016-07-02T09:23:30.397Z",
+      "updated_at": "2016-07-02T09:23:30.397Z",
+      "user_id": 2,
+      "metacode_id": 36
+    },
+    {
+      "id": 60,
+      "name": "View others on map in realtime",
+      "desc": "",
+      "link": "",
+      "permission": "commons",
+      "created_at": "2016-03-31T01:20:26.734Z",
+      "updated_at": "2016-03-31T01:20:26.734Z",
+      "user_id": 2,
+      "metacode_id": 8
+    }
+  ],
+  "page": {
+    "current_page": 1,
+    "next_page": 2,
+    "prev_page": 0,
+    "total_pages": 249,
+    "total_count": 497,
+    "per": 2
+  }
+}
+</code></pre></div><div class="tab-pane" id="topics_get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="topics_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/topics</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#topics_post_request" data-toggle="tab">Request</a></li><li><a href="#topics_post_response" data-toggle="tab">Response</a></li><li><a href="#topics_post_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="topics_post_request"><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>name</strong>: <em>required (string)</em><p>Topic name; this will be visible on the map</p></li><li><strong>desc</strong>: <em>required (string)</em><p>Longer topic description visible when opening a map card</p></li><li><strong>link</strong>: <em>(string)</em><p>embed a link to content on the web in the topic card</p></li><li><strong>permission</strong>: <em>required (string)</em><p>commons, public, or private</p></li><li><strong>metacode_id</strong>: <em>required (string)</em><p>Topic&#39;s metacode</p></li></ul></div><div class="tab-pane" id="topics_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 670,
+    "name": "Metamaps.cc Website",
+    "desc": "Metamaps is a great website; check it out below!",
+    "link": "https://metamaps.cc",
+    "permission": "commons",
+    "created_at": "2016-07-02T09:23:30.397Z",
+    "updated_at": "2016-07-02T09:23:30.397Z",
+    "user_id": 2,
+    "metacode_id": 36
+  }
+}
+</code></pre></div><div class="tab-pane" id="topics_post_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_topics__id_"><span class="parent">/topics</span>/{id}</a> <span class="methods"><a href="#topics__id__get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#topics__id__put"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#topics__id__patch"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#topics__id__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_topics__id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#topics__id__get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#topics__id__put'" class="list-group-item"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#topics__id__patch'" class="list-group-item"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#topics__id__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="topics__id__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/topics</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#topics__id__get_request" data-toggle="tab">Request</a></li><li><a href="#topics__id__get_response" data-toggle="tab">Response</a></li><li><a href="#topics__id__get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="topics__id__get_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>user,metacode</pre></p></li></ul></div><div class="tab-pane" id="topics__id__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 670,
+    "name": "Metamaps.cc Website",
+    "desc": "Metamaps is a great website; check it out below!",
+    "link": "https://metamaps.cc",
+    "permission": "commons",
+    "created_at": "2016-07-02T09:23:30.397Z",
+    "updated_at": "2016-07-02T09:23:30.397Z",
+    "user_id": 2,
+    "metacode_id": 36
+  }
+}
+</code></pre></div><div class="tab-pane" id="topics__id__get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="topics__id__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/topics</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#topics__id__put_request" data-toggle="tab">Request</a></li><li><a href="#topics__id__put_response" data-toggle="tab">Response</a></li><li><a href="#topics__id__put_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="topics__id__put_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>name</strong>: <em>(string)</em><p>Topic name; this will be visible on the map</p></li><li><strong>desc</strong>: <em>(string)</em><p>Longer topic description visible when opening a map card</p></li><li><strong>link</strong>: <em>(string)</em><p>embed a link to content on the web in the topic card</p></li><li><strong>permission</strong>: <em>(string)</em><p>commons, public, or private</p></li><li><strong>metacode_id</strong>: <em>(string)</em><p>Topic&#39;s metacode</p></li></ul></div><div class="tab-pane" id="topics__id__put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 670,
+    "name": "Metamaps.cc Website",
+    "desc": "Metamaps is a great website; check it out below!",
+    "link": "https://metamaps.cc",
+    "permission": "commons",
+    "created_at": "2016-07-02T09:23:30.397Z",
+    "updated_at": "2016-07-02T09:23:30.397Z",
+    "user_id": 2,
+    "metacode_id": 36
+  }
+}
+</code></pre></div><div class="tab-pane" id="topics__id__put_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="topics__id__patch"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/topics</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#topics__id__patch_request" data-toggle="tab">Request</a></li><li><a href="#topics__id__patch_response" data-toggle="tab">Response</a></li><li><a href="#topics__id__patch_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="topics__id__patch_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>name</strong>: <em>(string)</em><p>Topic name; this will be visible on the map</p></li><li><strong>desc</strong>: <em>(string)</em><p>Longer topic description visible when opening a map card</p></li><li><strong>link</strong>: <em>(string)</em><p>embed a link to content on the web in the topic card</p></li><li><strong>permission</strong>: <em>(string)</em><p>commons, public, or private</p></li><li><strong>metacode_id</strong>: <em>(string)</em><p>Topic&#39;s metacode</p></li></ul></div><div class="tab-pane" id="topics__id__patch_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 670,
+    "name": "Metamaps.cc Website",
+    "desc": "Metamaps is a great website; check it out below!",
+    "link": "https://metamaps.cc",
+    "permission": "commons",
+    "created_at": "2016-07-02T09:23:30.397Z",
+    "updated_at": "2016-07-02T09:23:30.397Z",
+    "user_id": 2,
+    "metacode_id": 36
+  }
+}
+</code></pre></div><div class="tab-pane" id="topics__id__patch_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="topics__id__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/topics</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#topics__id__delete_request" data-toggle="tab">Request</a></li><li><a href="#topics__id__delete_response" data-toggle="tab">Response</a></li><li><a href="#topics__id__delete_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="topics__id__delete_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="topics__id__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>No content</p></div><div class="tab-pane" id="topics__id__delete_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="synapses" class="panel-title">/synapses</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_synapses"><span class="parent"></span>/synapses</a> <span class="methods"><a href="#synapses_get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#synapses_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_synapses" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#synapses_get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#synapses_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="synapses_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/synapses</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#synapses_get_request" data-toggle="tab">Request</a></li><li><a href="#synapses_get_response" data-toggle="tab">Response</a></li><li><a href="#synapses_get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="synapses_get_request"><h3>Query Parameters</h3><ul><li><strong>q</strong>: <em>(string)</em><p>Search text columns for this string. A query of <code>"example"</code> will be passed to SQL as <code>LIKE %example%</code>. The searchable columns are:<pre>desc</pre></p></li><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>topic1,topic2,user</pre></p></li><li><strong>sort</strong>: <em>(string)</em><p>The name of the comma-separated fields to sort by, prefixed by "-" to sort descending</p></li><li><strong>page</strong>: <em>(integer - default: 1)</em><p>The page number</p></li><li><strong>per</strong>: <em>(integer - default: 25)</em><p>Number of records per page</p></li></ul></div><div class="tab-pane" id="synapses_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": [
+    {
+      "id": 2,
+      "desc": "hello",
+      "category": "from-to",
+      "permission": "commons",
+      "created_at": "2016-03-26T08:02:17.994Z",
+      "updated_at": "2016-03-26T08:02:17.994Z",
+      "topic1_id": 1,
+      "topic2_id": 2,
+      "user_id": 2
+    },
+    {
+      "id": 6,
+      "desc": "nice",
+      "category": "both",
+      "permission": "public",
+      "created_at": "2016-03-26T08:05:31.563Z",
+      "updated_at": "2016-03-26T08:05:31.563Z",
+      "topic1_id": 2,
+      "topic2_id": 3,
+      "user_id": 2
+    }
+  ],
+  "page": {
+    "current_page": 1,
+    "next_page": 2,
+    "prev_page": 0,
+    "total_pages": 71,
+    "total_count": 142,
+    "per": 2
+  }
+}
+</code></pre></div><div class="tab-pane" id="synapses_get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="synapses_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/synapses</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#synapses_post_request" data-toggle="tab">Request</a></li><li><a href="#synapses_post_response" data-toggle="tab">Response</a></li><li><a href="#synapses_post_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="synapses_post_request"><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>desc</strong>: <em>(string)</em><p>text description of this synapse</p></li><li><strong>category</strong>: <em>required (string)</em><p><code>from-to</code> or <code>both</code></p></li><li><strong>permission</strong>: <em>required (string)</em><p>commons, public, or private</p></li><li><strong>topic1_id</strong>: <em>required (string)</em><p>the topic being linked from</p></li><li><strong>topic2_id</strong>: <em>required (string)</em><p>the topic being linked to</p></li><li><strong>user_id</strong>: <em>required (string)</em><p>the creator of the topic</p></li></ul></div><div class="tab-pane" id="synapses_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 2,
+    "desc": "hello",
+    "category": "from-to",
+    "permission": "commons",
+    "created_at": "2016-03-26T08:02:17.994Z",
+    "updated_at": "2016-03-26T08:02:17.994Z",
+    "topic1_id": 5,
+    "topic2_id": 6,
+    "user_id": 2
+  }
+}
+</code></pre></div><div class="tab-pane" id="synapses_post_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_synapses__id_"><span class="parent">/synapses</span>/{id}</a> <span class="methods"><a href="#synapses__id__get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#synapses__id__put"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#synapses__id__patch"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#synapses__id__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_synapses__id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#synapses__id__get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#synapses__id__put'" class="list-group-item"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#synapses__id__patch'" class="list-group-item"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#synapses__id__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="synapses__id__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/synapses</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#synapses__id__get_request" data-toggle="tab">Request</a></li><li><a href="#synapses__id__get_response" data-toggle="tab">Response</a></li><li><a href="#synapses__id__get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="synapses__id__get_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>topic1,topic2,user</pre></p></li></ul></div><div class="tab-pane" id="synapses__id__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 2,
+    "desc": "hello",
+    "category": "from-to",
+    "permission": "commons",
+    "created_at": "2016-03-26T08:02:17.994Z",
+    "updated_at": "2016-03-26T08:02:17.994Z",
+    "topic1_id": 5,
+    "topic2_id": 6,
+    "user_id": 2
+  }
+}
+</code></pre></div><div class="tab-pane" id="synapses__id__get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="synapses__id__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/synapses</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#synapses__id__put_request" data-toggle="tab">Request</a></li><li><a href="#synapses__id__put_response" data-toggle="tab">Response</a></li><li><a href="#synapses__id__put_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="synapses__id__put_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>desc</strong>: <em>(string)</em><p>text description of this synapse</p></li><li><strong>category</strong>: <em>(string)</em><p><code>from-to</code> or <code>both</code></p></li><li><strong>permission</strong>: <em>(string)</em><p>commons, public, or private</p></li><li><strong>topic1_id</strong>: <em>(string)</em><p>the topic being linked from</p></li><li><strong>topic2_id</strong>: <em>(string)</em><p>the topic being linked to</p></li><li><strong>user_id</strong>: <em>(string)</em><p>the creator of the topic</p></li></ul></div><div class="tab-pane" id="synapses__id__put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 2,
+    "desc": "hello",
+    "category": "from-to",
+    "permission": "commons",
+    "created_at": "2016-03-26T08:02:17.994Z",
+    "updated_at": "2016-03-26T08:02:17.994Z",
+    "topic1_id": 5,
+    "topic2_id": 6,
+    "user_id": 2
+  }
+}
+</code></pre></div><div class="tab-pane" id="synapses__id__put_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="synapses__id__patch"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/synapses</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#synapses__id__patch_request" data-toggle="tab">Request</a></li><li><a href="#synapses__id__patch_response" data-toggle="tab">Response</a></li><li><a href="#synapses__id__patch_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="synapses__id__patch_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>desc</strong>: <em>(string)</em><p>text description of this synapse</p></li><li><strong>category</strong>: <em>(string)</em><p><code>from-to</code> or <code>both</code></p></li><li><strong>permission</strong>: <em>(string)</em><p>commons, public, or private</p></li><li><strong>topic1_id</strong>: <em>(string)</em><p>the topic being linked from</p></li><li><strong>topic2_id</strong>: <em>(string)</em><p>the topic being linked to</p></li><li><strong>user_id</strong>: <em>(string)</em><p>the creator of the topic</p></li></ul></div><div class="tab-pane" id="synapses__id__patch_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 2,
+    "desc": "hello",
+    "category": "from-to",
+    "permission": "commons",
+    "created_at": "2016-03-26T08:02:17.994Z",
+    "updated_at": "2016-03-26T08:02:17.994Z",
+    "topic1_id": 5,
+    "topic2_id": 6,
+    "user_id": 2
+  }
+}
+</code></pre></div><div class="tab-pane" id="synapses__id__patch_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="synapses__id__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/synapses</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#synapses__id__delete_request" data-toggle="tab">Request</a></li><li><a href="#synapses__id__delete_response" data-toggle="tab">Response</a></li><li><a href="#synapses__id__delete_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="synapses__id__delete_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="synapses__id__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>No content</p></div><div class="tab-pane" id="synapses__id__delete_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="maps" class="panel-title">/maps</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_maps"><span class="parent"></span>/maps</a> <span class="methods"><a href="#maps_get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#maps_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_maps" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#maps_get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#maps_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="maps_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/maps</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#maps_get_request" data-toggle="tab">Request</a></li><li><a href="#maps_get_response" data-toggle="tab">Response</a></li><li><a href="#maps_get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="maps_get_request"><h3>Query Parameters</h3><ul><li><strong>q</strong>: <em>(string)</em><p>Search text columns for this string. A query of <code>"example"</code> will be passed to SQL as <code>LIKE %example%</code>. The searchable columns are:<pre>name, desc</pre></p></li><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>user,topics,synapses,mappings,contributors,collaborators</pre></p></li><li><strong>sort</strong>: <em>(string)</em><p>The name of the comma-separated fields to sort by, prefixed by "-" to sort descending</p></li><li><strong>page</strong>: <em>(integer - default: 1)</em><p>The page number</p></li><li><strong>per</strong>: <em>(integer - default: 25)</em><p>Number of records per page</p></li></ul></div><div class="tab-pane" id="maps_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": [
+    {
+      "id": 2,
+      "name": "Emergent Network Phenomena",
+      "desc": "Example map for the API",
+      "permission": "commons",
+      "screenshot": "https://s3.amazonaws.com/metamaps-assets/site/missing-map.png",
+      "created_at": "2016-03-26T08:02:05.379Z",
+      "updated_at": "2016-03-27T07:20:18.047Z",
+      "topic_ids": [
+        58,
+        59
+      ],
+      "synapse_ids": [
+        2
+      ],
+      "mapping_ids": [
+        94,
+        95,
+        96
+      ],
+      "collaborator_ids": [],
+      "contributor_ids": [
+        2
+      ]
+    }
+  ],
+  "page": {
+    "current_page": 1,
+    "next_page": 2,
+    "prev_page": 0,
+    "total_pages": 5,
+    "total_count": 5,
+    "per": 1
+  }
+}
+</code></pre></div><div class="tab-pane" id="maps_get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="maps_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/maps</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#maps_post_request" data-toggle="tab">Request</a></li><li><a href="#maps_post_response" data-toggle="tab">Response</a></li><li><a href="#maps_post_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="maps_post_request"><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>name</strong>: <em>required (string)</em><p>name</p></li><li><strong>desc</strong>: <em>required (string)</em><p>description</p></li><li><strong>permission</strong>: <em>required (string)</em><p>commons, public, or private</p></li><li><strong>screenshot</strong>: <em>required (string)</em><p>url to a screenshot of the map</p></li><li><strong>contributor_ids</strong>: <em>required (string)</em><p>the ids of people who have contributed to the map</p></li><li><strong>collaborator_ids</strong>: <em>required (string)</em><p>the ids of people who have edit access to the map</p></li></ul></div><div class="tab-pane" id="maps_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+    "data": {
+        "id": 2,
+        "name": "Emergent Network Phenomena",
+        "desc": "Example map for the API",
+        "permission": "commons",
+        "screenshot": "https://s3.amazonaws.com/metamaps-assets/site/missing-map.png",
+        "created_at": "2016-03-26T08:02:05.379Z",
+        "updated_at": "2016-03-27T07:20:18.047Z",
+        "topic_ids": [
+            58,
+            59
+        ],
+        "synapse_ids": [
+            2
+        ],
+        "mapping_ids": [
+            94,
+            95,
+            96
+        ],
+        "collaborator_ids": [],
+        "contributor_ids": [
+            2
+        ]
+    }
+}
+</code></pre></div><div class="tab-pane" id="maps_post_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_maps__id_"><span class="parent">/maps</span>/{id}</a> <span class="methods"><a href="#maps__id__get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#maps__id__put"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#maps__id__patch"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#maps__id__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_maps__id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#maps__id__get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#maps__id__put'" class="list-group-item"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#maps__id__patch'" class="list-group-item"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#maps__id__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="maps__id__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/maps</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#maps__id__get_request" data-toggle="tab">Request</a></li><li><a href="#maps__id__get_response" data-toggle="tab">Response</a></li><li><a href="#maps__id__get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="maps__id__get_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>user,topics,synapses,mappings,contributors,collaborators</pre></p></li></ul></div><div class="tab-pane" id="maps__id__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+    "data": {
+        "id": 2,
+        "name": "Emergent Network Phenomena",
+        "desc": "Example map for the API",
+        "permission": "commons",
+        "screenshot": "https://s3.amazonaws.com/metamaps-assets/site/missing-map.png",
+        "created_at": "2016-03-26T08:02:05.379Z",
+        "updated_at": "2016-03-27T07:20:18.047Z",
+        "topic_ids": [
+            58,
+            59
+        ],
+        "synapse_ids": [
+            2
+        ],
+        "mapping_ids": [
+            94,
+            95,
+            96
+        ],
+        "collaborator_ids": [],
+        "contributor_ids": [
+            2
+        ]
+    }
+}
+</code></pre></div><div class="tab-pane" id="maps__id__get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="maps__id__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/maps</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#maps__id__put_request" data-toggle="tab">Request</a></li><li><a href="#maps__id__put_response" data-toggle="tab">Response</a></li><li><a href="#maps__id__put_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="maps__id__put_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>name</strong>: <em>(string)</em><p>name</p></li><li><strong>desc</strong>: <em>(string)</em><p>description</p></li><li><strong>permission</strong>: <em>(string)</em><p>commons, public, or private</p></li><li><strong>screenshot</strong>: <em>(string)</em><p>url to a screenshot of the map</p></li></ul></div><div class="tab-pane" id="maps__id__put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+    "data": {
+        "id": 2,
+        "name": "Emergent Network Phenomena",
+        "desc": "Example map for the API",
+        "permission": "commons",
+        "screenshot": "https://s3.amazonaws.com/metamaps-assets/site/missing-map.png",
+        "created_at": "2016-03-26T08:02:05.379Z",
+        "updated_at": "2016-03-27T07:20:18.047Z",
+        "topic_ids": [
+            58,
+            59
+        ],
+        "synapse_ids": [
+            2
+        ],
+        "mapping_ids": [
+            94,
+            95,
+            96
+        ],
+        "collaborator_ids": [],
+        "contributor_ids": [
+            2
+        ]
+    }
+}
+</code></pre></div><div class="tab-pane" id="maps__id__put_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="maps__id__patch"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/maps</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#maps__id__patch_request" data-toggle="tab">Request</a></li><li><a href="#maps__id__patch_response" data-toggle="tab">Response</a></li><li><a href="#maps__id__patch_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="maps__id__patch_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>name</strong>: <em>(string)</em><p>name</p></li><li><strong>desc</strong>: <em>(string)</em><p>description</p></li><li><strong>permission</strong>: <em>(string)</em><p>commons, public, or private</p></li><li><strong>screenshot</strong>: <em>(string)</em><p>url to a screenshot of the map</p></li></ul></div><div class="tab-pane" id="maps__id__patch_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+    "data": {
+        "id": 2,
+        "name": "Emergent Network Phenomena",
+        "desc": "Example map for the API",
+        "permission": "commons",
+        "screenshot": "https://s3.amazonaws.com/metamaps-assets/site/missing-map.png",
+        "created_at": "2016-03-26T08:02:05.379Z",
+        "updated_at": "2016-03-27T07:20:18.047Z",
+        "topic_ids": [
+            58,
+            59
+        ],
+        "synapse_ids": [
+            2
+        ],
+        "mapping_ids": [
+            94,
+            95,
+            96
+        ],
+        "collaborator_ids": [],
+        "contributor_ids": [
+            2
+        ]
+    }
+}
+</code></pre></div><div class="tab-pane" id="maps__id__patch_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="maps__id__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/maps</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#maps__id__delete_request" data-toggle="tab">Request</a></li><li><a href="#maps__id__delete_response" data-toggle="tab">Response</a></li><li><a href="#maps__id__delete_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="maps__id__delete_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="maps__id__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>No content</p></div><div class="tab-pane" id="maps__id__delete_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="mappings" class="panel-title">/mappings</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_mappings"><span class="parent"></span>/mappings</a> <span class="methods"><a href="#mappings_get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#mappings_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_mappings" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#mappings_get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#mappings_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="mappings_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/mappings</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#mappings_get_request" data-toggle="tab">Request</a></li><li><a href="#mappings_get_response" data-toggle="tab">Response</a></li><li><a href="#mappings_get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="mappings_get_request"><h3>Query Parameters</h3><ul><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>user,map</pre></p></li><li><strong>sort</strong>: <em>(string)</em><p>The name of the comma-separated fields to sort by, prefixed by "-" to sort descending</p></li><li><strong>page</strong>: <em>(integer - default: 1)</em><p>The page number</p></li><li><strong>per</strong>: <em>(integer - default: 25)</em><p>Number of records per page</p></li></ul></div><div class="tab-pane" id="mappings_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": [
+    {
+      "created_at": "2016-03-25T08:44:07.152Z",
+      "id": 1,
+      "map_id": 1,
+      "mappable_id": 1,
+      "mappable_type": "Topic",
+      "updated_at": "2016-03-25T08:44:07.152Z",
+      "user_id": 1,
+      "xloc": -271,
+      "yloc": 22
+    },
+    {
+      "created_at": "2016-03-25T08:44:13.907Z",
+      "id": 2,
+      "map_id": 1,
+      "mappable_id": 2,
+      "mappable_type": "Topic",
+      "updated_at": "2016-03-25T08:44:13.907Z",
+      "user_id": 1,
+      "xloc": -12,
+      "yloc": 61
+    },
+    {
+      "created_at": "2016-03-25T08:44:19.333Z",
+      "id": 3,
+      "map_id": 1,
+      "mappable_id": 3,
+      "mappable_type": "Topic",
+      "updated_at": "2016-03-25T08:44:19.333Z",
+      "user_id": 1,
+      "xloc": -93,
+      "yloc": -90
+    },
+    {
+      "created_at": "2016-03-25T08:44:21.337Z",
+      "id": 4,
+      "map_id": 1,
+      "mappable_id": 1,
+      "mappable_type": "Synapse",
+      "updated_at": "2016-03-25T08:44:21.337Z",
+      "user_id": 1
+    }
+  ],
+  "page": {
+    "current_page": 1,
+    "next_page": 2,
+    "per": 4,
+    "prev_page": 0,
+    "total_count": 303,
+    "total_pages": 76
+  }
+}
+</code></pre></div><div class="tab-pane" id="mappings_get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="mappings_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/mappings</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#mappings_post_request" data-toggle="tab">Request</a></li><li><a href="#mappings_post_response" data-toggle="tab">Response</a></li><li><a href="#mappings_post_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="mappings_post_request"><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>mappable_id</strong>: <em>required (string)</em><p>id of the topic/synapse to be mapped</p></li><li><strong>mappable_type</strong>: <em>required (string)</em><p>Topic or Synapse</p></li><li><strong>map_id</strong>: <em>required (string)</em><p>id of the map</p></li><li><strong>xloc</strong>: <em>(string)</em><p>(only for Topic mappings) x location on the canvas</p></li><li><strong>yloc</strong>: <em>(string)</em><p>(only for Topic mappings) y location on the canvas</p></li></ul></div><div class="tab-pane" id="mappings_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 4,
+    "created_at": "2016-03-25T08:44:21.337Z",
+    "updated_at": "2016-03-25T08:44:21.337Z",
+    "mappable_id": 1,
+    "mappable_type": "Synapse",
+    "user_id": 1,
+    "map_id": 1
+  }
+}
+</code></pre></div><div class="tab-pane" id="mappings_post_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_mappings__id_"><span class="parent">/mappings</span>/{id}</a> <span class="methods"><a href="#mappings__id__get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#mappings__id__put"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#mappings__id__patch"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#mappings__id__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_mappings__id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#mappings__id__get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#mappings__id__put'" class="list-group-item"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#mappings__id__patch'" class="list-group-item"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div><div onclick="window.location.href = '#mappings__id__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="mappings__id__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/mappings</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#mappings__id__get_request" data-toggle="tab">Request</a></li><li><a href="#mappings__id__get_response" data-toggle="tab">Response</a></li><li><a href="#mappings__id__get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="mappings__id__get_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>embed</strong>: <em>(string)</em><p>Comma-separated list of columns to embed. Each embedded column will be returned instead of the corresponding <code>field_id</code> or <code>field_ids</code> column. For instance, <code>?embed=user</code> would remove the <code>user_id</code> integer field from a response and replace it with a <code>user</code> object field.</p><p>Possible embeddable fields are:<pre>user,map</pre></p></li></ul></div><div class="tab-pane" id="mappings__id__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 4,
+    "created_at": "2016-03-25T08:44:21.337Z",
+    "updated_at": "2016-03-25T08:44:21.337Z",
+    "mappable_id": 1,
+    "mappable_type": "Synapse",
+    "user_id": 1,
+    "map_id": 1
+  }
+}
+</code></pre></div><div class="tab-pane" id="mappings__id__get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="mappings__id__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/mappings</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#mappings__id__put_request" data-toggle="tab">Request</a></li><li><a href="#mappings__id__put_response" data-toggle="tab">Response</a></li><li><a href="#mappings__id__put_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="mappings__id__put_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>mappable_id</strong>: <em>(string)</em><p>id of the topic/synapse to be mapped</p></li><li><strong>mappable_type</strong>: <em>(string)</em><p>Topic or Synapse</p></li><li><strong>map_id</strong>: <em>(string)</em><p>id of the map</p></li><li><strong>xloc</strong>: <em>(string)</em><p>(only for Topic mappings) x location on the canvas</p></li><li><strong>yloc</strong>: <em>(string)</em><p>(only for Topic mappings) y location on the canvas</p></li></ul></div><div class="tab-pane" id="mappings__id__put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 4,
+    "created_at": "2016-03-25T08:44:21.337Z",
+    "updated_at": "2016-03-25T08:44:21.337Z",
+    "mappable_id": 1,
+    "mappable_type": "Synapse",
+    "user_id": 1,
+    "map_id": 1
+  }
+}
+</code></pre></div><div class="tab-pane" id="mappings__id__put_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="mappings__id__patch"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/mappings</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#mappings__id__patch_request" data-toggle="tab">Request</a></li><li><a href="#mappings__id__patch_response" data-toggle="tab">Response</a></li><li><a href="#mappings__id__patch_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="mappings__id__patch_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>mappable_id</strong>: <em>(string)</em><p>id of the topic/synapse to be mapped</p></li><li><strong>mappable_type</strong>: <em>(string)</em><p>Topic or Synapse</p></li><li><strong>map_id</strong>: <em>(string)</em><p>id of the map</p></li><li><strong>xloc</strong>: <em>(string)</em><p>(only for Topic mappings) x location on the canvas</p></li><li><strong>yloc</strong>: <em>(string)</em><p>(only for Topic mappings) y location on the canvas</p></li></ul></div><div class="tab-pane" id="mappings__id__patch_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 4,
+    "created_at": "2016-03-25T08:44:21.337Z",
+    "updated_at": "2016-03-25T08:44:21.337Z",
+    "mappable_id": 1,
+    "mappable_type": "Synapse",
+    "user_id": 1,
+    "map_id": 1
+  }
+}
+</code></pre></div><div class="tab-pane" id="mappings__id__patch_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="mappings__id__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/mappings</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#mappings__id__delete_request" data-toggle="tab">Request</a></li><li><a href="#mappings__id__delete_response" data-toggle="tab">Response</a></li><li><a href="#mappings__id__delete_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="mappings__id__delete_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="mappings__id__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>No content</p></div><div class="tab-pane" id="mappings__id__delete_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="tokens" class="panel-title">/tokens</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tokens"><span class="parent"></span>/tokens</a> <span class="methods"><a href="#tokens_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_tokens" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tokens_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tokens_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent"></span>/tokens</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tokens_post_request" data-toggle="tab">Request</a></li><li><a href="#tokens_post_response" data-toggle="tab">Response</a></li><li><a href="#tokens_post_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tokens_post_request"><h3>Body</h3><p><strong>Type: application/json</strong></p><strong>Properties</strong><ul><li><strong>description</strong>: <em>(string)</em><p>short string describing this token</p></li></ul></div><div class="tab-pane" id="tokens_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": {
+    "id": 1,
+    "token": "VeI0qAe2bf2ytnrTRxmywsH0VSwuyjK5",
+    "description": "Personal token for in-browser testing",
+    "created_at": "2016-09-06T03:47:56.553Z"
+  }
+}
+</code></pre></div><div class="tab-pane" id="tokens_post_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tokens_my_tokens"><span class="parent">/tokens</span>/my_tokens</a> <span class="methods"><a href="#tokens_my_tokens_get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_tokens_my_tokens" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tokens_my_tokens_get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tokens_my_tokens_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/tokens</span>/my_tokens</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tokens_my_tokens_get_request" data-toggle="tab">Request</a></li><li><a href="#tokens_my_tokens_get_response" data-toggle="tab">Response</a></li><li><a href="#tokens_my_tokens_get_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tokens_my_tokens_get_request"><h3>Query Parameters</h3><ul><li><strong>q</strong>: <em>(string)</em><p>Search text columns for this string. A query of <code>"example"</code> will be passed to SQL as <code>LIKE %example%</code>. The searchable columns are:<pre>description</pre></p></li><li><strong>page</strong>: <em>(integer - default: 1)</em><p>The page number</p></li><li><strong>per</strong>: <em>(integer - default: 25)</em><p>Number of records per page</p></li><li><strong>sort</strong>: <em>(string)</em><p>The name of the comma-separated fields to sort by, prefixed by "-" to sort descending</p></li></ul></div><div class="tab-pane" id="tokens_my_tokens_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Examples</strong>:</p><pre><code>{
+  "data": [
+    {
+      "id": 1,
+      "token": "VeI0qAe2bf2ytnrTRxmywsH0VSwuyjK5",
+      "description": "Personal token for in-browser testing",
+      "created_at": "2016-09-06T03:47:56.553Z"
+    }
+  ],
+  "page": {
+    "current_page": 1,
+    "next_page": 0,
+    "prev_page": 0,
+    "total_pages": 1,
+    "total_count": 1,
+    "per": 25
+  }
+}
+</code></pre></div><div class="tab-pane" id="tokens_my_tokens_get_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_tokens__id_"><span class="parent">/tokens</span>/{id}</a> <span class="methods"><a href="#tokens__id__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_tokens__id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#tokens__id__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="tokens__id__delete"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/tokens</span>/{id}</h4></div><div class="modal-body"><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by <b>oauth_2_0</b><p>OAuth 2.0 implementation</p></div><ul class="nav nav-tabs"><li class="active"><a href="#tokens__id__delete_request" data-toggle="tab">Request</a></li><li><a href="#tokens__id__delete_response" data-toggle="tab">Response</a></li><li><a href="#tokens__id__delete_securedby" data-toggle="tab">Security</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tokens__id__delete_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="tokens__id__delete_response"><h2>HTTP status code <a href="http://httpstatus.es/204" target="_blank">204</a></h2><p>No content</p></div><div class="tab-pane" id="tokens__id__delete_securedby"><h1>Secured by oauth_2_0</h1></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#topics">/topics</a></li><li><a href="#synapses">/synapses</a></li><li><a href="#maps">/maps</a></li><li><a href="#mappings">/mappings</a></li><li><a href="#tokens">/tokens</a></li></ul></div></div></div></div></body></html>
