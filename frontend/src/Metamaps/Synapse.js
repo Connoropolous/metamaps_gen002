@@ -19,10 +19,11 @@ import Visualize from './Visualize'
  *  - Metamaps.Topics
  */
 
+const noOp = () => {}
 const Synapse = {
   // this function is to retrieve a synapse JSON object from the database
   // @param id = the id of the synapse to retrieve
-  get: function (id, callback) {
+  get: function (id, callback = noOp) {
     // if the desired topic is not yet in the local topic repository, fetch it
     if (Metamaps.Synapses.get(id) == undefined) {
       $.ajax({
