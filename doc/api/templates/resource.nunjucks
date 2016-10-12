@@ -9,7 +9,14 @@
         <span class="methods">
           {% for method in resource.methods %}
             <a href="#{{ resource.uniqueId }}_{{ method.method }}"><!-- modal shown by hashchange event -->
-              <span class="badge badge_{{ method.method }}">{{ method.method }}{% if method.securedBy.length %} <span class="glyphicon glyphicon-lock" title="Authentication required"></span>{% endif %}</span>
+              <span class="badge badge_{{ method.method }}">{{ method.method }}
+                {% if method.securedBy.length %}
+                  {% if method.securedBy | first == null %}
+                    <span class="glyphicon glyphicon-transfer" title="Authentication not required"></span>
+                  {% endif %}
+                  <span class="glyphicon glyphicon-lock" title="Authentication required"></span>
+                {% endif %}
+              </span>
             </a>
           {% endfor %}
         </span>
@@ -31,7 +38,15 @@
         <div class="list-group">
           {% for method in resource.methods %}
             <div onclick="window.location.href = '#{{ resource.uniqueId }}_{{ method.method }}'" class="list-group-item">
-              <span class="badge badge_{{ method.method }}">{{ method.method }}{% if method.securedBy.length %} <span class="glyphicon glyphicon-lock" title="Authentication required"></span>{% endif %}</span>
+              <span class="badge badge_{{ method.method }}">
+                {{ method.method }}
+                {% if method.securedBy.length %}
+                  {% if method.securedBy | first == null %}
+                    <span class="glyphicon glyphicon-transfer" title="Authentication not required"></span>
+                  {% endif %}
+                  <span class="glyphicon glyphicon-lock" title="Authentication required"></span>
+                {% endif %}
+              </span>
               <div class="method_description">
 {% markdown %}
 {{ method.description}}
@@ -51,7 +66,15 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h4 class="modal-title" id="myModalLabel">
-                <span class="badge badge_{{ method.method }}">{{ method.method }}{% if method.securedBy.length %} <span class="glyphicon glyphicon-lock" title="Authentication required"></span>{% endif %}</span>
+                <span class="badge badge_{{ method.method }}">
+                  {{ method.method }}
+                  {% if method.securedBy.length %}
+                    {% if method.securedBy | first == null %}
+                      <span class="glyphicon glyphicon-transfer" title="Authentication not required"></span>
+                    {% endif %}
+                    <span class="glyphicon glyphicon-lock" title="Authentication required"></span>
+                  {% endif %}
+                </span>
                 <span class="parent">{{ resource.parentUrl }}</span>{{ resource.relativeUri }}
               </h4>
             </div>
@@ -234,8 +257,8 @@
                     {% for securedBy in method.securedBy %}
                       {% if securedBy == null %}
                         <div class="alert alert-info">
-                          <span class="glyphicon glyphicon-unlock" title="Authentication not required"></span>
-                          This route can be access anonymously.</h1>
+                          <span class="glyphicon glyphicon-transfer" title="Authentication not required"></span>
+                          This route can be accessed anonymously.</h1>
                         </div>
                       {% else %}
                         {% set securityScheme = securitySchemes[securedBy] %}

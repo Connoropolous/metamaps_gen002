@@ -8,6 +8,7 @@ get:
         application/json:
           example: !include ../examples/metacodes.json
 /{id}:
+  securedBy: [ null, cookie, token, oauth_2_0 ]
   #type: item
   get:
     responses:
