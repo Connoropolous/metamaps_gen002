@@ -12,9 +12,9 @@ documentation:
     content: ""
 
 securitySchemes:
-  oauth_2_0: !include securitySchemes/oauth_2_0.raml
   token: !include securitySchemes/token.raml
   cookie: !include securitySchemes/cookie.raml
+  oauth_2_0: !include securitySchemes/oauth_2_0.raml
 securedBy: [ token, cookie, oauth_2_0 ]
 
 traits:
