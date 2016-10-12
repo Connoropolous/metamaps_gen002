@@ -13,7 +13,9 @@ documentation:
 
 securitySchemes:
   oauth_2_0: !include securitySchemes/oauth_2_0.raml
-securedBy: [ null, cookie, token, oauth_2_0 ]
+  token: !include securitySchemes/token.raml
+  cookie: !include securitySchemes/cookie.raml
+securedBy: [ token, cookie, oauth_2_0 ]
 
 traits:
   pageable: !include traits/pageable.raml
