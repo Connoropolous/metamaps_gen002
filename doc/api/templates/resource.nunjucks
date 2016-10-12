@@ -65,23 +65,6 @@
                 </div>
               {% endif %}
 
-              {% if method.securedBy.length %}
-                {% for securedBy in method.securedBy %}
-                  {% if securedBy %}
-                    <div class="alert alert-warning">
-                      {% set securedByScopes = renderSecuredBy(securedBy) %}
-                      <span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by {{ securedByScopes }}
-                      {% set securityScheme = securitySchemes[securedBy] %}
-                      {% if securityScheme.description %}
-{% markdown %}
-{{ securityScheme.description }}
-{% endmarkdown %}
-                      {% endif %}
-                    </div>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-
               <!-- Nav tabs -->
               <ul class="nav nav-tabs">
                 {% if method.allUriParameters.length or method.queryString or method.queryParameters or method.headers or method.body %}
@@ -249,33 +232,47 @@
                 {% if method.securedBy.length %}
                   <div class="tab-pane" id="{{ resource.uniqueId }}_{{ method.method }}_securedby">
                     {% for securedBy in method.securedBy %}
-                      {% set securityScheme = securitySchemes[securedBy] %}
-                      <h1>Secured by {{ securedBy }}</h1>
+                      {% if securedBy %}
+                        {% set securityScheme = securitySchemes[securedBy] %}
+                        <h1>Secured by {{ securedBy }}</h1>
 
-                      {% if securityScheme.describedBy.headers.length %}
-                        <h3>Headers</h3>
-                        <ul>
-                          {% for item in securityScheme.describedBy.headers %}
-                            {% include "./item.nunjucks" %}
-                          {% endfor %}
-                        </ul>
-                      {% endif %}
+                        <div class="alert alert-warning">
+                          {% set securedByScopes = renderSecuredBy(securedBy) %}
+                          <span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by {{ securedByScopes }}
+                          {% set securityScheme = securitySchemes[securedBy] %}
+                          {% if securityScheme.description %}
+{% markdown %}
+{{ securityScheme.description }}
+{% endmarkdown %}
+                          {% endif %}
 
-                      {% for response in securityScheme.describedBy.responses.length %}
-                        <h2>HTTP status code <a href="http://httpstatus.es/{{ response.code }}" target="_blank">{{ response.code }}</a></h2>
+                          {% if securityScheme.describedBy.headers.length %}
+                            <h3>Headers</h3>
+                            <ul>
+                              {% for item in securityScheme.describedBy.headers %}
+                                {% include "./item.nunjucks" %}
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+
+                          {% for response in securityScheme.describedBy.responses.length %}
+                            <h2>HTTP status code <a href="http://httpstatus.es/{{ response.code }}" target="_blank">{{ response.code }}</a></h2>
 {% markdown %}
 {{ response.description}}
 {% endmarkdown %}
-                        {% if response.headers.length %}
-                          <h3>Headers</h3>
-                          <ul>
-                            {% for item in response.headers %}
-                              {% include "./item.nunjucks" %}
-                            {% endfor %}
-                          </ul>
-                        {% endif %}
-                      {% endfor %}
-
+                            {% if response.headers.length %}
+                              <h3>Headers</h3>
+                              <ul>
+                                {% for item in response.headers %}
+                                  {% include "./item.nunjucks" %}
+                                {% endfor %}
+                              </ul>
+                            {% endif %}
+                          {% endfor %}
+                            </div>
+                      {% else %}
+                        <h1>This route can be access anonymously.</h1>
+                      {% endif %}
                     {% endfor %}
                   </div>
                 {% endif %}
