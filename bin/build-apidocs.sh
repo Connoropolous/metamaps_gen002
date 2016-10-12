@@ -10,5 +10,8 @@ if [[ ! -x ./node_modules/.bin/raml2html ]]; then
 fi
 
 ./node_modules/.bin/raml2html -i ./doc/api/api.raml -o ./public/api/index.html -t doc/api/templates/template.nunjucks
+if [[ -x $(which open) ]]; then
+  open public/api/index.html
+fi
 
 cd $OLD_DIR
