@@ -1,5 +1,3 @@
-[Skip ahead to the endpoints.](#endpoints)
-
 There are three ways to log in: cookie-based authentication, token-based authentication, or OAuth 2.
 
 ### 1. Cookie-based authentication
