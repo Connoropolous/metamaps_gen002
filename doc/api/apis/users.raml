@@ -1,5 +1,6 @@
 #type: collection
 get:
+  secured_by: [ ]
   is: [ searchable: { searchFields: "name" }, orderable, pageable ]
   responses:
     200:
@@ -17,6 +18,7 @@ get:
 /{id}:
   #type: item
   get:
+    secured_by: [ ]
     responses:
       200:
         body:
