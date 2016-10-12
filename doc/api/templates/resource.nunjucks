@@ -232,10 +232,13 @@
                 {% if method.securedBy.length %}
                   <div class="tab-pane" id="{{ resource.uniqueId }}_{{ method.method }}_securedby">
                     {% for securedBy in method.securedBy %}
-                      {% if securedBy %}
+                      {% if securedBy == null %}
+                        <div class="alert alert-info">
+                          <span class="glyphicon glyphicon-unlock" title="Authentication not required"></span>
+                          This route can be access anonymously.</h1>
+                        </div>
+                      {% else %}
                         {% set securityScheme = securitySchemes[securedBy] %}
-                        <h1>Secured by {{ securedBy }}</h1>
-
                         <div class="alert alert-warning">
                           {% set securedByScopes = renderSecuredBy(securedBy) %}
                           <span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by {{ securedByScopes }}
@@ -269,9 +272,7 @@
                               </ul>
                             {% endif %}
                           {% endfor %}
-                            </div>
-                      {% else %}
-                        <h1>This route can be access anonymously.</h1>
+                        </div>
                       {% endif %}
                     {% endfor %}
                   </div>
