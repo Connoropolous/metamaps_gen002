@@ -13,7 +13,7 @@ documentation:
 
 securitySchemes:
   oauth_2_0: !include securitySchemes/oauth_2_0.raml
-securedBy: [ oauth_2_0 ]
+securedBy: [ null, cookie, token, oauth_2_0 ]
 
 traits:
   pageable: !include traits/pageable.raml
