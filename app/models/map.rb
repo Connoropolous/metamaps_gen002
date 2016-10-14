@@ -9,6 +9,7 @@ class Map < ApplicationRecord
   has_many :messages, as: :resource, dependent: :destroy
   has_many :stars
 
+  has_many :access_requests, dependent: :destroy
   has_many :user_maps, dependent: :destroy
   has_many :collaborators, through: :user_maps, source: :user
 

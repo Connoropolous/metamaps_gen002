@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 class MapsController < ApplicationController
   before_action :require_user, only: [:create, :update, :destroy, :access, :events]
-  before_action :set_map, only: [:show, :update, :destroy, :access, :contains,
-                                 :events, :export]
+  before_action :set_map, only: [:show, :request_access, :update, :destroy, :access, :contains,
+                                 :events, :export, :access_request, :approve_access, :deny_access, :approve_access_post,
+                                 :deny_access_post]
   after_action :verify_authorized
 
   # GET maps/:id
@@ -20,6 +21,11 @@ class MapsController < ApplicationController
       format.json { render json: @map }
       format.csv { redirect_to action: :export, format: :csv }
     end
+  end
+
+  # GET maps/:id/request_access
+  def request_access
+    @map = nil
   end
 
   # GET maps/new
@@ -80,6 +86,19 @@ class MapsController < ApplicationController
     end
   end
 
+  # POST maps/:id/access_request
+  def access_request
+    request = AccessRequest.create(user: current_user, map: @map)
+    # what about push notification to map owner?
+    MapMailer.access_request_email(request, @map).deliver_later
+
+    respond_to do |format|
+      format.json do
+        head :ok
+      end
+    end
+  end
+
   # POST maps/:id/access
   def access
     user_ids = params[:access] || []
@@ -93,7 +112,7 @@ class MapsController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { message: 'Successfully altered edit permissions' }
+        head :ok
       end
     end
   end
@@ -128,6 +147,48 @@ class MapsController < ApplicationController
     respond_to do |format|
       format.json do
         head :bad_request unless valid_event
+        head :ok
+      end
+    end
+  end
+
+  # GET maps/:id/approve_access/:request_id
+  def approve_access
+    request = AccessRequest.find_by_id(params[:request_id])
+    request.approve() if request
+    respond_to do |format|
+      format.html { redirect_to map_path(@map), notice: request ? 'Request was approved' : 'No request there to approve' }
+    end
+  end
+
+  # GET maps/:id/deny_access/:request_id
+  def deny_access
+    request = AccessRequest.find_by_id(params[:request_id])
+    request.deny() if request
+    respond_to do |format|
+      format.html { redirect_to map_path(@map), notice: request ? 'Request was turned down' : 'No request there to deny' }
+    end
+  end
+
+  # POST maps/:id/approve_access/:request_id
+  def approve_access_post
+    request = AccessRequest.find_by_id(params[:request_id])
+    request.approve() if request
+    respond_to do |format|
+      format.json do
+        head :bad_request unless request
+        head :ok
+      end
+    end
+  end
+
+  # POST maps/:id/deny_access/:request_id
+  def deny_access_post
+    request = AccessRequest.find_by_id(params[:request_id])
+    request.deny() if request
+    respond_to do |format|
+      format.json do
+        head :bad_request unless request
         head :ok
       end
     end
