@@ -29,6 +29,8 @@
     "backbone": "1.0.0",
     "commonmark": "0.26.0",
     "csv-parse": "1.1.7",
+    "getScreenMedia": "git://github.com/devvmh/getScreenMedia#patch-1",
+    "hark": "git://github.com/devvmh/hark#patch-1",
     "howler": "2.0.1",
     "json-loader": "0.5.4",
     "lodash": "4.16.1",
