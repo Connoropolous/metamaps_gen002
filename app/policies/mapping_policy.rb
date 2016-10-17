@@ -10,6 +10,8 @@ class MappingPolicy < ApplicationPolicy
       permission = 'maps.permission IN (?)'
       return scope.joins(:map).where(permission, visible) unless user
 
+      # if this is getting changed, the policy_scope for messages should also be changed
+      # as it is based entirely on the map to which it belongs
       scope.joins(:map).where(permission, visible)
            .or(scope.joins(:map).where('maps.id IN (?)', user.shared_maps.map(&:id)))
            .or(scope.joins(:map).where('maps.user_id = ?', user.id))

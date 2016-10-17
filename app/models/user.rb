@@ -66,6 +66,7 @@ class User < ApplicationRecord
   end
   
   def all_accessible_maps
+    #TODO: is there a way to keep this an ActiveRecord relation?
     maps + shared_maps
   end
 
