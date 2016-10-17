@@ -65,6 +65,10 @@ class User < ApplicationRecord
     json
   end
   
+  def all_accessible_maps
+    maps + shared_maps
+  end
+
   def recentMetacodes
     array = []
     self.topics.sort{|a,b| b.created_at <=> a.created_at }.each do |t|

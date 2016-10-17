@@ -4,11 +4,11 @@ class MessagePolicy < ApplicationPolicy
     def resolve
       visible = %w(public commons)
       permission = 'maps.permission IN (?)'
-      if user
-        scope.joins(:maps).where(permission + ' OR maps.user_id = ?', visible, user.id)
-      else
-        scope.where(permission, visible)
-      end
+      return scope.joins(:map).where(permission, visible) unless user
+
+      scope.joins(:map).where(permission, visible)
+           .or(scope.joins(:map).where('maps.id IN (?)', user.shared_maps.map(&:id)))
+           .or(scope.joins(:map).where('maps.user_id = ?', user.id))
     end
   end
 

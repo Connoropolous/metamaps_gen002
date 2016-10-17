@@ -8,11 +8,11 @@ class MappingPolicy < ApplicationPolicy
       # a private topic, since you can't see the private topic anyways
       visible = %w(public commons)
       permission = 'maps.permission IN (?)'
-      if user
-        scope.joins(:map).where(permission, visible).or(scope.joins(:map).where(user_id: user.id))
-      else
-        scope.joins(:map).where(permission, visible)
-      end
+      return scope.joins(:map).where(permission, visible) unless user
+
+      scope.joins(:map).where(permission, visible)
+           .or(scope.joins(:map).where('maps.id IN (?)', user.shared_maps.map(&:id)))
+           .or(scope.joins(:map).where('maps.user_id = ?', user.id))
     end
   end
 
