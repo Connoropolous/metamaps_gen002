@@ -1,6 +1,7 @@
-/* global Metamaps, $, SocketIoConnection, SimpleWebRTC */
+/* global Metamaps, $, SocketIoConnection */
 
 import _ from 'lodash'
+import SimpleWebRTC from 'simplewebrtc'
 
 import Active from './Active'
 import Control from './Control'
