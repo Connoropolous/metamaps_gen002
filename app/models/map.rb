@@ -66,7 +66,7 @@ class Map < ApplicationRecord
     contributors.length
   end
 
-  def start_count
+  def star_count
     stars.length
   end
 
