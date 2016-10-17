@@ -16,16 +16,18 @@ Metamaps::Application.routes.draw do
 
   resources :maps, except: [:index, :edit] do
     member do
-      get :request_access
-      get 'approve_access/:request_id', action: :approve_access, as: :approve_access
-      get 'deny_access/:request_id', action: :deny_access, as: :deny_access
       get :export
       post 'events/:event', action: :events
       get :contains
-      post :access_request, default: { format: :json }
-      post 'approve_access/:request_id', action: :approve_access_post, default: { format: :json }
-      post 'deny_access/:request_id', action: :deny_access_post, default: { format: :json }
-      post :access, default: { format: :json }
+
+      get :request_access, to: 'access#request_access'
+      get 'approve_access/:request_id', to: 'access#approve_access', as: :approve_access
+      get 'deny_access/:request_id', to: 'access#deny_access', as: :deny_access
+      post :access_request, to: 'access#access_request', default: { format: :json }
+      post 'approve_access/:request_id', to: 'access#approve_access_post', default: { format: :json }
+      post 'deny_access/:request_id', to: 'access#deny_access_post', default: { format: :json }
+      post :access, to: 'access#access', default: { format: :json }
+
       post :star, to: 'stars#create', default: { format: :json }
       post :unstar, to: 'stars#destroy', default: { format: :json }
     end

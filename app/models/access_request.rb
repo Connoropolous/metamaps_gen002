@@ -7,13 +7,12 @@ class AccessRequest < ApplicationRecord
     self.answered = true
     self.save
     UserMap.create(user: self.user, map: self.map)
-    # send an email and push notification here?
+    MapMailer.invite_to_edit_email(self.map, self.map.user, self.user).deliver_later
   end
 
   def deny
     self.approved = false
     self.answered = true
     self.save
-    # send an email and push notification here?
   end
 end

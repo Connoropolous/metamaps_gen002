@@ -1,3 +1,58 @@
+.viewOnly {
+  float: left;
+  margin-left: 16px;
+  display: none;
+  height: 32px;
+  border: 1px solid #BDBDBD;
+  border-radius: 2px;
+  background-color: #424242;
+  color: #FFF;
+  font-size: 14px;
+  line-height: 32px;
+
+  &.isViewOnly {
+    display: block;
+  }
+
+  .eyeball {
+    background: url('<%= asset_path('view-only.png') %>') no-repeat 4px 0;
+    padding-left: 40px;
+    border-right: #747474;
+    padding-right: 10px;
+    display: inline-block;
+  }
+
+  .requestNotice {
+    display: none;
+    padding: 0 8px;
+  }
+
+  .requestAccess {
+    background-color: #a354cd;
+    &:hover {
+      background-color: #9150bc;
+    }
+    cursor: pointer;
+  }
+
+  .requestPending {
+    background-color: #4fc059;
+  }
+
+  .requestNotAccepted {
+    background-color: #c04f4f;
+  }
+
+  &.sendRequest .requestAccess {
+    display: inline-block;
+  }
+  &.sentRequest .requestPending {
+    display: inline-block;
+  }
+  &.requestDenied .requestNotAccepted {
+    display: inline-block;
+  }
+}
 
 .request_access {
   position: absolute;

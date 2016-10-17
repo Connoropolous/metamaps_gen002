@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 class MapsController < ApplicationController
-  before_action :require_user, only: [:create, :update, :destroy, :access, :events]
-  before_action :set_map, only: [:show, :request_access, :update, :destroy, :access, :contains,
-                                 :events, :export, :access_request, :approve_access, :deny_access, :approve_access_post,
-                                 :deny_access_post]
+  before_action :require_user, only: [:create, :update, :destroy, :events]
+  before_action :set_map, only: [:show, :update, :destroy, :contains, :events, :export]
   after_action :verify_authorized
 
   # GET maps/:id
@@ -17,15 +15,11 @@ class MapsController < ApplicationController
         @allmappings = policy_scope(@map.mappings)
         @allmessages = @map.messages.sort_by(&:created_at)
         @allstars = @map.stars
+        @allrequests = @map.access_requests
       end
       format.json { render json: @map }
       format.csv { redirect_to action: :export, format: :csv }
     end
-  end
-
-  # GET maps/:id/request_access
-  def request_access
-    @map = nil
   end
 
   # GET maps/new
@@ -86,37 +80,6 @@ class MapsController < ApplicationController
     end
   end
 
-  # POST maps/:id/access_request
-  def access_request
-    request = AccessRequest.create(user: current_user, map: @map)
-    # what about push notification to map owner?
-    MapMailer.access_request_email(request, @map).deliver_later
-
-    respond_to do |format|
-      format.json do
-        head :ok
-      end
-    end
-  end
-
-  # POST maps/:id/access
-  def access
-    user_ids = params[:access] || []
-
-    @map.add_new_collaborators(user_ids).each do |user_id|
-      # add_new_collaborators returns array of added users,
-      # who we then send an email to
-      MapMailer.invite_to_edit_email(@map, current_user, User.find(user_id)).deliver_later
-    end
-    @map.remove_old_collaborators(user_ids)
-
-    respond_to do |format|
-      format.json do
-        head :ok
-      end
-    end
-  end
-
   # GET maps/:id/contains
   def contains
     respond_to do |format|
@@ -147,48 +110,6 @@ class MapsController < ApplicationController
     respond_to do |format|
       format.json do
         head :bad_request unless valid_event
-        head :ok
-      end
-    end
-  end
-
-  # GET maps/:id/approve_access/:request_id
-  def approve_access
-    request = AccessRequest.find_by_id(params[:request_id])
-    request.approve() if request
-    respond_to do |format|
-      format.html { redirect_to map_path(@map), notice: request ? 'Request was approved' : 'No request there to approve' }
-    end
-  end
-
-  # GET maps/:id/deny_access/:request_id
-  def deny_access
-    request = AccessRequest.find_by_id(params[:request_id])
-    request.deny() if request
-    respond_to do |format|
-      format.html { redirect_to map_path(@map), notice: request ? 'Request was turned down' : 'No request there to deny' }
-    end
-  end
-
-  # POST maps/:id/approve_access/:request_id
-  def approve_access_post
-    request = AccessRequest.find_by_id(params[:request_id])
-    request.approve() if request
-    respond_to do |format|
-      format.json do
-        head :bad_request unless request
-        head :ok
-      end
-    end
-  end
-
-  # POST maps/:id/deny_access/:request_id
-  def deny_access_post
-    request = AccessRequest.find_by_id(params[:request_id])
-    request.deny() if request
-    respond_to do |format|
-      format.json do
-        head :bad_request unless request
         head :ok
       end
     end

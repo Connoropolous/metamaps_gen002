@@ -7,12 +7,14 @@
 <% content_for :title, 'Request Access | Metamaps' %>
 <% content_for :mobile_title, 'Request Access'  %>
 
-<div class='request_access'>
-  <div class='monkey'></div>
-  <div class='explainer_text'>
-    Oops! This map is private, but you can request<br> to edit it from the map creator.
+<div id="yield">
+  <div class='request_access'>
+    <div class='monkey'></div>
+    <div class='explainer_text'>
+      Hmmm. This map is private, but you can request to edit it from the map creator.
+    </div>
+    <div class='make_request'>REQUEST ACCESS</div>
   </div>
-  <div class='make_request'>REQUEST ACCESS</div>
 </div>
 
 <script>
@@ -26,8 +28,8 @@ $(document).ready(function() {
       type: 'POST',
       contentType: 'application/json',
       statusCode: {
-        200: function () { that.text('Request Sent!'); setTimeout(function () {window.location.href = '/'}, 2000) },
-        500: function () { that.text('An error occurred') }
+        200: function () { that.text('Request Sent'); setTimeout(function () {window.location.href = '/'}, 2000) },
+        400: function () { that.text('An error occurred') }
       }
     })
   })
