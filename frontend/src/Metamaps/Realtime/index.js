@@ -12,6 +12,7 @@
  *  - Metamaps.Synapses
  *  - Metamaps.Topics
  */
+
 import _ from 'lodash'
 import SimpleWebRTC from 'simplewebrtc'
 
@@ -82,7 +83,7 @@ import {
   liveMapsReceived,
   mapWentLive,
   mapCeasedLive
-} from './receivable'    
+} from './receivable'
 
 import {
   requestLiveMaps,
@@ -96,7 +97,6 @@ import {
   inviteACall,
   joinCall,
   leaveCall,
-  requestMapperInfo,
   sendMapperInfo,
   sendCoords,
   dragTopic,
@@ -110,10 +110,6 @@ import {
   deleteSynapse,
   updateMap
 } from './sendable'
-
-var socketReference = null
-
-export const getSocket = () => socketReference
 
 const Realtime = {
   videoId: 'video-wrapper',
@@ -133,10 +129,13 @@ const Realtime = {
     self.addJuntoListeners()
 
     self.socket = new SocketIoConnection({ url: Metamaps.Erb['REALTIME_SERVER']})
-    socketReference = self.socket
+
+    setupSendables(self)
+
     self.socket.on('connect', function () {
       console.log('connected')
-      subscribeToEvents(self.socket)
+      subscribeToEvents(self, self.socket)
+
       if (!self.disconnected) {
         self.startActiveMap()
       } else self.disconnected = false
@@ -233,7 +232,7 @@ const Realtime = {
       if (Active.Map.authorizeToEdit(Active.Mapper)) {
         self.turnOn()
         self.setupSocket()
-        self.setupSendables()
+        self.setupLocalSendables()
       }
       self.room.addMessages(new Metamaps.Backbone.MessageCollection(Metamaps.Messages), true)
     }
@@ -271,11 +270,11 @@ const Realtime = {
   },
   setupSocket: function () {
     var self = Realtime
-    // subscribe to rooms on the websocket? 
+    // subscribe to rooms on the websocket?
     self.checkForCall()
-    self.newMapperNotify()
+    self.joinMap()
   },
-  setupSendables: function () {
+  setupLocalSendables: function () {
     var self = Realtime
 
     // local event listeners that trigger events
@@ -496,8 +495,11 @@ const Realtime = {
     yLimit = Math.min(yLimit, yMax - compassDiameter)
 
     return {x: xLimit,y: yLimit}
-  },
-  requestLiveMaps,
+  }
+}
+
+const setupSendables = Realtime => {
+  [requestLiveMaps,
   joinMap,
   leaveMap,
   checkForCall,
@@ -508,7 +510,6 @@ const Realtime = {
   inviteACall,
   joinCall,
   leaveCall,
-  requestMapperInfo,
   sendMapperInfo,
   sendCoords,
   dragTopic,
@@ -520,67 +521,37 @@ const Realtime = {
   updateSynapse,
   removeSynapse,
   deleteSynapse,
-  updateMap
+  updateMap].forEach(sendable => Realtime[sendable.name] = sendable(Realtime, Realtime.socket))
 }
 
-const subscribeToEvents = socket => {
-    socket.on(INVITED_TO_CALL, invitedToCall)
-    socket.on(INVITED_TO_JOIN, invitedToJoin)
-    socket.on(CALL_ACCEPTED, callAccepted)
-    socket.on(CALL_DENIED, callDenied)
-    socket.on(INVITE_DENIED, inviteDenied)
-    socket.on(CALL_IN_PROGRESS, callInProgress)
-    socket.on(CALL_STARTED, callStarted)
-    socket.on(MAPPER_JOINED_CALL, mapperJoinedCall)
-    socket.on(MAPPER_LEFT_CALL, mapperLeftCall)
-    socket.on(MAPPER_LIST_UPDATED, mapperListUpdated)
-    socket.on(PEER_COORDS_UPDATED, peerCoordsUpdated)
-    socket.on(NEW_MAPPER, newMapper)
-    socket.on(LOST_MAPPER, lostMapper)
-    socket.on(MESSAGE_CREATED, messageCreated)
-    socket.on(TOPIC_DRAGGED, topicDragged)
-    socket.on(TOPIC_CREATED, topicCreated)
-    socket.on(TOPIC_UPDATED, topicUpdated)
-    socket.on(TOPIC_REMOVED, topicRemoved)
-    socket.on(TOPIC_DELETED, topicDeleted)
-    socket.on(SYNAPSE_CREATED, synapseCreated)
-    socket.on(SYNAPSE_UPDATED, synapseUpdated)
-    socket.on(SYNAPSE_REMOVED, synapseRemoved)
-    socket.on(SYNAPSE_DELETED, synapseDeleted)
-    socket.on(MAP_UPDATED, mapUpdated)
-    socket.on(LIVE_MAPS_RECEIVED, liveMapsReceived)
-    socket.on(MAP_WENT_LIVE, mapWentLive)
-    socket.on(MAP_CEASED_LIVE, mapCeasedLive)
-}
-
-const unsub = socket => {
-    socket.off(INVITED_TO_CALL)
-    socket.off(INVITED_TO_JOIN)
-    socket.off(CALL_ACCEPTED)
-    socket.off(CALL_DENIED)
-    socket.off(INVITE_DENIED)
-    socket.off(CALL_IN_PROGRESS)
-    socket.off(CALL_STARTED)
-    socket.off(MAPPER_JOINED_CALL)
-    socket.off(MAPPER_LEFT_CALL)
-    socket.off(MAPPER_LIST_UPDATED)
-    socket.off(PEER_COORDS_UPDATED)
-    socket.off(NEW_MAPPER)
-    socket.off(LOST_MAPPER)
-    socket.off(MESSAGE_CREATED)
-    socket.off(TOPIC_DRAGGED)
-    socket.off(TOPIC_CREATED)
-    socket.off(TOPIC_UPDATED)
-    socket.off(TOPIC_REMOVED)
-    socket.off(TOPIC_DELETED)
-    socket.off(SYNAPSE_CREATED)
-    socket.off(SYNAPSE_UPDATED)
-    socket.off(SYNAPSE_REMOVED)
-    socket.off(SYNAPSE_DELETED)
-    socket.off(MAP_UPDATED)
-    socket.off(LIVE_MAPS_RECEIVED)
-    socket.off(MAP_WENT_LIVE)
-    socket.off(MAP_CEASED_LIVE)
+const subscribeToEvents = (Realtime, socket) => {
+    socket.on(INVITED_TO_CALL, invitedToCall(Realtime))
+    socket.on(INVITED_TO_JOIN, invitedToJoin(Realtime))
+    socket.on(CALL_ACCEPTED, callAccepted(Realtime))
+    socket.on(CALL_DENIED, callDenied(Realtime))
+    socket.on(INVITE_DENIED, inviteDenied(Realtime))
+    socket.on(CALL_IN_PROGRESS, callInProgress(Realtime))
+    socket.on(CALL_STARTED, callStarted(Realtime))
+    socket.on(MAPPER_JOINED_CALL, mapperJoinedCall(Realtime))
+    socket.on(MAPPER_LEFT_CALL, mapperLeftCall(Realtime))
+    socket.on(MAPPER_LIST_UPDATED, mapperListUpdated(Realtime))
+    socket.on(PEER_COORDS_UPDATED, peerCoordsUpdated(Realtime))
+    socket.on(NEW_MAPPER, newMapper(Realtime))
+    socket.on(LOST_MAPPER, lostMapper(Realtime))
+    socket.on(MESSAGE_CREATED, messageCreated(Realtime))
+    socket.on(TOPIC_DRAGGED, topicDragged(Realtime))
+    socket.on(TOPIC_CREATED, topicCreated(Realtime))
+    socket.on(TOPIC_UPDATED, topicUpdated(Realtime))
+    socket.on(TOPIC_REMOVED, topicRemoved(Realtime))
+    socket.on(TOPIC_DELETED, topicDeleted(Realtime))
+    socket.on(SYNAPSE_CREATED, synapseCreated(Realtime))
+    socket.on(SYNAPSE_UPDATED, synapseUpdated(Realtime))
+    socket.on(SYNAPSE_REMOVED, synapseRemoved(Realtime))
+    socket.on(SYNAPSE_DELETED, synapseDeleted(Realtime))
+    socket.on(MAP_UPDATED, mapUpdated(Realtime))
+    socket.on(LIVE_MAPS_RECEIVED, liveMapsReceived(Realtime))
+    socket.on(MAP_WENT_LIVE, mapWentLive(Realtime))
+    socket.on(MAP_CEASED_LIVE, mapCeasedLive(Realtime))
 }
 
 export default Realtime

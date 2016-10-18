@@ -7,10 +7,12 @@ import GlobalUI from '../GlobalUI'
 import Control from '../Control'
 import Map from '../Map'
 import Mapper from '../Mapper'
-import Realtime from './index'
-var self = Realtime
+import Topic from '../Topic'
+import Synapse from '../Synapse'
+import Util from '../Util'
+import Visualize from '../Visualize'
 
-export const synapseRemoved = data => {
+export const synapseRemoved = self => data => {
   var synapse = Metamaps.Synapses.get(data.mappableid)
   if (synapse) {
     var edge = synapse.get('edge')
@@ -30,11 +32,11 @@ export const synapseRemoved = data => {
   }
 }
 
-export const synapseDeleted = data => {
+export const synapseDeleted = self => data => {
   self.synapseRemoved(data)
 }
 
-export const synapseCreated = function (data) {
+export const synapseCreated = self => data => {
   var topic1, topic2, node1, node2, synapse, mapping, cancel, mapper
 
 
@@ -82,7 +84,7 @@ export const synapseCreated = function (data) {
   waitThenRenderSynapse()
 }
 
-export const topicRemoved = function (data) {
+export const topicRemoved = self => data => {
   var topic = Metamaps.Topics.get(data.mappableid)
   if (topic) {
     var node = topic.get('node')
@@ -93,11 +95,11 @@ export const topicRemoved = function (data) {
   }
 }
 
-export const topicDeleted = function (data) {
+export const topicDeleted = self => data => {
   self.topicRemoved(data)
 }
 
-export const topicCreated = function (data) {
+export const topicCreated = self => data => {
   var topic, mapping, mapper, cancel
 
   function waitThenRenderTopic () {
@@ -140,11 +142,11 @@ export const topicCreated = function (data) {
   waitThenRenderTopic()
 }
 
-export const messageCreated = function (data) {
+export const messageCreated = self => data => {
   self.room.addMessages(new Metamaps.Backbone.MessageCollection(data))
 }
 
-export const mapUpdated = function (data) {
+export const mapUpdated = self => data => {
   var map = Active.Map
   var isActiveMap = map && data.mapId === map.id
   if (isActiveMap) {
@@ -170,7 +172,7 @@ export const mapUpdated = function (data) {
   }
 }
 
-export const topicUpdated = function (data) {
+export const topicUpdated = self => data => {
   var topic = Metamaps.Topics.get(data.topicId)
   if (topic) {
     var node = topic.get('node')
@@ -183,7 +185,7 @@ export const topicUpdated = function (data) {
   }
 }
 
-export const synapseUpdated = function (data) {
+export const synapseUpdated = self => data => {
   var synapse = Metamaps.Synapses.get(data.synapseId)
   if (synapse) {
     // edge reset necessary because fetch causes model reset
@@ -197,7 +199,7 @@ export const synapseUpdated = function (data) {
   }
 }
 
-export const topicDragged = function (positions) {
+export const topicDragged = self => positions => {
   var topic
   var node
 
@@ -211,13 +213,13 @@ export const topicDragged = function (positions) {
   }
 }
 
-export const peerCoordsUpdated = function (data) {
+export const peerCoordsUpdated = self => data => {
   if (!self.mappersOnMap[data.userid]) return
   self.mappersOnMap[data.userid].coords = {x: data.usercoords.x,y: data.usercoords.y}
   self.positionPeerIcon(data.userid)
 }
 
-export const lostMapper = function (data) {
+export const lostMapper = self => data => {
   // data.userid
   // data.username
   delete self.mappersOnMap[data.userid]
@@ -234,7 +236,7 @@ export const lostMapper = function (data) {
   }
 }
 
-export const mapperListUpdated = function (data) {
+export const mapperListUpdated = self => data => {
   // data.userid
   // data.username
   // data.userimage
@@ -261,7 +263,7 @@ export const mapperListUpdated = function (data) {
   }
 }
 
-export const newMapper = function (data) {
+export const newMapper = self => data => {
   // data.userid
   // data.username
   // data.userimage
@@ -298,26 +300,26 @@ export const newMapper = function (data) {
   }
 }
 
-export const callAccepted = function (userid) {
+export const callAccepted = self => userid => {
   var username = self.mappersOnMap[userid].name
   GlobalUI.notifyUser('Conversation starting...')
   self.joinCall()
   self.room.chat.invitationAnswered(userid)
 }
 
-export const callDenied = function (userid) {
+export const callDenied = self => userid => {
   var username = self.mappersOnMap[userid].name
   GlobalUI.notifyUser(username + " didn't accept your invitation")
   self.room.chat.invitationAnswered(userid)
 }
 
-export const inviteDenied = function (userid) {
+export const inviteDenied = self => userid => {
   var username = self.mappersOnMap[userid].name
   GlobalUI.notifyUser(username + " didn't accept your invitation")
   self.room.chat.invitationAnswered(userid)
 }
 
-export const invitedToCall = function (inviter) {
+export const invitedToCall = self => inviter => {
   self.room.chat.sound.stop(self.soundId)
   self.soundId = self.room.chat.sound.play('sessioninvite')
 
@@ -329,7 +331,7 @@ export const invitedToCall = function (inviter) {
   GlobalUI.notifyUser(notifyText, true)
 }
 
-export const invitedToJoin = function (inviter) {
+export const invitedToJoin = self => inviter => {
   self.room.chat.sound.stop(self.soundId)
   self.soundId = self.room.chat.sound.play('sessioninvite')
 
@@ -340,7 +342,7 @@ export const invitedToJoin = function (inviter) {
   GlobalUI.notifyUser(notifyText, true)
 }
 
-export const mapperJoinedCall = function (id) {
+export const mapperJoinedCall = self => id => {
   var mapper = self.mappersOnMap[id]
 
   if (mapper) {
@@ -355,7 +357,7 @@ export const mapperJoinedCall = function (id) {
   }
 }
 
-export const mapperLeftCall = function (id) {
+export const mapperLeftCall = self => id => {
   var mapper = self.mappersOnMap[id]
   if (mapper) {
     if (self.inConversation) {
@@ -372,7 +374,7 @@ export const mapperLeftCall = function (id) {
   }
 }
 
-export const callInProgress = function () {
+export const callInProgress = self => () => {
   var notifyText = "There's a conversation happening, want to join?"
   notifyText += ' <button type="button" class="toast-button button" onclick="Metamaps.Realtime.joinCall()">Yes</button>'
   notifyText += ' <button type="button" class="toast-button button btn-no" onclick="Metamaps.GlobalUI.clearNotify()">No</button>'
@@ -380,7 +382,7 @@ export const callInProgress = function () {
   self.room.conversationInProgress()
 }
 
-export const callStarted = function () {
+export const callStarted = self => () => {
   if (self.inConversation) return
   var notifyText = "There's a conversation starting, want to join?"
   notifyText += ' <button type="button" class="toast-button button" onclick="Metamaps.Realtime.joinCall()">Yes</button>'
@@ -389,3 +391,6 @@ export const callStarted = function () {
   self.room.conversationInProgress()
 }
 
+export const liveMapsReceived = self => () => {}
+export const mapWentLive = self => () => {}
+export const mapCeasedLive = self => () => {}
