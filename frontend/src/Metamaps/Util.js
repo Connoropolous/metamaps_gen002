@@ -2,8 +2,6 @@
 
 import { Parser, HtmlRenderer } from 'commonmark'
 
-import Visualize from './Visualize'
-
 const Util = {
   // helper function to determine how many lines are needed
   // Line Splitter Function
@@ -23,6 +21,7 @@ const Util = {
     }
     return b + s
   },
+
   nowDateFormatted: function () {
     var date = new Date(Date.now())
     var month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)
@@ -31,6 +30,7 @@ const Util = {
 
     return month + '/' + day + '/' + year
   },
+
   decodeEntities: function (desc) {
     var str, temp = document.createElement('p')
     temp.innerHTML = desc // browser handles the topics
@@ -38,12 +38,15 @@ const Util = {
     temp = null // delete the element
     return str
   }, // decodeEntities
+
   getDistance: function (p1, p2) {
     return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2))
   },
-  coordsToPixels: function (coords) {
-    if (Visualize.mGraph) {
-      var canvas = Visualize.mGraph.canvas,
+
+  // Try using Visualize.mGraph
+  coordsToPixels: function (mGraph, coords) {
+    if (mGraph) {
+      var canvas = mGraph.canvas,
         s = canvas.getSize(),
         p = canvas.getPos(),
         ox = canvas.translateOffsetX,
@@ -62,10 +65,12 @@ const Util = {
       }
     }
   },
-  pixelsToCoords: function (pixels) {
+
+  // Try using Visualize.mGraph
+  pixelsToCoords: function (mGraph, pixels) {
     var coords
-    if (Visualize.mGraph) {
-      var canvas = Visualize.mGraph.canvas,
+    if (mGraph) {
+      var canvas = mGraph.canvas,
         s = canvas.getSize(),
         p = canvas.getPos(),
         ox = canvas.translateOffsetX,
