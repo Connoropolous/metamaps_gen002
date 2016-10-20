@@ -22,11 +22,10 @@ const Util = {
     return b + s
   },
 
-  nowDateFormatted: function () {
-    var date = new Date(Date.now())
-    var month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)
-    var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
-    var year = date.getFullYear()
+  nowDateFormatted: function (date = new Date(Date.now())) {
+    const month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)
+    const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+    const year = date.getFullYear()
 
     return month + '/' + day + '/' + year
   },
