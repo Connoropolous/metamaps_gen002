@@ -1,3 +1,5 @@
+/* global $ */
+
 import ExploreMaps from './ExploreMaps'
 import ChatView from './ChatView'
 import VideoView from './VideoView'

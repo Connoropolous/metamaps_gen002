@@ -1,5 +1,4 @@
-
-import {
+const {
   // server sendable, client receivable
   TOPIC_UPDATED,
   TOPIC_DELETED,
@@ -18,11 +17,9 @@ import {
   UPDATE_SYNAPSE,
   DELETE_SYNAPSE,
   UPDATE_MAP
-} from '../frontend/src/Metamaps/Realtime/events'
-
+} = require('../frontend/src/Metamaps/Realtime/events')
 
 module.exports = function (io, store) {
-
   store.subscribe(() => {
     console.log(store.getState())
     io.sockets.emit(JUNTO_UPDATED, store.getState())
@@ -32,7 +29,7 @@ module.exports = function (io, store) {
 
     io.sockets.emit(JUNTO_UPDATED, store.getState())
 
-    socket.on(JOIN_MAP, data => store.dispatch({ type: JOIN_MAP, payload: data}))
+    socket.on(JOIN_MAP, data => store.dispatch({ type: JOIN_MAP, payload: data }))
     socket.on(LEAVE_MAP, () => store.dispatch({ type: LEAVE_MAP, payload: socket }))
     socket.on(JOIN_CALL, data => store.dispatch({ type: JOIN_CALL, payload: data }))
     socket.on(LEAVE_CALL, () => store.dispatch({ type: LEAVE_CALL, payload: socket }))

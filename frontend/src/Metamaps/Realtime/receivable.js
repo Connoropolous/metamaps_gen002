@@ -1,4 +1,5 @@
-/* globals $ */
+/* global $ */
+
 /*
 everthing in this file happens as a result of websocket events
 */
@@ -17,7 +18,7 @@ import Visualize from '../Visualize'
 
 export const juntoUpdated = self => state => {
   self.juntoState = state
-  $(document).trigger(JUNTO_UPDATED) 
+  $(document).trigger(JUNTO_UPDATED)
 }
 
 export const synapseRemoved = self => data => {

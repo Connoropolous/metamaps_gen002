@@ -1,18 +1,17 @@
-
-import { omit, omitBy, isNil, mapValues } from 'lodash'
-import {
+const { omit, omitBy, isNil, mapValues } = require('lodash')
+const {
   JOIN_MAP,
   LEAVE_MAP,
   JOIN_CALL,
   LEAVE_CALL
-} from '../frontend/src/Metamaps/Realtime/events'
+} = require('../frontend/src/Metamaps/Realtime/events')
 
 const NOT_IN_CONVERSATION = 0
 const IN_CONVERSATION = 1
 
 const addMapperToMap = (map, userId) => { return { ...map, [userId]: NOT_IN_CONVERSATION }}
 
-export const reducer = (state = { connectedPeople: {}, liveMaps: {} }, action) => {
+module.exports = { reducer: (state = { connectedPeople: {}, liveMaps: {} }, action) => {
   const { type, payload } = action
   const { connectedPeople, liveMaps } = state
   const map = payload && liveMaps[payload.mapid]
@@ -85,4 +84,4 @@ export const reducer = (state = { connectedPeople: {}, liveMaps: {} }, action) =
   default:
     return state
   }
-}
+} }

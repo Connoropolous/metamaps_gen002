@@ -1,4 +1,4 @@
-import {
+const {
   INVITED_TO_CALL,
   INVITED_TO_JOIN,
   CALL_ACCEPTED,
@@ -17,7 +17,7 @@ import {
   INVITE_A_CALL,
   JOIN_CALL,
   LEAVE_CALL
-} from '../frontend/src/Metamaps/Realtime/events'
+} = require('../frontend/src/Metamaps/Realtime/events')
 
 const { mapRoom, userMapRoom } = require('./rooms')
 
@@ -65,4 +65,3 @@ module.exports = function (io, store) {
     })
   })
 }   
-

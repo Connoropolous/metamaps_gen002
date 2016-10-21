@@ -1,5 +1,4 @@
-
-import {
+const {
   MAPPER_LIST_UPDATED,
   NEW_MAPPER,
   LOST_MAPPER,
@@ -21,7 +20,7 @@ import {
   REMOVE_TOPIC,
   CREATE_SYNAPSE,
   REMOVE_SYNAPSE
-} from '../frontend/src/Metamaps/Realtime/events'
+} = require('../frontend/src/Metamaps/Realtime/events')
 
 const { mapRoom, userMapRoom } = require('./rooms')
 
