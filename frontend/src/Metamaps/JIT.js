@@ -21,6 +21,7 @@ import Topic from './Topic'
 import TopicCard from './TopicCard'
 import Util from './Util'
 import Visualize from './Visualize'
+import clipboard from 'clipboard-js'
 
 /*
  * Metamaps.Erb
@@ -406,14 +407,13 @@ const JIT = {
                 Mouse.boxStartCoordinates = null
                 Mouse.boxEndCoordinates = null
               }
-            // console.log('called zoom to box')
             }
 
             if (e.shiftKey) {
               Visualize.mGraph.busy = false
               Mouse.boxEndCoordinates = eventInfo.getPos()
               JIT.selectWithBox(e)
-              // console.log('called select with box')
+              
               return
             }
           }
@@ -423,13 +423,10 @@ const JIT = {
           // clicking on a edge, node, or clicking on blank part of canvas?
           if (node.nodeFrom) {
             JIT.selectEdgeOnClickHandler(node, e)
-          // console.log('called selectEdgeOnClickHandler')
           } else if (node && !node.nodeFrom) {
             JIT.selectNodeOnClickHandler(node, e)
-          // console.log('called selectNodeOnClickHandler')
           } else {
             JIT.canvasClickHandler(eventInfo.getPos(), e)
-          // console.log('called canvasClickHandler')
           } // if
         },
         // Add also a click handler to nodes
@@ -1224,6 +1221,9 @@ const JIT = {
     if (Visualize.mGraph.busy) return
 
     const self = JIT
+        
+    //Copy topic title to clipboard
+    if(e.button===1 && e.ctrlKey) clipboard.copy(node.name);
 
     // catch right click on mac, which is often like ctrl+click
     if (navigator.platform.indexOf('Mac') !== -1 && e.ctrlKey) {
@@ -1245,25 +1245,45 @@ const JIT = {
       // wait a certain length of time, then check again, then run this code
       setTimeout(function () {
         if (!JIT.nodeWasDoubleClicked()) {
-          const nodeAlreadySelected = node.selected
-
-          if (!e.shiftKey) {
-            Control.deselectAllNodes()
-            Control.deselectAllEdges()
-          }
-
-          if (nodeAlreadySelected) {
-            Control.deselectNode(node)
+          var nodeAlreadySelected = node.selected
+          
+          if( !(e.button===1) ){
+            if (!e.shiftKey) {
+              Control.deselectAllNodes()
+              Control.deselectAllEdges()
+            }
+  
+            if (nodeAlreadySelected) {
+              Control.deselectNode(node)
+            } else {
+              Control.selectNode(node, e)
+            }
+            
+            // trigger animation to final styles
+            Visualize.mGraph.fx.animate({
+              modes: ['edge-property:lineWidth:color:alpha'],
+              duration: 500
+            })
+            Visualize.mGraph.plot()
+            
           } else {
-            Control.selectNode(node, e)
+            if(!e.ctrlKey){
+              var len = Selected.Nodes.length;
+              
+              for (let i = 0; i < len; i += 1) {
+                let n = Selected.Nodes[i];
+                let result = Metamaps.Util.openLink(Metamaps.Topics.get(n.id).attributes.link);
+                
+                if (!result) { //if link failed to open
+                    break;
+                }
+              }
+              console.log(Metamaps.Topics.get(node.id).attributes);
+              if(!node.selected){
+                Metamaps.Util.openLink(Metamaps.Topics.get(node.id).attributes.link);
+              }
+            }
           }
-
-          // trigger animation to final styles
-          Visualize.mGraph.fx.animate({
-            modes: ['edge-property:lineWidth:color:alpha'],
-            duration: 500
-          })
-          Visualize.mGraph.plot()
         }
       }, Mouse.DOUBLE_CLICK_TOLERANCE)
     }
@@ -1489,6 +1509,9 @@ const JIT = {
     if (Visualize.mGraph.busy) return
 
     const self = JIT
+    var synapseText = adj.data.$synapses[0].attributes.desc;
+    //Copy synapse label to clipboard
+    if(e.button===1 && e.ctrlKey && synapseText != "") clipboard.copy(synapseText);
 
     // catch right click on mac, which is often like ctrl+click
     if (navigator.platform.indexOf('Mac') !== -1 && e.ctrlKey) {

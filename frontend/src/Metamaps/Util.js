@@ -122,6 +122,18 @@ const Util = {
   checkURLisYoutubeVideo: function (url) {
     return (url.match(/^https?:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?$/) != null)
   },
+  openLink: function(url){
+    var win = (url != "") ? window.open(url, '_blank') : false;
+    
+    if (win) {
+        //Browser has allowed it to be opened
+        return true;
+    } else {
+        //Browser has blocked it
+        alert('Please allow popups in order to open the link');
+        return false;
+    }
+  },
   mdToHTML: text => {
     // use safe: true to filter xss
     return new HtmlRenderer({ safe: true })
