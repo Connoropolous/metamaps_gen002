@@ -1278,7 +1278,7 @@ const JIT = {
                     break;
                 }
               }
-              console.log(Metamaps.Topics.get(node.id).attributes);
+              
               if(!node.selected){
                 Metamaps.Util.openLink(Metamaps.Topics.get(node.id).attributes.link);
               }
