@@ -33,7 +33,7 @@ class Maps extends Component {
   }
 
   resize = () => {
-    const { maps, juntoState, user, currentUser } = this.props
+    const { maps, user, currentUser } = this.props
     const numCards = maps.length + (user || currentUser ? 1 : 0)
     const mapSpaces = Math.floor(document.body.clientWidth / MAP_WIDTH)
     const mapsWidth = Math.min(MAX_COLUMNS, Math.min(numCards, mapSpaces)) * MAP_WIDTH
@@ -41,7 +41,7 @@ class Maps extends Component {
   }
 
   render = () => {
-    const { maps, currentUser, section, user, moreToLoad, loadMore } = this.props
+    const { maps, currentUser, juntoState, section, user, moreToLoad, loadMore } = this.props
     const style = { width: this.state.mapsWidth + 'px' }
 
     return (
@@ -50,7 +50,7 @@ class Maps extends Component {
           <div style={ style }>
             { user ? <MapperCard user={ user } /> : null }
             { currentUser && !user ? <div className="map newMap"><a href="/maps/new"><div className="newMapImage"></div><span>Create new map...</span></a></div> : null }
-            { maps.models.map(map => <MapCard key={ map.id } map={ map } currentUser={ currentUser } />) }
+            { maps.models.map(map => <MapCard key={ map.id } map={ map } juntoState={ juntoState } currentUser={ currentUser } />) }
             <div className='clearfloat'></div>
             {!moreToLoad ? null : [
               <button className="button loadMore" onClick={ loadMore }>load more</button>,

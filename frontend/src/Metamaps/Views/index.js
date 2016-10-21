@@ -6,7 +6,7 @@ import { JUNTO_UPDATED } from '../Realtime/events'
 
 const Views = { 
   init: () => {
-    $(document).on(JUNTO_UPDATED, ExploreMaps.render()) 
+    $(document).on(JUNTO_UPDATED, () => ExploreMaps.render()) 
   },
   ExploreMaps,
   ChatView,

@@ -22,12 +22,15 @@ import {
 
 
 module.exports = function (io, store) {
+
+  store.subscribe(() => {
+    console.log(store.getState())
+    io.sockets.emit(JUNTO_UPDATED, store.getState())
+  })
+
   io.on('connection', function (socket) {
 
-    store.subscribe(() => {
-      console.log(store.getState())
-      io.sockets.emit(JUNTO_UPDATED, store.getState())
-    })
+    io.sockets.emit(JUNTO_UPDATED, store.getState())
 
     socket.on(JOIN_MAP, data => store.dispatch({ type: JOIN_MAP, payload: data}))
     socket.on(LEAVE_MAP, () => store.dispatch({ type: LEAVE_MAP, payload: socket }))
