@@ -499,7 +499,7 @@ const sendables = [
   ['leaveMap',leaveMap],
   ['checkForCall',checkForCall],
   ['acceptCall',acceptCall],
-  ['denyAll',denyCall],
+  ['denyCall',denyCall],
   ['denyInvite',denyInvite],
   ['inviteToJoin',inviteToJoin],
   ['inviteACall',inviteACall],

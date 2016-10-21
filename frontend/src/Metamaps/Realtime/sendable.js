@@ -50,7 +50,7 @@ export const sendMapperInfo = self => userid => {
   var update = {
     userToNotify: userid,
     username: Active.Mapper.get('name'),
-    userimage: Active.Mapper.get('image'),
+    avatar: Active.Mapper.get('image'),
     userid: Active.Mapper.id,
     userinconversation: self.inConversation,
     mapid: Active.Map.id

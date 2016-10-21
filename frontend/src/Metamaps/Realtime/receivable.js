@@ -247,13 +247,13 @@ export const lostMapper = self => data => {
 export const mapperListUpdated = self => data => {
   // data.userid
   // data.username
-  // data.userimage
+  // data.avatar
 
   self.mappersOnMap[data.userid] = {
     id: data.userid,
     name: data.username,
     username: data.username,
-    image: data.userimage,
+    image: data.avatar,
     color: Util.getPastelColor(),
     inConversation: data.userinconversation,
     coords: {
@@ -267,14 +267,14 @@ export const mapperListUpdated = self => data => {
     if (data.userinconversation) self.room.chat.mapperJoinedCall(data.userid)
 
     // create a div for the collaborators compass
-    self.createCompass(data.username, data.userid, data.userimage, self.mappersOnMap[data.userid].color)
+    self.createCompass(data.username, data.userid, data.avatar, self.mappersOnMap[data.userid].color)
   }
 }
 
 export const newMapper = self => data => {
   // data.userid
   // data.username
-  // data.userimage
+  // data.avatar
   // data.coords
   var firstOtherPerson = Object.keys(self.mappersOnMap).length === 0
 
@@ -282,13 +282,12 @@ export const newMapper = self => data => {
     id: data.userid,
     name: data.username,
     username: data.username,
-    image: data.userimage,
+    image: data.avatar,
     color: Util.getPastelColor(),
-    realtime: true,
     coords: {
       x: 0,
       y: 0
-    },
+    }
   }
 
   // create an item for them in the realtime box
@@ -297,7 +296,7 @@ export const newMapper = self => data => {
     self.room.chat.addParticipant(self.mappersOnMap[data.userid])
 
     // create a div for the collaborators compass
-    self.createCompass(data.username, data.userid, data.userimage, self.mappersOnMap[data.userid].color)
+    self.createCompass(data.username, data.userid, data.avatar, self.mappersOnMap[data.userid].color)
 
     var notifyMessage = data.username + ' just joined the map'
     if (firstOtherPerson) {
@@ -332,7 +331,7 @@ export const invitedToCall = self => inviter => {
   self.soundId = self.room.chat.sound.play('sessioninvite')
 
   var username = self.mappersOnMap[inviter].name
-  var notifyText = '<img src="' + Metamaps.Erb['junto_spinner_darkgrey.gif'] + '" style="display: inline-block; margin-top: -12px; vertical-align: top;" />'
+  var notifyText = '<img src="' + Metamaps.Erb['junto_spinner_darkgrey.gif'] + '" style="display: inline-block; margin-top: -12px; margin-bottom: -6px; vertical-align: top;" />'
   notifyText += username + ' is inviting you to a conversation. Join live?'
   notifyText += ' <button type="button" class="toast-button button" onclick="Metamaps.Realtime.acceptCall(' + inviter + ')">Yes</button>'
   notifyText += ' <button type="button" class="toast-button button btn-no" onclick="Metamaps.Realtime.denyCall(' + inviter + ')">No</button>'

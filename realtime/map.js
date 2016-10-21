@@ -63,7 +63,7 @@ module.exports = function (io, store) {
         userid: data.userid,
         username: data.username,
         userinconversation: data.userinconversation,
-        userimage: data.userimage
+        avatar: data.avatar
       }
       socket.broadcast.in(userMapRoom(data.userToNotify, data.mapid)).emit(MAPPER_LIST_UPDATED, existingUser)
     })
