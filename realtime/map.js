@@ -13,8 +13,8 @@ import {
 
   JOIN_MAP,
   LEAVE_MAP,
-  SEND_MAPPER_INFO,
   SEND_COORDS,
+  SEND_MAPPER_INFO,
   CREATE_MESSAGE,
   DRAG_TOPIC,
   CREATE_TOPIC,
@@ -25,7 +25,7 @@ import {
 
 const { mapRoom, userMapRoom } = require('./rooms')
 
-module.exports = function (io, state) {
+module.exports = function (io, store) {
   io.on('connection', function (socket) {
 
     // this will ping everyone on a map that there's a person just joined the map
@@ -33,11 +33,11 @@ module.exports = function (io, state) {
       socket.mapid = data.mapid
       socket.userid = data.userid
       socket.username = data.username
-      socket.userimage = data.userimage
+      socket.avatar = data.avatar
       var newUser = {
         userid: data.userid,
         username: data.username,
-        userimage: data.userimage
+        avatar: data.avatar
       }
       socket.join(mapRoom(data.mapid))
       socket.join(userMapRoom(data.userid, data.mapid))

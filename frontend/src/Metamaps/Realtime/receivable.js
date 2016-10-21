@@ -1,6 +1,9 @@
+/* globals $ */
 /*
 everthing in this file happens as a result of websocket events
 */
+
+import { JUNTO_UPDATED } from './events'
 
 import Active from '../Active'
 import GlobalUI from '../GlobalUI'
@@ -11,6 +14,11 @@ import Topic from '../Topic'
 import Synapse from '../Synapse'
 import Util from '../Util'
 import Visualize from '../Visualize'
+
+export const juntoUpdated = self => state => {
+  self.juntoState = state
+  $(document).trigger(JUNTO_UPDATED) 
+}
 
 export const synapseRemoved = self => data => {
   var synapse = Metamaps.Synapses.get(data.mappableid)
@@ -391,6 +399,3 @@ export const callStarted = self => () => {
   self.room.conversationInProgress()
 }
 
-export const liveMapsReceived = self => () => {}
-export const mapWentLive = self => () => {}
-export const mapCeasedLive = self => () => {}

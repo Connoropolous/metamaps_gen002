@@ -3,7 +3,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom' // TODO ensure this isn't a double import
 
+import { JUNTO_UPDATED } from '../Realtime/events'
 import Active from '../Active'
+import Realtime from '../Realtime'
 import Maps from '../../components/Maps'
 
 /*
@@ -27,6 +29,8 @@ const ExploreMaps = {
   render: function (mapperObj, cb) {
     var self = ExploreMaps
 
+    if (!self.collection) return
+
     if (typeof mapperObj === 'function') {
       cb = mapperObj
       mapperObj = null
@@ -36,6 +40,7 @@ const ExploreMaps = {
       currentUser: Active.Mapper,
       section: self.collection.id,
       maps: self.collection,
+      juntoState: Realtime.juntoState, 
       moreToLoad: self.collection.page != 'loadedAll',
       user: mapperObj,
       loadMore: self.loadMore

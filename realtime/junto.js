@@ -21,7 +21,7 @@ import {
 
 const { mapRoom, userMapRoom } = require('./rooms')
 
-module.exports = function (io, state) {
+module.exports = function (io, store) {
   io.on('connection', function (socket) {
 
     socket.on(CHECK_FOR_CALL, function (data) {
@@ -39,6 +39,8 @@ module.exports = function (io, state) {
 
     socket.on(ACCEPT_CALL, function (data) {
       socket.broadcast.in(userMapRoom(data.inviter, data.mapid)).emit(CALL_ACCEPTED, data.invited)
+      // convert this so that it broadcasts to all sockets and includes the map id
+      // and who's participating
       socket.broadcast.in(mapRoom(data.mapid)).emit(CALL_STARTED)
     })
 
@@ -51,10 +53,14 @@ module.exports = function (io, state) {
     })
 
     socket.on(JOIN_CALL, function (data) {
+      // convert this so that it broadcasts to all sockets and includes the map id
+      // and info about who joined
       socket.broadcast.in(mapRoom(data.mapid)).emit(MAPPER_JOINED_CALL, data.id)
     })
 
     socket.on(LEAVE_CALL, function (data) {
+      // convert this so that it broadcasts to all sockets and includes the map id
+      // and info about who joined
       socket.broadcast.in(mapRoom(data.mapid)).emit(MAPPER_LEFT_CALL, data.id)
     })
   })

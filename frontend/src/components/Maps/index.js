@@ -33,7 +33,7 @@ class Maps extends Component {
   }
 
   resize = () => {
-    const { maps, user, currentUser } = this.props
+    const { maps, juntoState, user, currentUser } = this.props
     const numCards = maps.length + (user || currentUser ? 1 : 0)
     const mapSpaces = Math.floor(document.body.clientWidth / MAP_WIDTH)
     const mapsWidth = Math.min(MAX_COLUMNS, Math.min(numCards, mapSpaces)) * MAP_WIDTH
@@ -70,6 +70,7 @@ class Maps extends Component {
 Maps.propTypes = {
   section: PropTypes.string.isRequired,
   maps: PropTypes.object.isRequired,
+  juntoState: PropTypes.object.isRequired,
   moreToLoad: PropTypes.bool.isRequired,
   user: PropTypes.object,
   currentUser: PropTypes.object,
