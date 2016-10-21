@@ -11,7 +11,7 @@ const IN_CONVERSATION = 1
 
 const addMapperToMap = (map, userId) => { return { ...map, [userId]: NOT_IN_CONVERSATION }}
 
-module.exports = { reducer: (state = { connectedPeople: {}, liveMaps: {} }, action) => {
+const reducer = (state = { connectedPeople: {}, liveMaps: {} }, action) => {
   const { type, payload } = action
   const { connectedPeople, liveMaps } = state
   const map = payload && liveMaps[payload.mapid]
@@ -20,68 +20,56 @@ module.exports = { reducer: (state = { connectedPeople: {}, liveMaps: {} }, acti
 
   switch (type) {
   case JOIN_MAP:
-    return {
-      connectedPeople: {
-        ...connectedPeople,
+    return Object.assign({}, state, {
+      connectedPeople: Object.assign({}, connectedPeople, {
         [payload.userid]: {
           id: payload.userid,
           username: payload.username,
           avatar: payload.avatar
         }
-      },
-      liveMaps: {
-        ...liveMaps,
+      }),
+      liveMaps: Object.assign({}, liveMaps, {
         [payload.mapid]: addMapperToMap(map || {}, payload.userid) 
-      } 
-    }
+      })
+    })
   case LEAVE_MAP:
+    // if the map will empty, remove it from liveMaps, if the map will not empty, just remove the mapper
+    const newLiveMaps = mapWillEmpty
+      ? omit(liveMaps, payload.mapid)
+      : Object.assign({}, liveMaps, { [payload.mapid]: omit(map, payload.userid) })
+
     return {
       connectedPeople: omit(connectedPeople, payload.userid),
-      // if the map will empty, remove it from liveMaps, if the map will not empty, just remove the mapper
-      liveMaps: omitBy(mapWillEmpty ? omit(liveMaps, payload.mapid) : { ...liveMaps, [payload.mapid]: omit(liveMaps[payload.mapid], payload.userid) }, isNil)
+      liveMaps: omitBy(newLiveMaps, isNil)
     }
   case JOIN_CALL:
-    return {
-      // connectedPeople stays the same
-      connectedPeople,
-      liveMaps: {
-        // liveMaps stays the same, except for
-        ...liveMaps,
-        // the map in question
-        [payload.mapid]: { 
-          // which stays the same, except for
-          ...map,
-          // the user in question, which is now marked as being in a conversation
+    // update the user (payload.id is user id) in the given map to be marked in the conversation
+    return Object.assign({}, state, {
+      liveMaps: Object.assign({}, liveMaps, {
+        [payload.mapid]: Object.assign({}, map, { 
           [payload.id]: IN_CONVERSATION
-        } 
-      }
-    }
+        })
+      })
+    })
   case LEAVE_CALL:
-    return {
-      // connectedPeople stays the same
-      connectedPeople,
-      liveMaps: {
-        // liveMaps stays the same, except for
-        ...liveMaps,
-        // the map in question
-        [payload.mapid]: callWillFinish ? mapValues(map, () => NOT_IN_CONVERSATION) : {
-          // which stays the same, except for
-          ...map,
-          // the user in question, which is now marked as being NOT in conversation
-          [payload.userid]: NOT_IN_CONVERSATION
-        } 
-      }
-    }
+    const newMap = callWillFinish
+      ? mapValues(map, () => NOT_IN_CONVERSATION)
+      : Object.assign({}, map, { [payload.userid]: NOT_IN_CONVERSATION })
+
+    return Object.assign({}, state, {
+      liveMaps: Object.assign({}, liveMaps, { map: newMap })
+    })
   case 'DISCONNECT':
     const mapWithoutUser = omit(map, payload.userid) 
     const newMap = callWillFinish ? mapValues(mapWithoutUser, () => NOT_IN_CONVERSATION) : mapWithoutUser 
+    const newLiveMaps = mapWillEmpty ? omit(liveMaps, payload.mapid) : Object.assign({}, liveMaps, { [payload.mapid]: newMap })
     return {
       connectedPeople: omit(connectedPeople, payload.userid),
-      // if the map will empty, remove it from liveMaps, if the map will not empty, just remove the mapper
-      liveMaps: omitBy(mapWillEmpty ? omit(liveMaps, payload.mapid) : 
-        { ...liveMaps, [payload.mapid]: newMap  }, isNil)
+      liveMaps: omitBy(newLiveMaps, isNil)
     }
   default:
     return state
   }
-} }
+}
+
+module.exports = reducer
