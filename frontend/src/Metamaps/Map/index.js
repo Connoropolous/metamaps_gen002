@@ -46,7 +46,7 @@ const Map = {
     })
     
     $('#wrapper').mousedown(function (e){
-      if(e.button==1)return false;
+      if(e.button === 1)return false;
     });
 
     $('.starMap').click(function () {
