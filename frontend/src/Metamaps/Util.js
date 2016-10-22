@@ -123,7 +123,7 @@ const Util = {
     return (url.match(/^https?:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?$/) != null)
   },
   openLink: function(url){
-    var win = (url != "") ? window.open(url, '_blank') : "empty";
+    var win = (url !== "") ? window.open(url, '_blank') : "empty";
     
     if (win) {
         //Browser has allowed it to be opened
