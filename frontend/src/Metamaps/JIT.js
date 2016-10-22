@@ -909,7 +909,7 @@ const JIT = {
     let pixelPos
     let mapping
 
-    if (JIT.tempInit && JIT.tempNode2 == null) {
+    if (JIT.tempInit && JIT.tempNode2 === null) {
       // this means you want to add a new topic, and then a synapse
       Create.newTopic.addSynapse = true
       Create.newTopic.open()
