@@ -913,7 +913,7 @@ const JIT = {
       // this means you want to add a new topic, and then a synapse
       Create.newTopic.addSynapse = true
       Create.newTopic.open()
-    } else if (JIT.tempInit && JIT.tempNode2 != null) {
+    } else if (JIT.tempInit && JIT.tempNode2 !== null) {
       // this means you want to create a synapse between two existing topics
       Create.newTopic.addSynapse = false
       Create.newSynapse.topic1id = JIT.tempNode.getData('topic').id
@@ -1247,7 +1247,7 @@ const JIT = {
         if (!JIT.nodeWasDoubleClicked()) {
           var nodeAlreadySelected = node.selected
           
-          if( !(e.button===1) ){
+          if(e.button!==1){
             if (!e.shiftKey) {
               Control.deselectAllNodes()
               Control.deselectAllEdges()
@@ -1511,7 +1511,7 @@ const JIT = {
     const self = JIT
     var synapseText = adj.data.$synapses[0].attributes.desc;
     //Copy synapse label to clipboard
-    if(e.button===1 && e.ctrlKey && synapseText != "") clipboard.copy(synapseText);
+    if(e.button===1 && e.ctrlKey && synapseText !== "") clipboard.copy(synapseText);
 
     // catch right click on mac, which is often like ctrl+click
     if (navigator.platform.indexOf('Mac') !== -1 && e.ctrlKey) {
