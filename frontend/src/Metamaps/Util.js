@@ -116,14 +116,6 @@ const Util = {
 
     return rgb
   },
-  checkURLisImage: function (url) {
-    // when the page reloads the following regular expression will be screwed up
-    // please replace it with this one before you save: /*backslashhere*.(jpeg|jpg|gif|png)$/
-    return (url.match(/\.(jpeg|jpg|gif|png)$/) != null)
-  },
-  checkURLisYoutubeVideo: function (url) {
-    return (url.match(/^https?:\/\/(?:www\.)?youtube.com\/watch\?(?=[^?]*v=\w+)(?:[^\s?]+)?$/) != null)
-  },
   openLink: function(url){
     var win = (url !== "") ? window.open(url, '_blank') : "empty";
     
