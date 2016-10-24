@@ -88,10 +88,13 @@ const Util = {
     }
     return coords
   },
-  getPastelColor: function () {
-    var r = (Math.round(Math.random() * 127) + 127).toString(16)
-    var g = (Math.round(Math.random() * 127) + 127).toString(16)
-    var b = (Math.round(Math.random() * 127) + 127).toString(16)
+  getPastelColor: function ({ rseed, gseed, bseed }) {
+    if (rseed === undefined) rseed = Math.random()
+    if (gseed === undefined) gseed = Math.random()
+    if (bseed === undefined) bseed = Math.random()
+    var r = (Math.round(rseed * 127) + 127).toString(16)
+    var g = (Math.round(gseed * 127) + 127).toString(16)
+    var b = (Math.round(bseed * 127) + 127).toString(16)
     return Util.colorLuminance('#' + r + g + b, -0.4)
   },
   // darkens a hex value by 'lum' percentage
@@ -112,13 +115,6 @@ const Util = {
     }
 
     return rgb
-  },
-  generateOptionsList: function (data) {
-    var newlist = ''
-    for (var i = 0; i < data.length; i++) {
-      newlist = newlist + '<option value="' + data[i]['id'] + '">' + data[i]['1'][1] + '</option>'
-    }
-    return newlist
   },
   checkURLisImage: function (url) {
     // when the page reloads the following regular expression will be screwed up
