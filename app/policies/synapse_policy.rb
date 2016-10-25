@@ -60,5 +60,4 @@ class SynapsePolicy < ApplicationPolicy
       record.permission == 'commons' || record.permission == 'public' || record.user == user
     end
   end
-
 end
