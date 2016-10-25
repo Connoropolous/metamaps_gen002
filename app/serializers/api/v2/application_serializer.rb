@@ -32,10 +32,10 @@ module Api
           if attr.to_s.pluralize == attr.to_s
             attribute("#{attr.to_s.singularize}_ids".to_sym,
                       opts.merge(unless: -> { embeds.include?(key) })) do
-              Pundit.policy_scope(scope[:current_user], object.send(:topics)).map(&:id)
+              Pundit.policy_scope(scope[:current_user], object.send(attr)).map(&:id)
             end
             has_many(attr, opts.merge(if: -> { embeds.include?(key) })) do
-              Pundit.policy_scope(scope[:current_user], object.send(:topics))
+              Pundit.policy_scope(scope[:current_user], object.send(attr))
             end
           else
             id_opts = opts.merge(key: "#{key}_id")
