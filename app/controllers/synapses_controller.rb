@@ -23,6 +23,9 @@ class SynapsesController < ApplicationController
     @synapse.desc = '' if @synapse.desc.nil?
     @synapse.desc.strip! # no trailing/leading whitespace
 
+    # we want invalid params to return :unprocessable_entity
+    # so we have to authorize AFTER saving. But if authorize
+    # fails, we need to rollback the SQL transaction
     success = nil
     ActiveRecord::Base.transaction do
       success = @synapse.save
