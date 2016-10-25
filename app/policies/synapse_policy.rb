@@ -16,16 +16,11 @@ class SynapsePolicy < ApplicationPolicy
   end
 
   def create?
-    user.present?
-    # TODO: add validation against whether you can see both topics
+    topic1_show? && topic2_show? && user.present?
   end
 
   def show?
-    if record.defer_to_map.present?
-      map_policy.show?
-    else
-      record.permission == 'commons' || record.permission == 'public' || record.user == user
-    end
+    topic1_show? && topic2_show? && synapse_show?
   end
 
   def update?
@@ -43,7 +38,27 @@ class SynapsePolicy < ApplicationPolicy
   end
 
   # Helpers
+
   def map_policy
     @map_policy ||= Pundit.policy(user, record.defer_to_map)
   end
+
+  def topic1_show?
+    @topic1_policy ||= Pundit.policy(user, record.topic1)
+    @topic1_policy.show?
+  end
+
+  def topic2_show?
+    @topic2_policy ||= Pundit.policy(user, record.topic2)
+    @topic2_policy.show?
+  end
+
+  def synapse_show?
+    if record.defer_to_map.present?
+      map_policy.show?
+    else
+      record.permission == 'commons' || record.permission == 'public' || record.user == user
+    end
+  end
+
 end
