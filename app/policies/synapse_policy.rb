@@ -45,17 +45,17 @@ class SynapsePolicy < ApplicationPolicy
 
   def topic1_show?
     @topic1_policy ||= Pundit.policy(user, record.topic1)
-    @topic1_policy.show?
+    @topic1_policy&.show?
   end
 
   def topic2_show?
     @topic2_policy ||= Pundit.policy(user, record.topic2)
-    @topic2_policy.show?
+    @topic2_policy&.show?
   end
 
   def synapse_show?
     if record.defer_to_map.present?
-      map_policy.show?
+      map_policy&.show?
     else
       record.permission == 'commons' || record.permission == 'public' || record.user == user
     end
