@@ -87,7 +87,7 @@ class Map < ApplicationRecord
   end
 
   def starred_by_user?(user)
-    user&.stars&.where(map: self)&.exists?
+    user&.stars&.where(map: self)&.exists? || false # return false, not nil
   end
 
   def as_json(_options = {})

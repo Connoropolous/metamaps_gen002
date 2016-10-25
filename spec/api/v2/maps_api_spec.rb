@@ -22,6 +22,16 @@ RSpec.describe 'maps API', type: :request do
     expect(response).to match_json_schema(:map)
     expect(JSON.parse(response.body)['data']['id']).to eq map.id
   end
+  
+  describe 'logged out' do
+    it 'GET commons map' do
+      get "/api/v2/maps/#{map.id}"
+
+      expect(response).to have_http_status(:success)
+      expect(response).to match_json_schema(:map)
+      expect(JSON.parse(response.body)['data']['id']).to eq map.id
+    end
+  end
 
   it 'POST /api/v2/maps' do
     post '/api/v2/maps', params: { map: map.attributes, access_token: token }
