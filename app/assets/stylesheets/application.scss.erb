@@ -82,10 +82,13 @@ body {
   font-family: 'din-medium', helvetica, sans-serif;
   color: #424242;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
+  overflow-x: hidden;
 
-  &.controller-metacodes {
-    overflow-y: auto;
+  &.controller-main,
+  &.controller-maps,
+  &.controller-topics,
+  &.controller-explore {
+    overflow-y: hidden;
   }
 }
 h1,
