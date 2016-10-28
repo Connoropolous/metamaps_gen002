@@ -16,7 +16,12 @@ class SynapsePolicy < ApplicationPolicy
   end
 
   def create?
-    topic1_show? && topic2_show? && user.present?
+    if record.try(:topic1) && record.try(:topic2)
+      topic1_show? && topic2_show? && user.present?
+    else
+      # allows us to use policy(Synapse).create?
+      user.present?
+    end
   end
 
   def show?
