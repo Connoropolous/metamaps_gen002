@@ -78,11 +78,15 @@ html {
 
 }
 body {
-    background: #d8d9da url(<%= asset_data_uri('shattered_@2X.png') %>);
-    font-family: 'din-medium', helvetica, sans-serif;
-    color: #424242;
-    -moz-osx-font-smoothing: grayscale;
-    overflow: hidden;
+  background: #d8d9da url(<%= asset_path('shattered_@2X.png') %>);
+  font-family: 'din-medium', helvetica, sans-serif;
+  color: #424242;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+
+  &.controller-metacodes {
+    overflow-y: auto;
+  }
 }
 h1,
 h2,
