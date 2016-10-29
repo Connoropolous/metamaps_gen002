@@ -22,7 +22,7 @@ class TopicsController < ApplicationController
     end
     @all= @topics.to_a.concat(@maps.to_a).sort { |a, b| a.name <=> b.name }
     
-    render json: autocomplete_array_json(@all).to_json
+    render json: autocomplete_array_json(@all).as_json
   end
 
   # GET topics/:id
@@ -39,7 +39,7 @@ class TopicsController < ApplicationController
 
         respond_with(@allsynapses, @alltopics, @allcreators, @topic)
       end
-      format.json { render json: @topic.to_json(user: current_user) }
+      format.json { render json: @topic.as_json(user: current_user) }
     end
   end
 
@@ -55,9 +55,9 @@ class TopicsController < ApplicationController
     @allcreators += @allsynapses.map(&:user).uniq
 
     @json = {}
-    @json['topic'] = @topic.to_json(user: current_user)
+    @json['topic'] = @topic.as_json(user: current_user)
     @json['creators'] = @allcreators
-    @json['relatives'] = @alltopics.to_json(user: current_user)
+    @json['relatives'] = @alltopics.as_json(user: current_user)
     @json['synapses'] = @allsynapses
 
     respond_to do |format|
@@ -114,7 +114,7 @@ class TopicsController < ApplicationController
     end
 
     @json = {}
-    @json['topics'] = alltopics.to_json(user: current_user)
+    @json['topics'] = alltopics.as_json(user: current_user)
     @json['synapses'] = allsynapses
     @json['creators'] = allcreators
 
@@ -131,7 +131,7 @@ class TopicsController < ApplicationController
 
     respond_to do |format|
       if @topic.save
-        format.json { render json: @topic.to_json(user: current_user), status: :created }
+        format.json { render json: @topic.as_json(user: current_user), status: :created }
       else
         format.json { render json: @topic.errors, status: :unprocessable_entity }
       end
