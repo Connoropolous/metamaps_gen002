@@ -22,7 +22,7 @@ class TopicsController < ApplicationController
     end
     @all= @topics.to_a.concat(@maps.to_a).sort { |a, b| a.name <=> b.name }
     
-    render json: autocomplete_array_json(@all).as_json
+    render json: autocomplete_array_json(@all).to_json
   end
 
   # GET topics/:id
@@ -39,7 +39,7 @@ class TopicsController < ApplicationController
 
         respond_with(@allsynapses, @alltopics, @allcreators, @topic)
       end
-      format.json { render json: @topic.as_json(user: current_user) }
+      format.json { render json: @topic.as_json(user: current_user).to_json }
     end
   end
 
