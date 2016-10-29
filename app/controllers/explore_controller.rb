@@ -17,7 +17,7 @@ class ExploreController < ApplicationController
         redirect_to(root_url) && return if authenticated?
         respond_with(@maps, @user)
       end
-      format.json { render json: @maps.as_json }
+      format.json { render json: @maps.to_json }
     end
   end
 
@@ -27,7 +27,7 @@ class ExploreController < ApplicationController
 
     respond_to do |format|
       format.html { respond_with(@maps, @user) }
-      format.json { render json: @maps.as_json }
+      format.json { render json: @maps.to_json }
     end
   end
 
@@ -37,7 +37,7 @@ class ExploreController < ApplicationController
 
     respond_to do |format|
       format.html { respond_with(@maps, @user) }
-      format.json { render json: @maps.as_json }
+      format.json { render json: @maps.to_json }
     end
   end
 
@@ -47,7 +47,7 @@ class ExploreController < ApplicationController
 
     respond_to do |format|
       format.html { respond_with(@maps, @user) }
-      format.json { render json: @maps.as_json }
+      format.json { render json: @maps.to_json }
     end
   end
 
@@ -57,7 +57,7 @@ class ExploreController < ApplicationController
 
     respond_to do |format|
       format.html { respond_with(@maps, @user) }
-      format.json { render json: @maps.as_json }
+      format.json { render json: @maps.to_json }
     end
   end
 
@@ -68,7 +68,7 @@ class ExploreController < ApplicationController
 
     respond_to do |format|
       format.html { respond_with(@maps, @user) }
-      format.json { render json: @maps.as_json }
+      format.json { render json: @maps.to_json }
     end
   end
 
