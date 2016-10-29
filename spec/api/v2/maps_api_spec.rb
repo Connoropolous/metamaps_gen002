@@ -62,6 +62,7 @@ RSpec.describe 'maps API', type: :request do
     post "/api/v2/maps/#{map.id}/stars", params: { access_token: token }
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:map)
+    expect(response).to match_json_schema(:map_starred)
     expect(user.stars.count).to eq 1
     expect(map.stars.count).to eq 1
   end
@@ -78,6 +79,7 @@ RSpec.describe 'maps API', type: :request do
   context 'RAML example' do
     let(:resource) { get_json_example(:map) }
     let(:collection) { get_json_example(:maps) }
+    let(:starred) { get_json_example(:map_starred) }
 
     it 'resource matches schema' do
       expect(resource).to match_json_schema(:map)
@@ -85,6 +87,10 @@ RSpec.describe 'maps API', type: :request do
 
     it 'collection matches schema' do
       expect(collection).to match_json_schema(:maps)
+    end
+
+    it 'starred resource matches schema' do
+      expect(starred).to match_json_schema(:map)
     end
   end
 end
