@@ -62,7 +62,6 @@ RSpec.describe 'maps API', type: :request do
     post "/api/v2/maps/#{map.id}/stars", params: { access_token: token }
     expect(response).to have_http_status(:success)
     expect(response).to match_json_schema(:map)
-    expect(response).to match_json_schema(:map_starred)
     expect(user.stars.count).to eq 1
     expect(map.stars.count).to eq 1
   end
