@@ -75,12 +75,8 @@ class Topic < ApplicationRecord
     Pundit.policy_scope(user, maps).map(&:id)
   end
 
-  def calculated_permission
-    defer_to_map&.permission || permission
-  end
-
   def as_json(options = {})
-    super(methods: [:user_name, :user_image, :calculated_permission, :collaborator_ids])
+    super(methods: [:user_name, :user_image, :collaborator_ids])
       .merge(inmaps: inmaps(options[:user]), inmapsLinks: inmapsLinks(options[:user]),
              map_count: map_count(options[:user]), synapse_count: synapse_count(options[:user]))
   end
