@@ -38,10 +38,6 @@ class Map < ApplicationRecord
     topicmappings.or(synapsemappings)
   end
 
-  def mk_permission
-    Perm.short(permission)
-  end
-
   def contributors
     User.where(id: mappings.map(&:user_id).uniq)
   end

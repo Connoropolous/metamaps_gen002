@@ -125,15 +125,12 @@ class Topic < ApplicationRecord
     "Get: #{name}"
   end
 
-  def mk_permission
-    Perm.short(permission)
-  end
-
   protected
-    def create_metamap?
-      if link == '' and metacode.name == 'Metamap'
-        @map = Map.create({ name: name, permission: permission, desc: '', arranged: true, user_id: user_id })
-        self.link = Rails.application.routes.url_helpers.map_url(:host => ENV['MAILER_DEFAULT_URL'], :id => @map.id)
-      end
+
+  def create_metamap?
+    if link == '' and metacode.name == 'Metamap'
+      @map = Map.create({ name: name, permission: permission, desc: '', arranged: true, user_id: user_id })
+      self.link = Rails.application.routes.url_helpers.map_url(:host => ENV['MAILER_DEFAULT_URL'], :id => @map.id)
     end
+  end
 end
