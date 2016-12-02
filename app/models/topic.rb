@@ -128,9 +128,11 @@ class Topic < ApplicationRecord
   protected
 
   def create_metamap?
-    if link == '' and metacode.name == 'Metamap'
-      @map = Map.create({ name: name, permission: permission, desc: '', arranged: true, user_id: user_id })
-      self.link = Rails.application.routes.url_helpers.map_url(:host => ENV['MAILER_DEFAULT_URL'], :id => @map.id)
-    end
+    return unless (link == '') && (metacode.name == 'Metamap')
+
+    @map = Map.create(name: name, permission: permission, desc: '',
+                      arranged: true, user_id: user_id)
+    self.link = Rails.application.routes.url_helpers
+                     .map_url(host: ENV['MAILER_DEFAULT_URL'], id: @map.id)
   end
 end
