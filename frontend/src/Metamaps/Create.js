@@ -140,7 +140,13 @@ const Create = {
   },
   newTopic: {
     init: function() {
-      $('#topic_name').keyup(function() {
+      $('#topic_name').keyup(function(e) {
+        const ESC = 27
+
+        if (e.keyCode === ESC) {
+          Create.newTopic.hide()
+        } // if
+
         Create.newTopic.name = $(this).val()
       })
 
@@ -308,6 +314,7 @@ const Create = {
           e.keyCode === ESC) {
           Create.newSynapse.hide()
         } // if
+
         Create.newSynapse.description = $(this).val()
       })
 
