@@ -307,11 +307,8 @@ const Create = {
 
       $('#synapse_desc').keyup(function(e) {
         const ESC = 27
-        const BACKSPACE = 8
-        const DELETE = 46
-        if (e.keyCode === BACKSPACE && $(this).val() === '' ||
-          e.keyCode === DELETE && $(this).val() === '' ||
-          e.keyCode === ESC) {
+
+        if (e.keyCode === ESC) {
           Create.newSynapse.hide()
         } // if
 
