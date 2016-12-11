@@ -321,6 +321,14 @@ const Create = {
         }
       })
 
+      $('#synapse_desc').keydown(function(e) {
+        const TAB = 9
+        if (Create.newSynapse.beingCreated && e.keyCode === TAB) {
+          e.preventDefault()
+          Synapse.createSynapseLocally()
+        }
+      })
+
       $('#synapse_desc').bind('typeahead:select', function(event, datum, dataset) {
         if (datum.id) { // if they clicked on an existing synapse get it
           Synapse.getSynapseFromAutocomplete(datum.id)
