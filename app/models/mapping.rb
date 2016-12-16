@@ -6,6 +6,7 @@ class Mapping < ApplicationRecord
   belongs_to :mappable, polymorphic: true
   belongs_to :map, class_name: 'Map', foreign_key: 'map_id', touch: true
   belongs_to :user
+  belongs_to :updated_by, class_name: 'User'
 
   validates :xloc, presence: true,
                    unless: proc { |m| m.mappable_type == 'Synapse' }
@@ -40,7 +41,7 @@ class Mapping < ApplicationRecord
   def after_updated
     if mappable_type == 'Topic' and (xloc_changed? or yloc_changed?)
       meta = {'x': xloc, 'y': yloc, 'mapping_id': id}
-      Events::TopicMovedOnMap.publish!(mappable, map, user, meta)
+      Events::TopicMovedOnMap.publish!(mappable, map, updated_by, meta)
     end
   end
 
@@ -53,9 +54,9 @@ class Mapping < ApplicationRecord
 
     meta = {'mapping_id': id}
     if mappable_type == 'Topic'
-      Events::TopicRemovedFromMap.publish!(mappable, map, user, meta)
+      Events::TopicRemovedFromMap.publish!(mappable, map, updated_by, meta)
     elsif mappable_type == 'Synapse'
-      Events::SynapseRemovedFromMap.publish!(mappable, map, user, meta)
+      Events::SynapseRemovedFromMap.publish!(mappable, map, updated_by, meta)
     end
   end
 end

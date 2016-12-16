@@ -6,19 +6,23 @@ module Api
         []
       end
 
+      def create
+        instantiate_resource
+        resource.user = current_user if current_user.present?
+        resource.updated_by = current_user if current_user.present?
+        authorize resource
+        create_action
+        respond_with_resource
+      end
+
       def update
-        # hack: set the user temporarily so the model hook can reference it, then set it back
-        temp = resource.user
-        resource.user = current_user
+        resource.updated_by = current_user if current_user.present?
         update_action
         respond_with_resource
-        resourse.user = temp
-        update_action
       end
 
       def destroy
-        # this is done so that the model hooks can use the mapping user to determine who took this action
-        resource.user = current_user if current_user.present? # current_user should always be present
+        resource.updated_by = current_user if current_user.present?
         destroy_action
         head :no_content
       end

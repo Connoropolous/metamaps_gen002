@@ -19,6 +19,7 @@ class MappingsController < ApplicationController
     @mapping = Mapping.new(mapping_params)
     authorize @mapping
     @mapping.user = current_user
+    @mapping.updated_by = current_user
 
     if @mapping.save
       render json: @mapping, status: :created
@@ -31,9 +32,7 @@ class MappingsController < ApplicationController
   def update
     @mapping = Mapping.find(params[:id])
     authorize @mapping
-    # hack: set the user temporarily so that the model hook can reference it, and then set it back
-    temp = @mapping.user 
-    @mapping.user = current_user
+    @mapping.updated_by = current_user
     @mapping.assign_attributes(mapping_params)
 
     if @mapping.save
@@ -41,17 +40,13 @@ class MappingsController < ApplicationController
     else
       render json: @mapping.errors, status: :unprocessable_entity
     end
-    # restore the original mapping creator
-    @mapping.user = temp
-    @mapping.save
   end
 
   # DELETE /mappings/1.json
   def destroy
     @mapping = Mapping.find(params[:id])
     authorize @mapping
-    # hack: set the user temporarily so that the model hook can reference this user who is taking the action
-    @mapping.user = current_user
+    @mapping.updated_by = current_user
     @mapping.destroy
 
     head :no_content
