@@ -34,7 +34,7 @@
       "$ref": "_user.json"
     },
     "source_id": {
-      "$ref": "_id.json"
+      "$ref": "_optid.json"
     },
     "source": {
       "$ref": "_map.json"
