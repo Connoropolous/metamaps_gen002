@@ -29,11 +29,11 @@ class Participant extends Component {
 }
 
 ChatView.propTypes = {
-  color: PropTypes.string // css color
+  color: PropTypes.string, // css color
   id: PropTypes.number,
   image: PropTypes.string, // image url
   self: PropTypes.bool,
-  username: PropTypes.string,
+  username: PropTypes.string
 }
 
 export default ChatView

@@ -29,7 +29,7 @@ class MapChat extends Component {
         </div>
         <div className="chat-button">
           <div className="tooltips">Chat</div>
-          <div className="chat-unread"></div>
+          <Unread count={this.props.unreadMessages} />
         </div>
         <div className="chat-messages"></div>
         <textarea className="chat-input" placeholder="Send a message..." />
@@ -43,11 +43,11 @@ MapChat.propTypes = {
   leaveCall: PropTypes.func,
   joinCall: PropTypes.func,
   participants: PropTypes.arrayOf(PropTypes.shape({
-    color: PropTypes.string // css color
+    color: PropTypes.string, // css color
     id: PropTypes.number,
     image: PropTypes.string, // image url
     self: PropTypes.bool,
-    username: PropTypes.string,
+    username: PropTypes.string
   }))
 }
 

@@ -5,6 +5,8 @@ import { Howl } from 'howler'
 import Autolinker from 'autolinker'
 import { clone, template as lodashTemplate } from 'lodash'
 import outdent from 'outdent'
+import React from 'react'
+import ReactDOM from 'react-dom'
 // TODO is this line good or bad
 // Backbone.$ = window.$
 
@@ -12,120 +14,22 @@ import MapChat from '../../components/MapChat'
 
 const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, phone: false })
 
-var Private = {
-  messageHTML: outdent`
-    <div class='chat-message'>
-      <div class='chat-message-user'><img src='{{ user_image }}' title='{{user_name }}'/></div>
-      <div class='chat-message-text'>{{ message }}</div>
-      <div class='chat-message-time'>{{ timestamp }}</div>
-      <div class='clearfloat'></div>
-    </div>`,
-  participantHTML: outdent`
-    <div class='participant participant-{{ id }} {{ selfClass }}'>
-      <div class='chat-participant-image'>
-        <img src='{{ image }}' style='border: 2px solid {{ color }};' />
-      </div>
-      <div class='chat-participant-name'>
-        {{ username }} {{ selfName }}
-      </div>
-      <button type='button'
-        class='button chat-participant-invite-call'
-        onclick='Metamaps.Realtime.inviteACall({{ id}});'
-      ></button>
-      <button type='button'
-        class='button chat-participant-invite-join'
-        onclick='Metamaps.Realtime.inviteToJoin({{ id}});'
-      ></button>
-      <span class='chat-participant-participating'>
-        <div class='green-dot'></div>
-      </span>
-      <div class='clearfloat'></div>
-    </div>`,
-  templates: function() {
-    const templateSettings = {
-      interpolate: /\{\{(.+?)\}\}/g
-    }
+const ChatView = {
+  init: function(messages, mapper, room, opts = {}) {
+    const self = ChatView
+    self.room = room
+    self.mapper = mapper
+    self.messages = messages.models.map(m => m.attributes)
 
-    this.messageTemplate = lodashTemplate(Private.messageHTML, templateSettings)
+    self.isOpen = false
+    self.alertSound = true // whether to play sounds on arrival of new messages or not
+    self.cursorsShowing = true
+    self.videosShowing = true
+    self.unreadMessages = 0
+    self.participants = []
 
-    this.participantTemplate = lodashTemplate(Private.participantHTML, templateSettings)
-  },
-  createElements: function() {
-    this.$unread = $('<div class="chat-unread"></div>')
-    this.$button = $('<div class="chat-button"><div class="tooltips">Chat</div></div>')
-    this.$messageInput = $('<textarea placeholder="Send a message..." class="chat-input"></textarea>')
-    this.$juntoHeader = $('<div class="junto-header">PARTICIPANTS</div>')
-    this.$videoToggle = $('<div class="video-toggle"></div>')
-    this.$cursorToggle = $('<div class="cursor-toggle"></div>')
-    this.$participants = $('<div class="participants"></div>')
-    this.$conversationInProgress = $(outdent`
-      <div class="conversation-live">
-        LIVE
-        <span class="call-action leave" onclick="Metamaps.Realtime.leaveCall();">
-          LEAVE
-        </span>
-        <span class="call-action join" onclick="Metamaps.Realtime.joinCall();">
-          JOIN
-        </span>
-      </div>`)
-    this.$chatHeader = $('<div class="chat-header">CHAT</div>')
-    this.$soundToggle = $('<div class="sound-toggle"></div>')
-    this.$messages = $('<div class="chat-messages"></div>')
-    this.$container = $('<div class="chat-box"></div>')
-  },
-  attachElements: function() {
-    this.$button.append(this.$unread)
-
-    this.$juntoHeader.append(this.$videoToggle)
-    this.$juntoHeader.append(this.$cursorToggle)
-
-    this.$chatHeader.append(this.$soundToggle)
-
-    this.$participants.append(this.$conversationInProgress)
-
-    this.$container.append(this.$juntoHeader)
-    this.$container.append(this.$participants)
-    this.$container.append(this.$chatHeader)
-    this.$container.append(this.$button)
-    this.$container.append(this.$messages)
-    this.$container.append(this.$messageInput)
-  },
-  addEventListeners: function() {
-    var self = this
-
-    this.participants.on('add', function(participant) {
-      Private.addParticipant.call(self, participant)
-    })
-
-    this.participants.on('remove', function(participant) {
-      Private.removeParticipant.call(self, participant)
-    })
-
-    this.$button.on('click', function() {
-      Handlers.buttonClick.call(self)
-    })
-    this.$videoToggle.on('click', function() {
-      Handlers.videoToggleClick.call(self)
-    })
-    this.$cursorToggle.on('click', function() {
-      Handlers.cursorToggleClick.call(self)
-    })
-    this.$soundToggle.on('click', function() {
-      Handlers.soundToggleClick.call(self)
-    })
-    this.$messageInput.on('keyup', function(event) {
-      Handlers.keyUp.call(self, event)
-    })
-    this.$messageInput.on('focus', function() {
-      Handlers.inputFocus.call(self)
-    })
-    this.$messageInput.on('blur', function() {
-      Handlers.inputBlur.call(self)
-    })
-  },
-  initializeSounds: function(soundUrls) {
-    this.sound = new Howl({
-      src: soundUrls,
+    self.sound = new Howl({
+      src: opts.soundUrls,
       sprite: {
         joinmap: [0, 561],
         leavemap: [1000, 592],
@@ -134,14 +38,67 @@ var Private = {
         sessioninvite: [4000, 5393, true]
       }
     })
+
+    // TODO move these event handlers into react
+    // this.$button.on('click', function() {
+    //   Handlers.buttonClick.call(self)
+    // })
+    // this.$videoToggle.on('click', function() {
+    //   Handlers.videoToggleClick.call(self)
+    // })
+    // this.$cursorToggle.on('click', function() {
+    //   Handlers.cursorToggleClick.call(self)
+    // })
+    // this.$soundToggle.on('click', function() {
+    //   Handlers.soundToggleClick.call(self)
+    // })
+    // this.$messageInput.on('keyup', function(event) {
+    //   Handlers.keyUp.call(self, event)
+    // })
+    // this.$messageInput.on('focus', function() {
+    //   Handlers.inputFocus.call(self)
+    // })
+    // this.$messageInput.on('blur', function() {
+    //   Handlers.inputBlur.call(self)
+    // })
   },
-  incrementUnread: function() {
-    this.unreadMessages++
-    this.$unread.html(this.unreadMessages)
-    this.$unread.show()
+  addWrapper: () => {
+    $('body').prepend('<div id="chat-box-wrapper"></div>')
   },
-  addMessage: function(message, isInitial, wasMe) {
-    if (!this.isOpen && !isInitial) Private.incrementUnread.call(this)
+  render: () => {
+    const self = ChatView
+    ReactDOM.render(React.createElement(MapChat, {
+      show: self.show,
+      leaveCall: Realtime.leaveCall(),
+      joinCall: Realtime.joinCall(),
+      participants: self.participants,
+      unreadMessages: self.unreadMessages
+    }))
+  },
+  show: () => {
+    ChatView.show = true
+    ChatView.render()
+  },
+  hide: () => {
+    ChatView.show = false
+    ChatView.render()
+  },
+  addParticipant: participant => {
+    const p = clone(participant.attributes)
+    ChatView.participants.push(p)
+    ChatView.render()
+  },
+  removeParticipant: participant => {
+    const remove_id = participant.get('id')
+    ChatView.participants = ChatView.participants.filter(p => p.id !== remove_id)
+    ChatView.render()
+  },
+  incrementUnread: (render = false) => {
+    ChatView.unreadMessages += 1
+    if (render) ChatView.render()
+  },
+  addMessage: (message, isInitial, wasMe) => {
+    if (!self.isOpen && !isInitial) ChatView.incrementUnread(false) // TODO don't need to render, right?
 
     function addZero(i) {
       if (i < 10) {
@@ -158,40 +115,18 @@ var Private = {
     m.timestamp = date
     m.image = m.user_image
     m.message = linker.link(m.message)
-    var $html = $(this.messageTemplate(m))
-    this.$messages.append($html)
+
+    self.messages.push(m)
+    // TODO what is scrollMessages?
     if (!isInitial) this.scrollMessages(200)
+    self.render()
 
     if (!wasMe && !isInitial && this.alertSound) this.sound.play('receivechat')
   },
-  initialMessages: function() {
-    var messages = this.messages.models
-    for (var i = 0; i < messages.length; i++) {
-      Private.addMessage.call(this, messages[i], true)
-    }
+  handleInputMessage: text => {
+    // TODO set textarea to be empty in react
+    $(document).trigger(ChatView.events.message + '-' + this.room, [{ message: text }])
   },
-  handleInputMessage: function() {
-    var message = {
-      message: this.$messageInput.val()
-    }
-    this.$messageInput.val('')
-    $(document).trigger(ChatView.events.message + '-' + this.room, [message])
-  },
-  addParticipant: function(participant) {
-    var p = clone(participant.attributes)
-    if (p.self) {
-      p.selfClass = 'is-self'
-      p.selfName = '(me)'
-    } else {
-      p.selfClass = ''
-      p.selfName = ''
-    }
-    var html = this.participantTemplate(p)
-    this.$participants.append(html)
-  },
-  removeParticipant: function(participant) {
-    this.$container.find('.participant-' + participant.get('id')).remove()
-  }
 }
 
 var Handlers = {
@@ -228,68 +163,11 @@ var Handlers = {
   }
 }
 
-const ChatView = {
-  init: function(messages, mapper, room, opts = {}) {
-    const self = ChatView
-    self.room = room
-    self.mapper = mapper
-    self.messages = messages // backbone collection
-
-    self.isOpen = false
-    self.alertSound = true // whether to play sounds on arrival of new messages or not
-    self.cursorsShowing = true
-    self.videosShowing = true
-    self.unreadMessages = 0
-    self.participants = []
-
-    // TODO reimplement
-    //Private.addEventListeners.call(this)
-    //Private.initialMessages.call(this)
-    //Private.initializeSounds.call(this, opts.soundUrls)
-    //this.$container.css({
-    //  right: '-300px'
-    //})
-  },
-  addWrapper: () => {
-    $('body').prepend('<div id="chat-box-wrapper"></div>')
-  },
-  render: () => {
-    const self = ChatView
-    ReactDOM.render(React.createElement(MapChat, {
-      show: self.show,
-      leaveCall: Realtime.leaveCall(),
-      joinCall: Realtime.joinCall(),
-      participants: self.participants
-    }))
-  }
-  show: () => {
-    ChatView.show = true
-    ChatView.render()
-  },
-  hide: () => {
-    ChatView.show = false
-    ChatView.render()
-  },
-  addParticipant: participant => {
-    const p = clone(participant.attributes)
-    ChatView.participants.push(p)
-    ChatView.render()
-  },
-  removeParticipant: participant => {
-    const remove_id = participant.get('id')
-    ChatView.participants = ChatView.participants.filter(p => p.id !== remove_id)
-    ChatView.render()
-  }
-}
-
-
 ChatView.prototype.conversationInProgress = function(participating) {
   this.$conversationInProgress.show()
   this.$participants.addClass('is-live')
   if (participating) this.$participants.addClass('is-participating')
   this.$button.addClass('active')
-
-// hide invite to call buttons
 }
 
 ChatView.prototype.conversationEnded = function() {
