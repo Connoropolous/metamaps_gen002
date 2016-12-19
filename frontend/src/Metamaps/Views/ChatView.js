@@ -20,7 +20,7 @@ const ChatView = {
     const self = ChatView
     self.room = room
     self.mapper = mapper
-    self.messages = messages.models.map(m => m.attributes)
+    self.messages = messages
 
     self.isOpen = false
     self.alertSound = true // whether to play sounds on arrival of new messages or not
@@ -48,7 +48,7 @@ const ChatView = {
       leaveCall: Realtime.leaveCall,
       joinCall: Realtime.joinCall,
       participants: self.participants,
-      messages: self.messages,
+      messages: self.messages.models.map(m => m.attributes),
       unreadMessages: self.unreadMessages,
       buttonClick: self.buttonClick,
       videoToggleClick: self.videoToggleClick,
@@ -71,6 +71,7 @@ const ChatView = {
     ChatView.render()
   },
   addParticipant: participant => {
+    // TODO this should probably be using a Backbone collection????
     const p = participant.attributes ? clone(participant.attributes) : participant
     ChatView.participants.push(p)
     ChatView.render()
@@ -85,6 +86,7 @@ const ChatView = {
     if (render) ChatView.render()
   },
   addMessage: (message, isInitial, wasMe) => {
+    const self = ChatView
     if (!self.isOpen && !isInitial) ChatView.incrementUnread(false) // TODO don't need to render, right?
 
     function addZero(i) {
@@ -111,6 +113,8 @@ const ChatView = {
     if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
   },
   handleInputMessage: text => {
+    // TODO use backbone
+    ChatView.addMessage(text, false, false)
     $(document).trigger(ChatView.events.message + '-' + self.room, [{ message: text }])
   },
   leaveConversation: () => {
