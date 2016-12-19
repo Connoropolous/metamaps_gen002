@@ -8,20 +8,29 @@ class MapChat extends Component {
     super(props)
 
     this.state = {
+      unreadMessages: 0,
       open: false,
       messageText: ''
     }
   }
 
+  close = () => {
+    this.setState({open: false})
+    this.props.onClose()
+  }
+
+  open = () => {
+    this.setState({open: true, unreadMessages: 0})
+    this.props.onOpen()
+  }
+
+  newMessage = () => {
+    if (!this.state.open) this.setState({ unreadMessages: this.state.unreadMessages + 1 })
+  }
+
   toggleDrawer = () => {
-    if (this.state.open) {
-      this.setState({open: false})
-      this.props.onClose()
-    }
-    else if (!this.state.open) {
-      this.setState({open: true})
-      this.props.onOpen()
-    }
+    if (this.state.open) this.close()
+    else if (!this.state.open) this.open()
   }
 
   handleChange = key => e => {
@@ -42,6 +51,7 @@ class MapChat extends Component {
   render = () => {
     const rightOffset = this.state.open ? '0' : '-300px'
     const { videosShowing, cursorsShowing, alertSound } = this.props
+    const { unreadMessages } = this.state
     return (
       <div className="chat-box"
         style={{ right: rightOffset }}
@@ -71,7 +81,7 @@ class MapChat extends Component {
         </div>
         <div className="chat-button" onClick={this.toggleDrawer}>
           <div className="tooltips">Chat</div>
-          <Unread count={this.props.unreadMessages} />
+          <Unread count={unreadMessages} />
         </div>
         <div className="chat-messages">
           {this.props.messages.map(message => {

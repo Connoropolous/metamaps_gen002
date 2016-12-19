@@ -1,10 +1,7 @@
 import React from 'react'
 
 const Unread = props => {
-  if (props.count <= 0) {
-    return null
-  }
-  return <div className="chat-unread"></div>
+  return props.count ? <div className="chat-unread">{props.count}</div> : null
 }
 
 export default Unread

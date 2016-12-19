@@ -17,6 +17,7 @@ const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, pho
 
 const ChatView = {
   isOpen: false,
+  mapChat: null,
   init: function(messages, mapper, room, opts = {}) {
     const self = ChatView
     self.room = room
@@ -26,7 +27,6 @@ const ChatView = {
     self.alertSound = true // whether to play sounds on arrival of new messages or not
     self.cursorsShowing = true
     self.videosShowing = true
-    self.unreadMessages = 0
     self.participants = []
 
     self.sound = new Howl({
@@ -43,14 +43,13 @@ const ChatView = {
   },
   render: () => {
     const self = ChatView
-    ReactDOM.render(React.createElement(MapChat, {
+    self.mapChat = ReactDOM.render(React.createElement(MapChat, {
       onOpen: self.onOpen,
       onClose: self.onClose,
       leaveCall: Realtime.leaveCall,
       joinCall: Realtime.joinCall,
       participants: self.participants,
       messages: self.messages.models.map(m => m.attributes),
-      unreadMessages: self.unreadMessages,
       videoToggleClick: self.videoToggleClick,
       cursorToggleClick: self.cursorToggleClick,
       soundToggleClick: self.soundToggleClick,
@@ -63,11 +62,9 @@ const ChatView = {
     }), document.getElementById('chat-box-wrapper'))
   },
   onOpen: () => {
-    ChatView.isOpen = true
     $(document).trigger(ChatView.events.openTray)
   },
   onClose: () => {
-    ChatView.isOpen = false
     $(document).trigger(ChatView.events.closeTray)
   },
   addParticipant: participant => {
@@ -81,13 +78,9 @@ const ChatView = {
     ChatView.participants = ChatView.participants.filter(p => p.id !== remove_id)
     ChatView.render()
   },
-  incrementUnread: (render = false) => {
-    ChatView.unreadMessages += 1
-    if (render) ChatView.render()
-  },
   addMessage: (message, isInitial, wasMe) => {
     const self = ChatView
-    if (!self.isOpen && !isInitial) ChatView.incrementUnread(false) // TODO don't need to render, right?
+    if (!isInitial) self.mapChat.newMessage() 
 
     function addZero(i) {
       if (i < 10) {
@@ -141,14 +134,14 @@ const ChatView = {
   close: () => {
     // TODO how to do focus with react
     // this.$messageInput.blur()
+    ChatView.mapChat.close()
   },
   open: () => {
-    ChatView.unreadMessages = 0
+    ChatView.mapChat.open()
     // TODO how to do focus with react
     // this.$messageInput.focus()
     // TODO reimplement scrollMessages
     // this.scrollMessages(0)
-    ChatView.render()
   },
   videoToggleClick: function() {
     const self = ChatView
