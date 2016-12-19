@@ -8,6 +8,8 @@ import outdent from 'outdent'
 // TODO is this line good or bad
 // Backbone.$ = window.$
 
+import MapChat from '../../components/MapChat'
+
 const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, phone: false })
 
 var Private = {
@@ -226,28 +228,60 @@ var Handlers = {
   }
 }
 
-const ChatView = function(messages, mapper, room, opts = {}) {
-  this.room = room
-  this.mapper = mapper
-  this.messages = messages // backbone collection
+const ChatView = {
+  init: function(messages, mapper, room, opts = {}) {
+    const self = ChatView
+    self.room = room
+    self.mapper = mapper
+    self.messages = messages // backbone collection
 
-  this.isOpen = false
-  this.alertSound = true // whether to play sounds on arrival of new messages or not
-  this.cursorsShowing = true
-  this.videosShowing = true
-  this.unreadMessages = 0
-  this.participants = new Backbone.Collection()
+    self.isOpen = false
+    self.alertSound = true // whether to play sounds on arrival of new messages or not
+    self.cursorsShowing = true
+    self.videosShowing = true
+    self.unreadMessages = 0
+    self.participants = []
 
-  Private.templates.call(this)
-  Private.createElements.call(this)
-  Private.attachElements.call(this)
-  Private.addEventListeners.call(this)
-  Private.initialMessages.call(this)
-  Private.initializeSounds.call(this, opts.soundUrls)
-  this.$container.css({
-    right: '-300px'
-  })
+    // TODO reimplement
+    //Private.addEventListeners.call(this)
+    //Private.initialMessages.call(this)
+    //Private.initializeSounds.call(this, opts.soundUrls)
+    //this.$container.css({
+    //  right: '-300px'
+    //})
+  },
+  addWrapper: () => {
+    $('body').prepend('<div id="chat-box-wrapper"></div>')
+  },
+  render: () => {
+    const self = ChatView
+    ReactDOM.render(React.createElement(MapChat, {
+      show: self.show,
+      leaveCall: Realtime.leaveCall(),
+      joinCall: Realtime.joinCall(),
+      participants: self.participants
+    }))
+  }
+  show: () => {
+    ChatView.show = true
+    ChatView.render()
+  },
+  hide: () => {
+    ChatView.show = false
+    ChatView.render()
+  },
+  addParticipant: participant => {
+    const p = clone(participant.attributes)
+    ChatView.participants.push(p)
+    ChatView.render()
+  },
+  removeParticipant: participant => {
+    const remove_id = participant.get('id')
+    ChatView.participants = ChatView.participants.filter(p => p.id !== remove_id)
+    ChatView.render()
+  }
 }
+
 
 ChatView.prototype.conversationInProgress = function(participating) {
   this.$conversationInProgress.show()

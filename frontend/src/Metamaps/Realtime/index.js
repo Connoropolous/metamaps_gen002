@@ -189,7 +189,8 @@ let Realtime = {
       if (!Active.Map) {
         self.room.chat.$container.hide()
       }
-      $('body').prepend(self.room.chat.$container)
+      self.room.chat.addWrapper()
+      self.room.chat.render()
     } // if Active.Mapper
   },
   addJuntoListeners: function() {
