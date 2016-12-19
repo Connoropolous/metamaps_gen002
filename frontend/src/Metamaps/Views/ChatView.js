@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom'
 // TODO is this line good or bad
 // Backbone.$ = window.$
 
+import Active from '../Active'
 import Realtime from '../Realtime'
 import MapChat from '../../components/MapChat'
 
@@ -18,7 +19,21 @@ const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, pho
 const ChatView = {
   isOpen: false,
   mapChat: null,
-  init: function(messages, mapper, room, opts = {}) {
+  domId: 'chat-box-wrapper',
+  init: function(urls) {
+    const self = ChatView
+    self.sound = new Howl({
+      src: urls,
+      sprite: {
+        joinmap: [0, 561],
+        leavemap: [1000, 592],
+        receivechat: [2000, 318],
+        sendchat: [3000, 296],
+        sessioninvite: [4000, 5393, true]
+      }
+    })
+  },
+  setNewMap: function(messages, mapper, room) {
     const self = ChatView
     self.room = room
     self.mapper = mapper
@@ -28,20 +43,16 @@ const ChatView = {
     self.cursorsShowing = true
     self.videosShowing = true
     self.participants = []
-
-    self.sound = new Howl({
-      src: opts.soundUrls,
-      sprite: {
-        joinmap: [0, 561],
-        leavemap: [1000, 592],
-        receivechat: [2000, 318],
-        sendchat: [3000, 296],
-        sessioninvite: [4000, 5393, true]
-      }
-    })
-    $('body').prepend('<div id="chat-box-wrapper"></div>')
+    self.render()
+  },
+  show: () => {
+    $('#' + ChatView.domId).show()
+  },
+  hide: () => {
+    $('#' + ChatView.domId).hide()
   },
   render: () => {
+    if (!Active.Map) return    
     const self = ChatView
     self.mapChat = ReactDOM.render(React.createElement(MapChat, {
       onOpen: self.onOpen,
@@ -55,11 +66,8 @@ const ChatView = {
       soundToggleClick: self.soundToggleClick,
       inputBlur: self.inputBlur,
       inputFocus: self.inputFocus,
-      videosShowing: self.videosShowing,
-      cursorsShowing: self.cursorsShowing,
-      alertSound: self.alertSound,
       handleInputMessage: self.handleInputMessage
-    }), document.getElementById('chat-box-wrapper'))
+    }), document.getElementById(ChatView.domId))
   },
   onOpen: () => {
     $(document).trigger(ChatView.events.openTray)
@@ -144,21 +152,15 @@ const ChatView = {
     // this.scrollMessages(0)
   },
   videoToggleClick: function() {
-    const self = ChatView
-    self.videosShowing = !self.videosShowing
-    $(document).trigger(self.videosShowing ? ChatView.events.videosOn : ChatView.events.videosOff)
-    ChatView.render()
+    ChatView.videosShowing = !ChatView.videosShowing
+    $(document).trigger(ChatView.videosShowing ? ChatView.events.videosOn : ChatView.events.videosOff)
   },
   cursorToggleClick: function() {
-    const self = ChatView
-    self.cursorsShowing = !self.cursorsShowing
-    $(document).trigger(self.cursorsShowing ? ChatView.events.cursorsOn : ChatView.events.cursorsOff)
-    ChatView.render()
+    ChatView.cursorsShowing = !ChatView.cursorsShowing
+    $(document).trigger(ChatView.cursorsShowing ? ChatView.events.cursorsOn : ChatView.events.cursorsOff)
   },
   soundToggleClick: function() {
-    const self = ChatView
-    this.alertSound = !this.alertSound
-    ChatView.render()
+    ChatView.alertSound = !ChatView.alertSound
   },
   inputFocus: () => {
     $(document).trigger(ChatView.events.inputFocus)

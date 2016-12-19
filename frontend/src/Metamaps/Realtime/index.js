@@ -8,6 +8,7 @@ import DataModel from '../DataModel'
 import JIT from '../JIT'
 import Util from '../Util'
 import Views from '../Views'
+import { ChatView } from '../Views'
 import Visualize from '../Visualize'
 
 import {
@@ -178,17 +179,9 @@ let Realtime = {
         room: 'global',
         $video: self.localVideo.$video,
         myVideoView: self.localVideo.view,
-        config: { DOUBLE_CLICK_TOLERANCE: 200 },
-        soundUrls: [
-          serverData['sounds/MM_sounds.mp3'],
-          serverData['sounds/MM_sounds.ogg']
-        ]
+        config: { DOUBLE_CLICK_TOLERANCE: 200 }
       })
       self.room.videoAdded(self.handleVideoAdded)
-
-      if (Active.Map) {
-        self.room.chat.render()
-      }
     } // if Active.Mapper
   },
   addJuntoListeners: function() {
@@ -237,14 +230,14 @@ let Realtime = {
     $('.collabCompass').remove()
     if (self.room) {
       self.room.leave()
-      self.room.chat.hide()
-      self.room.chat.close()
+      ChatView.hide()
+      ChatView.close()
     }
   },
   turnOn: function(notify) {
     var self = Realtime
     $('.collabCompass').show()
-    self.room.chat.show()
+    ChatView.show()
     self.room.room = 'map-' + Active.Map.id
     self.activeMapper = {
       id: Active.Mapper.id,
@@ -257,7 +250,7 @@ let Realtime = {
     self.localVideo.view.$container.find('.video-cutoff').css({
       border: '4px solid ' + self.activeMapper.color
     })
-    self.room.chat.addParticipant(self.activeMapper)
+    ChatView.addParticipant(self.activeMapper)
   },
   setupSocket: function() {
     var self = Realtime

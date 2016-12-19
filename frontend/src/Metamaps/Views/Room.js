@@ -26,10 +26,7 @@ const Room = function(opts = {}) {
 
   this.messages = new Backbone.Collection()
   this.currentMapper = new Backbone.Model({ name: opts.username, image: opts.image })
-  this.chat = ChatView
-  this.chat.init(this.messages, this.currentMapper, this.room, {
-    soundUrls: opts.soundUrls
-  })
+  ChatView.setNewMap(this.messages, this.currentMapper, this.room)
 
   this.videos = {}
 
@@ -39,19 +36,19 @@ const Room = function(opts = {}) {
 Room.prototype.join = function(cb) {
   this.isActiveRoom = true
   this.webrtc.joinRoom(this.room, cb)
-  this.chat.conversationInProgress(true) // true indicates participation
+  ChatView.conversationInProgress(true) // true indicates participation
 }
 
 Room.prototype.conversationInProgress = function() {
-  this.chat.conversationInProgress(false) // false indicates not participating
+  ChatView.conversationInProgress(false) // false indicates not participating
 }
 
 Room.prototype.conversationEnding = function() {
-  this.chat.conversationEnded()
+  ChatView.conversationEnded()
 }
 
 Room.prototype.leaveVideoOnly = function() {
-  this.chat.leaveConversation() // the conversation will carry on without you
+  ChatView.leaveConversation() // the conversation will carry on without you
   for (var id in this.videos) {
     this.removeVideo(id)
   }
@@ -67,9 +64,9 @@ Room.prototype.leave = function() {
   this.isActiveRoom = false
   this.webrtc.leaveRoom()
   this.webrtc.stopLocalVideo()
-  this.chat.conversationEnded()
-  this.chat.removeParticipants()
-  this.chat.clearMessages()
+  ChatView.conversationEnded()
+  ChatView.removeParticipants()
+  ChatView.clearMessages()
   this.messages.reset()
 }
 
@@ -161,8 +158,7 @@ Room.prototype.removeVideo = function(peer) {
 
 Room.prototype.sendChatMessage = function(data) {
   var self = this
-      // this.roomRef.child('messages').push(data)
-  if (self.chat.alertSound) self.chat.sound.play('sendchat')
+  if (ChatView.alertSound) ChatView.sound.play('sendchat')
   var m = new DataModel.Message({
     message: data.message,
     resource_id: Active.Map.id,
@@ -185,7 +181,7 @@ Room.prototype.addMessages = function(messages, isInitial, wasMe) {
   var self = this
 
   messages.models.forEach(function(message) {
-    self.chat.addMessage(message, isInitial, wasMe)
+    ChatView.addMessage(message, isInitial, wasMe)
   })
 }
 

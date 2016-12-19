@@ -10,7 +10,10 @@ class MapChat extends Component {
     this.state = {
       unreadMessages: 0,
       open: false,
-      messageText: ''
+      messageText: '',
+      alertSound: true, // whether to play sounds on arrival of new messages or not
+      cursorsShowing: true,
+      videosShowing:  true
     }
   }
 
@@ -33,6 +36,21 @@ class MapChat extends Component {
     else if (!this.state.open) this.open()
   }
 
+  toggleAlertSound = () => {
+    this.setState({alertSound: !this.state.alertSound})
+    this.props.soundToggleClick()
+  }
+
+  toggleCursorsShowing = () => {
+    this.setState({cursorsShowing: !this.state.cursorsShowing})
+    this.props.cursorToggleClick()
+  }
+
+  toggleVideosShowing = () => {
+    this.setState({videosShowing: !this.state.videosShowing})
+    this.props.videoToggleClick()
+  }
+
   handleChange = key => e => {
     this.setState({
       [key]: e.target.value
@@ -50,16 +68,15 @@ class MapChat extends Component {
 
   render = () => {
     const rightOffset = this.state.open ? '0' : '-300px'
-    const { videosShowing, cursorsShowing, alertSound } = this.props
-    const { unreadMessages } = this.state
+    const { videosShowing, cursorsShowing, alertSound, unreadMessages } = this.state
     return (
       <div className="chat-box"
         style={{ right: rightOffset }}
       >
         <div className="junto-header">
           PARTICIPANTS
-          <div className={`video-toggle ${videosShowing ? 'active' : ''}`} />
-          <div className={`cursor-toggle ${cursorsShowing ? 'active' : ''}`} />
+          <div onClick={this.toggleVideosShowing} className={`video-toggle ${videosShowing ? '' : 'active'}`} />
+          <div onClick={this.toggleCursorsShowing} className={`cursor-toggle ${cursorsShowing ? '' : 'active'}`} />
         </div>
         <div className="participants">
           <div className="conversation-live">
@@ -77,7 +94,7 @@ class MapChat extends Component {
         </div>
         <div className="chat-header">
           CHAT
-          <div className={`sound-toggle ${alertSound ? 'active' : ''}`}></div>
+          <div onClick={this.toggleAlertSound} className={`sound-toggle ${alertSound ? '' : 'active'}`}></div>
         </div>
         <div className="chat-button" onClick={this.toggleDrawer}>
           <div className="tooltips">Chat</div>
@@ -106,6 +123,9 @@ MapChat.propTypes = {
   onClose: PropTypes.func,
   leaveCall: PropTypes.func,
   joinCall: PropTypes.func,
+  videoToggleClick: PropTypes.func,
+  cursorToggleClick: PropTypes.func,
+  soundToggleClick: PropTypes.func, 
   participants: PropTypes.arrayOf(PropTypes.shape({
     color: PropTypes.string, // css color
     id: PropTypes.number,
