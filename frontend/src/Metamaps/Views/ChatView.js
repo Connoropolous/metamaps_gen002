@@ -16,13 +16,13 @@ import MapChat from '../../components/MapChat'
 const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, phone: false })
 
 const ChatView = {
+  isOpen: false,
   init: function(messages, mapper, room, opts = {}) {
     const self = ChatView
     self.room = room
     self.mapper = mapper
     self.messages = messages
 
-    self.isOpen = false
     self.alertSound = true // whether to play sounds on arrival of new messages or not
     self.cursorsShowing = true
     self.videosShowing = true
@@ -44,13 +44,13 @@ const ChatView = {
   render: () => {
     const self = ChatView
     ReactDOM.render(React.createElement(MapChat, {
-      isOpen: self.isOpen,
+      onOpen: self.onOpen,
+      onClose: self.onClose,
       leaveCall: Realtime.leaveCall,
       joinCall: Realtime.joinCall,
       participants: self.participants,
       messages: self.messages.models.map(m => m.attributes),
       unreadMessages: self.unreadMessages,
-      buttonClick: self.buttonClick,
       videoToggleClick: self.videoToggleClick,
       cursorToggleClick: self.cursorToggleClick,
       soundToggleClick: self.soundToggleClick,
@@ -62,13 +62,13 @@ const ChatView = {
       handleInputMessage: self.handleInputMessage
     }), document.getElementById('chat-box-wrapper'))
   },
-  show: () => {
-    ChatView.show = true
-    ChatView.render()
+  onOpen: () => {
+    ChatView.isOpen = true
+    $(document).trigger(ChatView.events.openTray)
   },
-  hide: () => {
-    ChatView.show = false
-    ChatView.render()
+  onClose: () => {
+    ChatView.isOpen = false
+    $(document).trigger(ChatView.events.closeTray)
   },
   addParticipant: participant => {
     // TODO this should probably be using a Backbone collection????
@@ -107,6 +107,7 @@ const ChatView = {
 
     self.messages.push(m)
     // TODO what is scrollMessages?
+    // scrollMessages scrolls to the bottom of the div when there's new messages“
     // if (!isInitial) self.scrollMessages(200)
     self.render()
 
@@ -137,30 +138,16 @@ const ChatView = {
     // TODO refactor
     // this.$participants.find('.participant-' + id).removeClass('pending')
   },
-  buttonClick: () => {
-    const self = ChatView
-    if (self.isOpen) self.close()
-    else if (!self.isOpen) self.open()
-  },
   close: () => {
-    this.isOpen = false
-
     // TODO how to do focus with react
     // this.$messageInput.blur()
-
-    $(document).trigger(ChatView.events.closeTray)
-    ChatView.render()
   },
   open: () => {
     ChatView.unreadMessages = 0
-    this.isOpen = true
-
     // TODO how to do focus with react
     // this.$messageInput.focus()
     // TODO reimplement scrollMessages
     // this.scrollMessages(0)
-
-    $(document).trigger(ChatView.events.openTray)
     ChatView.render()
   },
   videoToggleClick: function() {

@@ -8,7 +8,19 @@ class MapChat extends Component {
     super(props)
 
     this.state = {
+      open: false,
       messageText: ''
+    }
+  }
+
+  toggleDrawer = () => {
+    if (this.state.open) {
+      this.setState({open: false})
+      this.props.onClose()
+    }
+    else if (!this.state.open) {
+      this.setState({open: true})
+      this.props.onOpen()
     }
   }
 
@@ -28,7 +40,7 @@ class MapChat extends Component {
   }
 
   render = () => {
-    const rightOffset = this.props.isOpen ? '-300px' : '0'
+    const rightOffset = this.state.open ? '0' : '-300px'
     const { videosShowing, cursorsShowing, alertSound } = this.props
     return (
       <div className="chat-box"
@@ -57,7 +69,7 @@ class MapChat extends Component {
           CHAT
           <div className={`sound-toggle ${alertSound ? 'active' : ''}`}></div>
         </div>
-        <div className="chat-button">
+        <div className="chat-button" onClick={this.toggleDrawer}>
           <div className="tooltips">Chat</div>
           <Unread count={this.props.unreadMessages} />
         </div>
@@ -80,7 +92,8 @@ class MapChat extends Component {
 }
 
 MapChat.propTypes = {
-  isOpen: PropTypes.bool,
+  onOpen: PropTypes.func,
+  onClose: PropTypes.func,
   leaveCall: PropTypes.func,
   joinCall: PropTypes.func,
   participants: PropTypes.arrayOf(PropTypes.shape({
