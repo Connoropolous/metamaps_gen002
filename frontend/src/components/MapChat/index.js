@@ -1,8 +1,11 @@
 import React, { PropTypes, Component } from 'react'
+import Unread from './Unread'
+import Participant from './Participant'
+import Message from './Message'
 
 class MapChat extends Component {
-  render() {
-    const rightOffset = this.props.show ? '-300px' : '0'
+  render = () => {
+    const rightOffset = this.props.isOpen ? '-300px' : '0'
     return (
       <div className="chat-box"
         style={{ right: rightOffset }}
@@ -13,15 +16,15 @@ class MapChat extends Component {
           <div className="cursor-toggle" />
         </div>
         <div className="participants">
-				  <div className="conversation-live">
-						LIVE
+          <div className="conversation-live">
+            LIVE
 						<span className="call-action leave" onClick={this.props.leaveCall}>
 							LEAVE
 						</span>
 						<span className="call-action join"  onClick={this.props.joinCall}>
 							JOIN
 						</span>
-					</div>
+          </div>
         </div>
         <div className="chat-header">
           CHAT
@@ -39,7 +42,7 @@ class MapChat extends Component {
 }
 
 MapChat.propTypes = {
-  show: PropTypes.bool,
+  isOpen: PropTypes.bool,
   leaveCall: PropTypes.func,
   joinCall: PropTypes.func,
   participants: PropTypes.arrayOf(PropTypes.shape({

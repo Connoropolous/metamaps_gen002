@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom'
 // TODO is this line good or bad
 // Backbone.$ = window.$
 
+import Realtime from '../Realtime'
 import MapChat from '../../components/MapChat'
 
 const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, phone: false })
@@ -68,12 +69,12 @@ const ChatView = {
   render: () => {
     const self = ChatView
     ReactDOM.render(React.createElement(MapChat, {
-      show: self.show,
-      leaveCall: Realtime.leaveCall(),
-      joinCall: Realtime.joinCall(),
+      isOpen: self.isOpen,
+      leaveCall: Realtime.leaveCall,
+      joinCall: Realtime.joinCall,
       participants: self.participants,
       unreadMessages: self.unreadMessages
-    }))
+    }), document.getElementById('chat-box-wrapper'))
   },
   show: () => {
     ChatView.show = true
@@ -127,6 +128,26 @@ const ChatView = {
     // TODO set textarea to be empty in react
     $(document).trigger(ChatView.events.message + '-' + this.room, [{ message: text }])
   },
+  leaveConversation: () => {
+    // TODO refactor
+    // this.$participants.removeClass('is-participating')
+  },
+  mapperJoinedCall: () => {
+    // TODO refactor
+    // this.$participants.find('.participant-' + id).addClass('active')
+  },
+  mapperLeftCall: () => {
+    // TODO refactor
+    // this.$participants.find('.participant-' + id).removeClass('active')
+  },
+  invitationPending: () => {
+    // TODO refactor
+    // this.$participants.find('.participant-' + id).addClass('pending')
+  },
+  invitationAnswered: () => {
+    // TODO refactor
+    // this.$participants.find('.participant-' + id).removeClass('pending')
+  }
 }
 
 var Handlers = {
@@ -163,101 +184,82 @@ var Handlers = {
   }
 }
 
-ChatView.prototype.conversationInProgress = function(participating) {
-  this.$conversationInProgress.show()
-  this.$participants.addClass('is-live')
-  if (participating) this.$participants.addClass('is-participating')
-  this.$button.addClass('active')
-}
+// ChatView.prototype.conversationInProgress = function(participating) {
+//   this.$conversationInProgress.show()
+//   this.$participants.addClass('is-live')
+//   if (participating) this.$participants.addClass('is-participating')
+//   this.$button.addClass('active')
+// }
 
-ChatView.prototype.conversationEnded = function() {
-  this.$conversationInProgress.hide()
-  this.$participants.removeClass('is-live')
-  this.$participants.removeClass('is-participating')
-  this.$button.removeClass('active')
-  this.$participants.find('.participant').removeClass('active')
-  this.$participants.find('.participant').removeClass('pending')
-}
+// ChatView.prototype.conversationEnded = function() {
+//   this.$conversationInProgress.hide()
+//   this.$participants.removeClass('is-live')
+//   this.$participants.removeClass('is-participating')
+//   this.$button.removeClass('active')
+//   this.$participants.find('.participant').removeClass('active')
+//   this.$participants.find('.participant').removeClass('pending')
+// }
 
-ChatView.prototype.leaveConversation = function() {
-  this.$participants.removeClass('is-participating')
-}
 
-ChatView.prototype.mapperJoinedCall = function(id) {
-  this.$participants.find('.participant-' + id).addClass('active')
-}
+// ChatView.prototype.addParticipant = function(participant) {
+//   this.participants.add(participant)
+// }
 
-ChatView.prototype.mapperLeftCall = function(id) {
-  this.$participants.find('.participant-' + id).removeClass('active')
-}
+// ChatView.prototype.removeParticipant = function(username) {
+//   var p = this.participants.find(p => p.get('username') === username)
+//   if (p) {
+//     this.participants.remove(p)
+//   }
+// }
 
-ChatView.prototype.invitationPending = function(id) {
-  this.$participants.find('.participant-' + id).addClass('pending')
-}
+// ChatView.prototype.removeParticipants = function() {
+//   this.participants.remove(this.participants.models)
+// }
 
-ChatView.prototype.invitationAnswered = function(id) {
-  this.$participants.find('.participant-' + id).removeClass('pending')
-}
+// ChatView.prototype.open = function() {
+//   this.$container.css({
+//     right: '0'
+//   })
+//   this.$messageInput.focus()
+//   this.isOpen = true
+//   this.unreadMessages = 0
+//   this.$unread.hide()
+//   this.scrollMessages(0)
+//   $(document).trigger(ChatView.events.openTray)
+// }
 
-ChatView.prototype.addParticipant = function(participant) {
-  this.participants.add(participant)
-}
+// ChatView.prototype.addMessage = function(message, isInitial, wasMe) {
+//   this.messages.add(message)
+//   Private.addMessage.call(this, message, isInitial, wasMe)
+// }
+//
+// ChatView.prototype.scrollMessages = function(duration) {
+//   duration = duration || 0
 
-ChatView.prototype.removeParticipant = function(username) {
-  var p = this.participants.find(p => p.get('username') === username)
-  if (p) {
-    this.participants.remove(p)
-  }
-}
+//   this.$messages.animate({
+//     scrollTop: this.$messages[0].scrollHeight
+//   }, duration)
+// }
 
-ChatView.prototype.removeParticipants = function() {
-  this.participants.remove(this.participants.models)
-}
+// ChatView.prototype.clearMessages = function() {
+//   this.unreadMessages = 0
+//   this.$unread.hide()
+//   this.$messages.empty()
+// }
 
-ChatView.prototype.open = function() {
-  this.$container.css({
-    right: '0'
-  })
-  this.$messageInput.focus()
-  this.isOpen = true
-  this.unreadMessages = 0
-  this.$unread.hide()
-  this.scrollMessages(0)
-  $(document).trigger(ChatView.events.openTray)
-}
+// ChatView.prototype.close = function() {
+//   this.$container.css({
+//     right: '-300px'
+//   })
+//   this.$messageInput.blur()
+//   this.isOpen = false
+//   $(document).trigger(ChatView.events.closeTray)
+// }
 
-ChatView.prototype.addMessage = function(message, isInitial, wasMe) {
-  this.messages.add(message)
-  Private.addMessage.call(this, message, isInitial, wasMe)
-}
-
-ChatView.prototype.scrollMessages = function(duration) {
-  duration = duration || 0
-
-  this.$messages.animate({
-    scrollTop: this.$messages[0].scrollHeight
-  }, duration)
-}
-
-ChatView.prototype.clearMessages = function() {
-  this.unreadMessages = 0
-  this.$unread.hide()
-  this.$messages.empty()
-}
-
-ChatView.prototype.close = function() {
-  this.$container.css({
-    right: '-300px'
-  })
-  this.$messageInput.blur()
-  this.isOpen = false
-  $(document).trigger(ChatView.events.closeTray)
-}
-
-ChatView.prototype.remove = function() {
-  this.$button.off()
-  this.$container.remove()
-}
+// ChatView.prototype.remove = function() {
+//   this.$button.off()
+//   this.$container.remove()
+// }
 
 /**
  * @class
