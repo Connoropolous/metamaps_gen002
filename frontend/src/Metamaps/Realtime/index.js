@@ -187,7 +187,6 @@ let Realtime = {
       self.room.videoAdded(self.handleVideoAdded)
 
       if (Active.Map) {
-        self.room.chat.addWrapper()
         self.room.chat.render()
       }
     } // if Active.Mapper

@@ -39,31 +39,6 @@ const ChatView = {
         sessioninvite: [4000, 5393, true]
       }
     })
-
-    // TODO move these event handlers into react
-    // this.$button.on('click', function() {
-    //   Handlers.buttonClick.call(self)
-    // })
-    // this.$videoToggle.on('click', function() {
-    //   Handlers.videoToggleClick.call(self)
-    // })
-    // this.$cursorToggle.on('click', function() {
-    //   Handlers.cursorToggleClick.call(self)
-    // })
-    // this.$soundToggle.on('click', function() {
-    //   Handlers.soundToggleClick.call(self)
-    // })
-    // this.$messageInput.on('keyup', function(event) {
-    //   Handlers.keyUp.call(self, event)
-    // })
-    // this.$messageInput.on('focus', function() {
-    //   Handlers.inputFocus.call(self)
-    // })
-    // this.$messageInput.on('blur', function() {
-    //   Handlers.inputBlur.call(self)
-    // })
-  },
-  addWrapper: () => {
     $('body').prepend('<div id="chat-box-wrapper"></div>')
   },
   render: () => {
@@ -73,7 +48,18 @@ const ChatView = {
       leaveCall: Realtime.leaveCall,
       joinCall: Realtime.joinCall,
       participants: self.participants,
-      unreadMessages: self.unreadMessages
+      messages: self.messages,
+      unreadMessages: self.unreadMessages,
+      buttonClick: self.buttonClick,
+      videoToggleClick: self.videoToggleClick,
+      cursorToggleClick: self.cursorToggleClick,
+      soundToggleClick: self.soundToggleClick,
+      inputBlur: self.inputBlur,
+      inputFocus: self.inputFocus,
+      videosShowing: self.videosShowing,
+      cursorsShowing: self.cursorsShowing,
+      alertSound: self.alertSound,
+      handleInputMessage: self.handleInputMessage
     }), document.getElementById('chat-box-wrapper'))
   },
   show: () => {
@@ -85,7 +71,7 @@ const ChatView = {
     ChatView.render()
   },
   addParticipant: participant => {
-    const p = clone(participant.attributes)
+    const p = participant.attributes ? clone(participant.attributes) : participant
     ChatView.participants.push(p)
     ChatView.render()
   },
@@ -119,14 +105,13 @@ const ChatView = {
 
     self.messages.push(m)
     // TODO what is scrollMessages?
-    if (!isInitial) this.scrollMessages(200)
+    // if (!isInitial) self.scrollMessages(200)
     self.render()
 
-    if (!wasMe && !isInitial && this.alertSound) this.sound.play('receivechat')
+    if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
   },
   handleInputMessage: text => {
-    // TODO set textarea to be empty in react
-    $(document).trigger(ChatView.events.message + '-' + this.room, [{ message: text }])
+    $(document).trigger(ChatView.events.message + '-' + self.room, [{ message: text }])
   },
   leaveConversation: () => {
     // TODO refactor
@@ -147,39 +132,54 @@ const ChatView = {
   invitationAnswered: () => {
     // TODO refactor
     // this.$participants.find('.participant-' + id).removeClass('pending')
-  }
-}
+  },
+  buttonClick: () => {
+    const self = ChatView
+    if (self.isOpen) self.close()
+    else if (!self.isOpen) self.open()
+  },
+  close: () => {
+    this.isOpen = false
 
-var Handlers = {
-  buttonClick: function() {
-    if (this.isOpen) this.close()
-    else if (!this.isOpen) this.open()
+    // TODO how to do focus with react
+    // this.$messageInput.blur()
+
+    $(document).trigger(ChatView.events.closeTray)
+    ChatView.render()
+  },
+  open: () => {
+    ChatView.unreadMessages = 0
+    this.isOpen = true
+
+    // TODO how to do focus with react
+    // this.$messageInput.focus()
+    // TODO reimplement scrollMessages
+    // this.scrollMessages(0)
+
+    $(document).trigger(ChatView.events.openTray)
+    ChatView.render()
   },
   videoToggleClick: function() {
-    this.$videoToggle.toggleClass('active')
-    this.videosShowing = !this.videosShowing
-    $(document).trigger(this.videosShowing ? ChatView.events.videosOn : ChatView.events.videosOff)
+    const self = ChatView
+    self.videosShowing = !self.videosShowing
+    $(document).trigger(self.videosShowing ? ChatView.events.videosOn : ChatView.events.videosOff)
+    ChatView.render()
   },
   cursorToggleClick: function() {
-    this.$cursorToggle.toggleClass('active')
-    this.cursorsShowing = !this.cursorsShowing
-    $(document).trigger(this.cursorsShowing ? ChatView.events.cursorsOn : ChatView.events.cursorsOff)
+    const self = ChatView
+    self.cursorsShowing = !self.cursorsShowing
+    $(document).trigger(self.cursorsShowing ? ChatView.events.cursorsOn : ChatView.events.cursorsOff)
+    ChatView.render()
   },
   soundToggleClick: function() {
+    const self = ChatView
     this.alertSound = !this.alertSound
-    this.$soundToggle.toggleClass('active')
+    ChatView.render()
   },
-  keyUp: function(event) {
-    switch (event.which) {
-      case 13: // enter
-        Private.handleInputMessage.call(this)
-        break
-    }
-  },
-  inputFocus: function() {
+  inputFocus: () => {
     $(document).trigger(ChatView.events.inputFocus)
   },
-  inputBlur: function() {
+  inputBlur: () => {
     $(document).trigger(ChatView.events.inputBlur)
   }
 }
@@ -200,32 +200,8 @@ var Handlers = {
 //   this.$participants.find('.participant').removeClass('pending')
 // }
 
-
-// ChatView.prototype.addParticipant = function(participant) {
-//   this.participants.add(participant)
-// }
-
-// ChatView.prototype.removeParticipant = function(username) {
-//   var p = this.participants.find(p => p.get('username') === username)
-//   if (p) {
-//     this.participants.remove(p)
-//   }
-// }
-
 // ChatView.prototype.removeParticipants = function() {
 //   this.participants.remove(this.participants.models)
-// }
-
-// ChatView.prototype.open = function() {
-//   this.$container.css({
-//     right: '0'
-//   })
-//   this.$messageInput.focus()
-//   this.isOpen = true
-//   this.unreadMessages = 0
-//   this.$unread.hide()
-//   this.scrollMessages(0)
-//   $(document).trigger(ChatView.events.openTray)
 // }
 
 // ChatView.prototype.addMessage = function(message, isInitial, wasMe) {
@@ -245,15 +221,6 @@ var Handlers = {
 //   this.unreadMessages = 0
 //   this.$unread.hide()
 //   this.$messages.empty()
-// }
-
-// ChatView.prototype.close = function() {
-//   this.$container.css({
-//     right: '-300px'
-//   })
-//   this.$messageInput.blur()
-//   this.isOpen = false
-//   $(document).trigger(ChatView.events.closeTray)
 // }
 
 // ChatView.prototype.remove = function() {
