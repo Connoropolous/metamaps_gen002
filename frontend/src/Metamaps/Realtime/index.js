@@ -186,11 +186,10 @@ let Realtime = {
       })
       self.room.videoAdded(self.handleVideoAdded)
 
-      if (!Active.Map) {
-        self.room.chat.$container.hide()
+      if (Active.Map) {
+        self.room.chat.addWrapper()
+        self.room.chat.render()
       }
-      self.room.chat.addWrapper()
-      self.room.chat.render()
     } // if Active.Mapper
   },
   addJuntoListeners: function() {
@@ -239,14 +238,14 @@ let Realtime = {
     $('.collabCompass').remove()
     if (self.room) {
       self.room.leave()
-      self.room.chat.$container.hide()
+      self.room.chat.hide()
       self.room.chat.close()
     }
   },
   turnOn: function(notify) {
     var self = Realtime
     $('.collabCompass').show()
-    self.room.chat.$container.show()
+    self.room.chat.show()
     self.room.room = 'map-' + Active.Map.id
     self.activeMapper = {
       id: Active.Mapper.id,
