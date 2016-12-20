@@ -18,6 +18,8 @@ const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, pho
 
 const ChatView = {
   isOpen: false,
+  conversationLive: false,
+  isParticipating: false,
   mapChat: null,
   domId: 'chat-box-wrapper',
   init: function(urls) {
@@ -37,12 +39,13 @@ const ChatView = {
     const self = ChatView
     self.room = room
     self.mapper = mapper
-    self.messages = messages
-
+    self.messages = messages // is a backbone collection
+    self.conversationLive = false
+    self.isParticipating = false
     self.alertSound = true // whether to play sounds on arrival of new messages or not
     self.cursorsShowing = true
     self.videosShowing = true
-    self.participants = []
+    self.participants = new Backbone.Collection()
     self.render()
   },
   show: () => {
@@ -55,11 +58,13 @@ const ChatView = {
     if (!Active.Map) return    
     const self = ChatView
     self.mapChat = ReactDOM.render(React.createElement(MapChat, {
+      conversationLive: self.conversationLive,
+      isParticipating: self.isParticipating,
       onOpen: self.onOpen,
       onClose: self.onClose,
       leaveCall: Realtime.leaveCall,
       joinCall: Realtime.joinCall,
-      participants: self.participants,
+      participants: self.participants.models.map(p => p.attributes),
       messages: self.messages.models.map(m => m.attributes),
       videoToggleClick: self.videoToggleClick,
       cursorToggleClick: self.cursorToggleClick,
@@ -76,14 +81,11 @@ const ChatView = {
     $(document).trigger(ChatView.events.closeTray)
   },
   addParticipant: participant => {
-    // TODO this should probably be using a Backbone collection????
-    const p = participant.attributes ? clone(participant.attributes) : participant
-    ChatView.participants.push(p)
+    ChatView.participants.add(participant)
     ChatView.render()
   },
   removeParticipant: participant => {
-    const remove_id = participant.get('id')
-    ChatView.participants = ChatView.participants.filter(p => p.id !== remove_id)
+    ChatView.participants.remove(participant)
     ChatView.render()
   },
   addMessage: (message, isInitial, wasMe) => {
@@ -115,29 +117,56 @@ const ChatView = {
     if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
   },
   handleInputMessage: text => {
-    // TODO use backbone
-    ChatView.addMessage(text, false, false)
     $(document).trigger(ChatView.events.message + '-' + self.room, [{ message: text }])
   },
   leaveConversation: () => {
     // TODO refactor
     // this.$participants.removeClass('is-participating')
+    ChatView.isParticipating = false
+    ChatView.render()
   },
-  mapperJoinedCall: () => {
+  mapperJoinedCall: id => {
     // TODO refactor
     // this.$participants.find('.participant-' + id).addClass('active')
+    const mapper = ChatView.participants.findWhere({id})
+    mapper && mapper.set('isParticipating', true)
+    ChatView.render()
   },
   mapperLeftCall: () => {
     // TODO refactor
     // this.$participants.find('.participant-' + id).removeClass('active')
+    const mapper = ChatView.participants.findWhere({id})
+    mapper && mapper.set('isParticipating', false)
+    ChatView.render()
   },
-  invitationPending: () => {
+  invitationPending: id => {
     // TODO refactor
     // this.$participants.find('.participant-' + id).addClass('pending')
+    const mapper = ChatView.participants.findWhere({id})
+    mapper && mapper.set('isPending', true)
+    ChatView.render()
   },
-  invitationAnswered: () => {
+  invitationAnswered: id => {
     // TODO refactor
     // this.$participants.find('.participant-' + id).removeClass('pending')
+    const mapper = ChatView.participants.findWhere({id})
+    mapper && mapper.set('isPending', false)
+    ChatView.render()
+  },
+  conversationInProgress: participating => {
+    ChatView.conversationLive = true
+    ChatView.isParticipating = participating
+    ChatView.render() 
+  },
+  conversationEnded: () => {
+    ChatView.conversationLive = false
+    ChatView.isParticipating = false
+    // go through and remove isParticipating from all other participants too
+    ChatView.render()
+  },
+  removeParticipants: () => {
+    ChatView.participants.remove(ChatView.participants.models)
+    ChatView.render()
   },
   close: () => {
     // TODO how to do focus with react
@@ -186,10 +215,6 @@ const ChatView = {
 //   this.$participants.find('.participant').removeClass('pending')
 // }
 
-// ChatView.prototype.removeParticipants = function() {
-//   this.participants.remove(this.participants.models)
-// }
-
 // ChatView.prototype.addMessage = function(message, isInitial, wasMe) {
 //   this.messages.add(message)
 //   Private.addMessage.call(this, message, isInitial, wasMe)
@@ -207,11 +232,6 @@ const ChatView = {
 //   this.unreadMessages = 0
 //   this.$unread.hide()
 //   this.$messages.empty()
-// }
-
-// ChatView.prototype.remove = function() {
-//   this.$button.off()
-//   this.$container.remove()
 // }
 
 /**

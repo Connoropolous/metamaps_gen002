@@ -68,6 +68,7 @@ class MapChat extends Component {
 
   render = () => {
     const rightOffset = this.state.open ? '0' : '-300px'
+    const { conversationLive } = this.props
     const { videosShowing, cursorsShowing, alertSound, unreadMessages } = this.state
     return (
       <div className="chat-box"
@@ -79,18 +80,21 @@ class MapChat extends Component {
           <div onClick={this.toggleCursorsShowing} className={`cursor-toggle ${cursorsShowing ? '' : 'active'}`} />
         </div>
         <div className="participants">
-          <div className="conversation-live">
+          {conversationLive && <div className="conversation-live">
             LIVE
-						<span className="call-action leave" onClick={this.props.leaveCall}>
-							LEAVE
-						</span>
-						<span className="call-action join"  onClick={this.props.joinCall}>
-							JOIN
-						</span>
-          </div>
-          {this.props.participants.map(participant => {
-            return <Participant key={participant.id} {...participant} />
-          })}
+	      {isParticipating && <span className="call-action leave" onClick={this.props.leaveCall}>
+                LEAVE
+              </span>}
+              {!isParticipating && <span className="call-action join"  onClick={this.props.joinCall}>
+                JOIN
+              </span>}
+          </div>}
+          {participants.map(participant => <Participant
+            key={participant.id}
+            {...participant}
+            conversationLive={conversationLive}
+            mapperIsLive={isParticipating}/>
+          )}
         </div>
         <div className="chat-header">
           CHAT
@@ -101,9 +105,7 @@ class MapChat extends Component {
           <Unread count={unreadMessages} />
         </div>
         <div className="chat-messages">
-          {this.props.messages.map(message => {
-            return <Message key={message.id} {...message} />
-          })}
+          {messages.map(message => <Message key={message.id} {...message} />)}
         </div>
         <textarea className="chat-input"
           placeholder="Send a message..."
@@ -119,6 +121,8 @@ class MapChat extends Component {
 }
 
 MapChat.propTypes = {
+  conversationLive: PropTypes.bool,
+  isParticipating: PropTypes.bool,
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
   leaveCall: PropTypes.func,
@@ -131,7 +135,8 @@ MapChat.propTypes = {
     id: PropTypes.number,
     image: PropTypes.string, // image url
     self: PropTypes.bool,
-    username: PropTypes.string
+    username: PropTypes.string,
+    isParticipating: PropTypes.bool
   }))
 }
 

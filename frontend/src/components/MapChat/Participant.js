@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 
 class Participant extends Component {
   render() {
-    const { id, self, image, username, selfName, color } = this.props
+    const { conversationLive, mapperIsLive, isParticipating, isPending, id, self, image, username, selfName, color } = this.props
     return (
 			<div className={`participant participant-${id} ${self ? 'is-self' : ''}`}>
 				<div className="chat-participant-image">
@@ -11,17 +11,17 @@ class Participant extends Component {
 				<div className="chat-participant-name">
 					{username} {self ? '(me)' : ''}
 				</div>
-				<button
+				{!conversationLive && <button
 					className='button chat-participant-invite-call'
 					onClick={this.props.inviteACall} // Realtime.inviteACall(id)
-				/>
-				<button
+				/>}
+				{mapperIsLive && !isParticipating && <button
 					className="button chat-participant-invite-join"
 					onClick={this.props.inviteToJoin} // Realtime.inviteToJoin(id)
-				/>
-				<span className="chat-participant-participating">
+				/>}
+				{isParticipating && <span className="chat-participant-participating">
 					<div className="green-dot"></div>
-				</span>
+				</span>}
 				<div className="clearfloat"></div>
 			</div>
     )
@@ -29,6 +29,10 @@ class Participant extends Component {
 }
 
 Participant.propTypes = {
+  conversationLive: PropTypes.bool,
+  mapperIsLive: PropTypes.bool,
+  isParticipating: PropTypes.bool,
+  isPending: PropTypes.bool,
   color: PropTypes.string, // css color
   id: PropTypes.number,
   image: PropTypes.string, // image url
