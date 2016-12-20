@@ -11,11 +11,11 @@ class Participant extends Component {
 				<div className="chat-participant-name">
 					{username} {self ? '(me)' : ''}
 				</div>
-				{!conversationLive && <button
+				{!self && !conversationLive && <button
 					className='button chat-participant-invite-call'
 					onClick={this.props.inviteACall} // Realtime.inviteACall(id)
 				/>}
-				{mapperIsLive && !isParticipating && <button
+				{!self && mapperIsLive && !isParticipating && <button
 					className="button chat-participant-invite-join"
 					onClick={this.props.inviteToJoin} // Realtime.inviteToJoin(id)
 				/>}

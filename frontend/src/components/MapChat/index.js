@@ -17,6 +17,17 @@ class MapChat extends Component {
     }
   }
 
+  reset = () => {
+    this.setState({
+      unreadMessages: 0,
+      open: false,
+      messageText: '',
+      alertSound: true, // whether to play sounds on arrival of new messages or not
+      cursorsShowing: true,
+      videosShowing:  true
+    })
+  }
+
   close = () => {
     this.setState({open: false})
     this.props.onClose()
@@ -28,7 +39,7 @@ class MapChat extends Component {
   }
 
   newMessage = () => {
-    if (!this.state.open) this.setState({ unreadMessages: this.state.unreadMessages + 1 })
+    if (!this.state.open) this.setState({unreadMessages: this.state.unreadMessages + 1})
   }
 
   toggleDrawer = () => {
@@ -68,7 +79,7 @@ class MapChat extends Component {
 
   render = () => {
     const rightOffset = this.state.open ? '0' : '-300px'
-    const { conversationLive } = this.props
+    const { conversationLive, isParticipating, participants, messages } = this.props
     const { videosShowing, cursorsShowing, alertSound, unreadMessages } = this.state
     return (
       <div className="chat-box"
@@ -100,7 +111,7 @@ class MapChat extends Component {
           CHAT
           <div onClick={this.toggleAlertSound} className={`sound-toggle ${alertSound ? '' : 'active'}`}></div>
         </div>
-        <div className="chat-button" onClick={this.toggleDrawer}>
+        <div className={`chat-button ${conversationLive ? 'active' : ''}`} onClick={this.toggleDrawer}>
           <div className="tooltips">Chat</div>
           <Unread count={unreadMessages} />
         </div>
@@ -136,7 +147,8 @@ MapChat.propTypes = {
     image: PropTypes.string, // image url
     self: PropTypes.bool,
     username: PropTypes.string,
-    isParticipating: PropTypes.bool
+    isParticipating: PropTypes.bool,
+    isPending: PropTypes.bool
   }))
 }
 

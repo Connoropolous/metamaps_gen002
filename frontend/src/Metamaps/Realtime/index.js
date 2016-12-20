@@ -174,8 +174,6 @@ let Realtime = {
       self.room = new Views.Room({
         webrtc: self.webrtc,
         socket: self.socket,
-        username: Active.Mapper ? Active.Mapper.get('name') : '',
-        image: Active.Mapper ? Active.Mapper.get('image') : '',
         room: 'global',
         $video: self.localVideo.$video,
         myVideoView: self.localVideo.view,
@@ -187,26 +185,26 @@ let Realtime = {
   addJuntoListeners: function() {
     var self = Realtime
 
-    $(document).on(Views.ChatView.events.openTray, function() {
+    $(document).on(ChatView.events.openTray, function() {
       $('.main').addClass('compressed')
       self.chatOpen = true
       self.positionPeerIcons()
     })
-    $(document).on(Views.ChatView.events.closeTray, function() {
+    $(document).on(ChatView.events.closeTray, function() {
       $('.main').removeClass('compressed')
       self.chatOpen = false
       self.positionPeerIcons()
     })
-    $(document).on(Views.ChatView.events.videosOn, function() {
+    $(document).on(ChatView.events.videosOn, function() {
       $('#wrapper').removeClass('hideVideos')
     })
-    $(document).on(Views.ChatView.events.videosOff, function() {
+    $(document).on(ChatView.events.videosOff, function() {
       $('#wrapper').addClass('hideVideos')
     })
-    $(document).on(Views.ChatView.events.cursorsOn, function() {
+    $(document).on(ChatView.events.cursorsOn, function() {
       $('#wrapper').removeClass('hideCursors')
     })
-    $(document).on(Views.ChatView.events.cursorsOff, function() {
+    $(document).on(ChatView.events.cursorsOff, function() {
       $('#wrapper').addClass('hideCursors')
     })
   },
@@ -218,7 +216,7 @@ let Realtime = {
         self.setupSocket()
         self.setupLocalSendables()
       }
-      self.room.addMessages(new DataModel.MessageCollection(DataModel.Messages), true)
+      self.setupChat() // chat can happen on public maps too
     }
   },
   endActiveMap: function() {
@@ -228,16 +226,14 @@ let Realtime = {
     if (self.inConversation) self.leaveCall()
     self.leaveMap()
     $('.collabCompass').remove()
-    if (self.room) {
-      self.room.leave()
-      ChatView.hide()
-      ChatView.close()
-    }
+    if (self.room) self.room.leave()
+    ChatView.hide()
+    ChatView.close()
+    ChatView.reset()
   },
   turnOn: function(notify) {
     var self = Realtime
     $('.collabCompass').show()
-    ChatView.show()
     self.room.room = 'map-' + Active.Map.id
     self.activeMapper = {
       id: Active.Mapper.id,
@@ -250,7 +246,13 @@ let Realtime = {
     self.localVideo.view.$container.find('.video-cutoff').css({
       border: '4px solid ' + self.activeMapper.color
     })
+  },
+  setupChat: function() {
+    const self = Realtime
+    ChatView.setNewMap(self.room.room)
     ChatView.addParticipant(self.activeMapper)
+    ChatView.addMessages(new DataModel.MessageCollection(DataModel.Messages), true)
+    ChatView.show()
   },
   setupSocket: function() {
     var self = Realtime
@@ -324,7 +326,7 @@ let Realtime = {
     var createMessage = function(event, data) {
       self.createMessage(data)
     }
-    $(document).on(Views.Room.events.newMessage + '.map', createMessage)
+    $(document).on(ChatView.events.newMessage + '.map', createMessage)
   },
   countOthersInConversation: function() {
     var self = Realtime
@@ -395,7 +397,7 @@ let Realtime = {
   callEnded: function() {
     var self = Realtime
 
-    self.room.conversationEnding()
+    ChatView.conversationEnded()
     self.room.leaveVideoOnly()
     self.inConversation = false
     self.localVideo.view.$container.hide().css({

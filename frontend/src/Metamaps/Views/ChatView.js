@@ -2,22 +2,19 @@
 
 import Backbone from 'backbone'
 import { Howl } from 'howler'
-import Autolinker from 'autolinker'
-import { clone, template as lodashTemplate } from 'lodash'
-import outdent from 'outdent'
 import React from 'react'
 import ReactDOM from 'react-dom'
 // TODO is this line good or bad
 // Backbone.$ = window.$
 
 import Active from '../Active'
+import DataModel from '../DataModel'
 import Realtime from '../Realtime'
 import MapChat from '../../components/MapChat'
 
-const linker = new Autolinker({ newWindow: true, truncate: 50, email: false, phone: false })
-
 const ChatView = {
   isOpen: false,
+  messages: new Backbone.Collection(),
   conversationLive: false,
   isParticipating: false,
   mapChat: null,
@@ -35,11 +32,9 @@ const ChatView = {
       }
     })
   },
-  setNewMap: function(messages, mapper, room) {
+  setNewMap: function(room) {
     const self = ChatView
     self.room = room
-    self.mapper = mapper
-    self.messages = messages // is a backbone collection
     self.conversationLive = false
     self.isParticipating = false
     self.alertSound = true // whether to play sounds on arrival of new messages or not
@@ -88,67 +83,26 @@ const ChatView = {
     ChatView.participants.remove(participant)
     ChatView.render()
   },
-  addMessage: (message, isInitial, wasMe) => {
-    const self = ChatView
-    if (!isInitial) self.mapChat.newMessage() 
-
-    function addZero(i) {
-      if (i < 10) {
-        i = '0' + i
-      }
-      return i
-    }
-    var m = clone(message.attributes)
-
-    m.timestamp = new Date(m.created_at)
-
-    var date = (m.timestamp.getMonth() + 1) + '/' + m.timestamp.getDate()
-    date += ' ' + addZero(m.timestamp.getHours()) + ':' + addZero(m.timestamp.getMinutes())
-    m.timestamp = date
-    m.image = m.user_image
-    m.message = linker.link(m.message)
-
-    self.messages.push(m)
-    // TODO what is scrollMessages?
-    // scrollMessages scrolls to the bottom of the div when there's new messages“
-    // if (!isInitial) self.scrollMessages(200)
-    self.render()
-
-    if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
-  },
-  handleInputMessage: text => {
-    $(document).trigger(ChatView.events.message + '-' + self.room, [{ message: text }])
-  },
   leaveConversation: () => {
-    // TODO refactor
-    // this.$participants.removeClass('is-participating')
     ChatView.isParticipating = false
     ChatView.render()
   },
   mapperJoinedCall: id => {
-    // TODO refactor
-    // this.$participants.find('.participant-' + id).addClass('active')
     const mapper = ChatView.participants.findWhere({id})
     mapper && mapper.set('isParticipating', true)
     ChatView.render()
   },
   mapperLeftCall: () => {
-    // TODO refactor
-    // this.$participants.find('.participant-' + id).removeClass('active')
     const mapper = ChatView.participants.findWhere({id})
     mapper && mapper.set('isParticipating', false)
     ChatView.render()
   },
   invitationPending: id => {
-    // TODO refactor
-    // this.$participants.find('.participant-' + id).addClass('pending')
     const mapper = ChatView.participants.findWhere({id})
     mapper && mapper.set('isPending', true)
     ChatView.render()
   },
   invitationAnswered: id => {
-    // TODO refactor
-    // this.$participants.find('.participant-' + id).removeClass('pending')
     const mapper = ChatView.participants.findWhere({id})
     mapper && mapper.set('isPending', false)
     ChatView.render()
@@ -161,11 +115,7 @@ const ChatView = {
   conversationEnded: () => {
     ChatView.conversationLive = false
     ChatView.isParticipating = false
-    // go through and remove isParticipating from all other participants too
-    ChatView.render()
-  },
-  removeParticipants: () => {
-    ChatView.participants.remove(ChatView.participants.models)
+    ChatView.participants.forEach(p => p.set({isParticipating: false, isPending: false}))
     ChatView.render()
   },
   close: () => {
@@ -196,30 +146,51 @@ const ChatView = {
   },
   inputBlur: () => {
     $(document).trigger(ChatView.events.inputBlur)
+  },
+  addMessage: (message, isInitial, wasMe) => {
+    const self = ChatView
+    if (!isInitial) self.mapChat.newMessage() 
+    if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
+    self.messages.add(message)
+    // TODO what is scrollMessages?
+    // scrollMessages scrolls to the bottom of the div when there's new messages“
+    // if (!isInitial) self.scrollMessages(200)
+    self.render()
+  },
+  sendChatMessage: message => {
+    var self = ChatView
+    if (ChatView.alertSound) ChatView.sound.play('sendchat')
+    var m = new DataModel.Message({
+      message: message.message,
+      resource_id: Active.Map.id,
+      resource_type: 'Map'
+    })
+    m.save(null, {
+      success: function(model, response) {
+        self.addMessages(new DataModel.MessageCollection(model), false, true)
+        $(document).trigger(ChatView.events.newMessage, [model])
+      },
+      error: function(model, response) {
+        console.log('error!', response)
+      }
+    })
+  },
+  handleInputMessage: text => {
+    ChatView.sendChatMessage({message: text})
+  },
+  // they should be instantiated as backbone models before they get
+  // passed to this function
+  addMessages: (messages, isInitial, wasMe) => {
+    messages.models.forEach(m => ChatView.addMessage(m, isInitial, wasMe))
+  },
+  reset: () => {
+    ChatView.mapChat.reset()
+    ChatView.participants.reset()
+    ChatView.messages.reset()
+    ChatView.render()
   }
 }
 
-// ChatView.prototype.conversationInProgress = function(participating) {
-//   this.$conversationInProgress.show()
-//   this.$participants.addClass('is-live')
-//   if (participating) this.$participants.addClass('is-participating')
-//   this.$button.addClass('active')
-// }
-
-// ChatView.prototype.conversationEnded = function() {
-//   this.$conversationInProgress.hide()
-//   this.$participants.removeClass('is-live')
-//   this.$participants.removeClass('is-participating')
-//   this.$button.removeClass('active')
-//   this.$participants.find('.participant').removeClass('active')
-//   this.$participants.find('.participant').removeClass('pending')
-// }
-
-// ChatView.prototype.addMessage = function(message, isInitial, wasMe) {
-//   this.messages.add(message)
-//   Private.addMessage.call(this, message, isInitial, wasMe)
-// }
-//
 // ChatView.prototype.scrollMessages = function(duration) {
 //   duration = duration || 0
 
@@ -228,18 +199,12 @@ const ChatView = {
 //   }, duration)
 // }
 
-// ChatView.prototype.clearMessages = function() {
-//   this.unreadMessages = 0
-//   this.$unread.hide()
-//   this.$messages.empty()
-// }
-
 /**
  * @class
  * @static
  */
 ChatView.events = {
-  message: 'ChatView:message',
+  newMessage: 'ChatView:newMessage',
   openTray: 'ChatView:openTray',
   closeTray: 'ChatView:closeTray',
   inputFocus: 'ChatView:inputFocus',

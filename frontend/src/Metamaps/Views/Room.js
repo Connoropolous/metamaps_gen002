@@ -9,8 +9,6 @@ import attachMediaStream from 'attachmediastream'
 import Active from '../Active'
 import DataModel from '../DataModel'
 import Realtime from '../Realtime'
-
-import ChatView from './ChatView'
 import VideoView from './VideoView'
 
 const Room = function(opts = {}) {
@@ -19,36 +17,18 @@ const Room = function(opts = {}) {
   this.webrtc = opts.webrtc
   this.room = opts.room
   this.config = opts.config
-  this.peopleCount = 0
-
   this.$myVideo = opts.$video
   this.myVideo = opts.myVideoView
-
-  this.messages = new Backbone.Collection()
-  this.currentMapper = new Backbone.Model({ name: opts.username, image: opts.image })
-  ChatView.setNewMap(this.messages, this.currentMapper, this.room)
-
   this.videos = {}
-
   this.init()
 }
 
 Room.prototype.join = function(cb) {
   this.isActiveRoom = true
   this.webrtc.joinRoom(this.room, cb)
-  ChatView.conversationInProgress(true) // true indicates participation
-}
-
-Room.prototype.conversationInProgress = function() {
-  ChatView.conversationInProgress(false) // false indicates not participating
-}
-
-Room.prototype.conversationEnding = function() {
-  ChatView.conversationEnded()
 }
 
 Room.prototype.leaveVideoOnly = function() {
-  ChatView.leaveConversation() // the conversation will carry on without you
   for (var id in this.videos) {
     this.removeVideo(id)
   }
@@ -64,14 +44,6 @@ Room.prototype.leave = function() {
   this.isActiveRoom = false
   this.webrtc.leaveRoom()
   this.webrtc.stopLocalVideo()
-  ChatView.conversationEnded()
-  ChatView.removeParticipants()
-  ChatView.clearMessages()
-  this.messages.reset()
-}
-
-Room.prototype.setPeopleCount = function(count) {
-  this.peopleCount = count
 }
 
 Room.prototype.init = function() {
@@ -127,11 +99,6 @@ Room.prototype.init = function() {
     }
     v.$container.show()
   })
-
-  var sendChatMessage = function(event, data) {
-    self.sendChatMessage(data)
-  }
-  $(document).on(ChatView.events.message + '-' + this.room, sendChatMessage)
 }
 
 Room.prototype.videoAdded = function(callback) {
@@ -154,43 +121,6 @@ Room.prototype.removeVideo = function(peer) {
     this.videos[id].remove()
     delete this.videos[id]
   }
-}
-
-Room.prototype.sendChatMessage = function(data) {
-  var self = this
-  if (ChatView.alertSound) ChatView.sound.play('sendchat')
-  var m = new DataModel.Message({
-    message: data.message,
-    resource_id: Active.Map.id,
-    resource_type: 'Map'
-  })
-  m.save(null, {
-    success: function(model, response) {
-      self.addMessages(new DataModel.MessageCollection(model), false, true)
-      $(document).trigger(Room.events.newMessage, [model])
-    },
-    error: function(model, response) {
-      console.log('error!', response)
-    }
-  })
-}
-
-  // they should be instantiated as backbone models before they get
-  // passed to this function
-Room.prototype.addMessages = function(messages, isInitial, wasMe) {
-  var self = this
-
-  messages.models.forEach(function(message) {
-    ChatView.addMessage(message, isInitial, wasMe)
-  })
-}
-
-/**
- * @class
- * @static
- */
-Room.events = {
-  newMessage: 'Room:newMessage'
 }
 
 export default Room
