@@ -13,11 +13,11 @@ class Participant extends Component {
 				</div>
 				{!self && !conversationLive && <button
 					className='button chat-participant-invite-call'
-					onClick={this.props.inviteACall} // Realtime.inviteACall(id)
+					onClick={() => this.props.inviteACall(id)} // Realtime.inviteACall(id)
 				/>}
 				{!self && mapperIsLive && !isParticipating && <button
 					className="button chat-participant-invite-join"
-					onClick={this.props.inviteToJoin} // Realtime.inviteToJoin(id)
+					onClick={() => this.props.inviteToJoin(id)} // Realtime.inviteToJoin(id)
 				/>}
 				{isParticipating && <span className="chat-participant-participating">
 					<div className="green-dot"></div>
@@ -37,7 +37,9 @@ Participant.propTypes = {
   id: PropTypes.number,
   image: PropTypes.string, // image url
   self: PropTypes.bool,
-  username: PropTypes.string
+  username: PropTypes.string,
+  inviteACall: PropTypes.func,
+  inviteToJoin: PropTypes.func
 }
 
 export default Participant

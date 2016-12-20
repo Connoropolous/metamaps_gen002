@@ -59,6 +59,8 @@ const ChatView = {
       onClose: self.onClose,
       leaveCall: Realtime.leaveCall,
       joinCall: Realtime.joinCall,
+      inviteACall: Realtime.inviteACall,
+      inviteToJoin: Realtime.inviteToJoin,
       participants: self.participants.models.map(p => p.attributes),
       messages: self.messages.models.map(m => m.attributes),
       videoToggleClick: self.videoToggleClick,
@@ -92,7 +94,7 @@ const ChatView = {
     mapper && mapper.set('isParticipating', true)
     ChatView.render()
   },
-  mapperLeftCall: () => {
+  mapperLeftCall: id => {
     const mapper = ChatView.participants.findWhere({id})
     mapper && mapper.set('isParticipating', false)
     ChatView.render()

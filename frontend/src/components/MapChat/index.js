@@ -79,7 +79,7 @@ class MapChat extends Component {
 
   render = () => {
     const rightOffset = this.state.open ? '0' : '-300px'
-    const { conversationLive, isParticipating, participants, messages } = this.props
+    const { conversationLive, isParticipating, participants, messages, inviteACall, inviteToJoin } = this.props
     const { videosShowing, cursorsShowing, alertSound, unreadMessages } = this.state
     return (
       <div className="chat-box"
@@ -103,6 +103,8 @@ class MapChat extends Component {
           {participants.map(participant => <Participant
             key={participant.id}
             {...participant}
+            inviteACall={inviteACall}
+            inviteToJoin={inviteToJoin}
             conversationLive={conversationLive}
             mapperIsLive={isParticipating}/>
           )}
@@ -138,6 +140,8 @@ MapChat.propTypes = {
   onClose: PropTypes.func,
   leaveCall: PropTypes.func,
   joinCall: PropTypes.func,
+  inviteACall: PropTypes.func,
+  inviteToJoin: PropTypes.func,
   videoToggleClick: PropTypes.func,
   cursorToggleClick: PropTypes.func,
   soundToggleClick: PropTypes.func, 
