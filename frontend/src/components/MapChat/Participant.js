@@ -12,12 +12,12 @@ class Participant extends Component {
 					{username} {self ? '(me)' : ''}
 				</div>
 				{!self && !conversationLive && <button
-					className='button chat-participant-invite-call'
-					onClick={() => this.props.inviteACall(id)} // Realtime.inviteACall(id)
+					className={`button chat-participant-invite-call ${isPending ? 'pending' : ''}`}
+					onClick={() => !isPending && this.props.inviteACall(id)} // Realtime.inviteACall(id)
 				/>}
 				{!self && mapperIsLive && !isParticipating && <button
-					className="button chat-participant-invite-join"
-					onClick={() => this.props.inviteToJoin(id)} // Realtime.inviteToJoin(id)
+					className={`button chat-participant-invite-join ${isPending ? 'pending' : ''}`}
+					onClick={() => !isPending && this.props.inviteToJoin(id)} // Realtime.inviteToJoin(id)
 				/>}
 				{isParticipating && <span className="chat-participant-participating">
 					<div className="green-dot"></div>
