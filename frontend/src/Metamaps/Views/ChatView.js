@@ -120,16 +120,10 @@ const ChatView = {
     ChatView.render()
   },
   close: () => {
-    // TODO how to do focus with react
-    // this.$messageInput.blur()
     ChatView.mapChat.close()
   },
   open: () => {
     ChatView.mapChat.open()
-    // TODO how to do focus with react
-    // this.$messageInput.focus()
-    // TODO reimplement scrollMessages
-    // this.scrollMessages(0)
   },
   videoToggleClick: function() {
     ChatView.videosShowing = !ChatView.videosShowing
@@ -153,10 +147,8 @@ const ChatView = {
     if (!isInitial) self.mapChat.newMessage() 
     if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
     self.messages.add(message)
-    // TODO what is scrollMessages?
-    // scrollMessages scrolls to the bottom of the div when there's new messages“
-    // if (!isInitial) self.scrollMessages(200)
     self.render()
+    if (!isInitial) self.mapChat.scroll()
   },
   sendChatMessage: message => {
     var self = ChatView

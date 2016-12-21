@@ -31,15 +31,22 @@ class MapChat extends Component {
   close = () => {
     this.setState({open: false})
     this.props.onClose()
+    this.messageInput.blur()
   }
 
   open = () => {
+    this.scroll()
     this.setState({open: true, unreadMessages: 0})
     this.props.onOpen()
+    this.messageInput.focus()
   }
 
   newMessage = () => {
     if (!this.state.open) this.setState({unreadMessages: this.state.unreadMessages + 1})
+  }
+
+  scroll = () => {
+    this.messagesDiv.scrollTop = this.messagesDiv.scrollHeight
   }
 
   toggleDrawer = () => {
@@ -117,10 +124,11 @@ class MapChat extends Component {
           <div className="tooltips">Chat</div>
           <Unread count={unreadMessages} />
         </div>
-        <div className="chat-messages">
+        <div className="chat-messages" ref={div => this.messagesDiv = div}>
           {messages.map(message => <Message key={message.id} {...message} />)}
         </div>
         <textarea className="chat-input"
+          ref={textarea => this.messageInput = textarea}
           placeholder="Send a message..."
           value={this.state.messageText}
           onChange={this.handleChange('messageText')}
