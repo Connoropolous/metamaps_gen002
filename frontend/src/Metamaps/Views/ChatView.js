@@ -32,9 +32,8 @@ const ChatView = {
       }
     })
   },
-  setNewMap: function(room) {
+  setNewMap: function() {
     const self = ChatView
-    self.room = room
     self.conversationLive = false
     self.isParticipating = false
     self.alertSound = true // whether to play sounds on arrival of new messages or not

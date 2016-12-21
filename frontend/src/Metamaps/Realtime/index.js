@@ -249,7 +249,7 @@ let Realtime = {
   },
   setupChat: function() {
     const self = Realtime
-    ChatView.setNewMap(self.room.room)
+    ChatView.setNewMap()
     ChatView.addParticipant(self.activeMapper)
     ChatView.addMessages(new DataModel.MessageCollection(DataModel.Messages), true)
     ChatView.show()
