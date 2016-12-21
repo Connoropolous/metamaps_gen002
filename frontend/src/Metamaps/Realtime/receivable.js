@@ -234,7 +234,7 @@ export const lostMapper = self => data => {
   ChatView.sound.play('leavemap')
   // $('#mapper' + data.userid).remove()
   $('#compass' + data.userid).remove()
-  ChatView.removeParticipant(data.username)
+  ChatView.removeParticipant(ChatView.participants.findWhere({id: data.userid}))
 
   GlobalUI.notifyUser(data.username + ' just left the map')
 
