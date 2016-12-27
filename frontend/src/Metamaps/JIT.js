@@ -69,6 +69,28 @@ const JIT = {
     self.topicLinkImage = new Image()
     self.topicLinkImage.src = serverData['topic_link_signifier.png']
   },
+  connectModelsToGraph: function () {
+      var i, l, t, s
+
+      Visualize.mGraph.graph.eachNode(function(n) {
+        t = DataModel.Topics.get(n.id)
+        t.set({ node: n }, { silent: true })
+        t.updateNode()
+
+        n.eachAdjacency(function(edge) {
+          if (!edge.getData('init')) {
+            edge.setData('init', true)
+
+            l = edge.getData('synapseIDs').length
+            for (i = 0; i < l; i++) {
+              s = DataModel.Synapses.get(edge.getData('synapseIDs')[i])
+              s.set({ edge: edge }, { silent: true })
+              s.updateEdge()
+            }
+          }
+        })
+      })
+  },
   /**
    * convert our topic JSON into something JIT can use
    */
@@ -640,14 +662,14 @@ const JIT = {
       }
     },
     // this will just be used to patch the ForceDirected graphsettings with the few things which actually differ
-    background: {
+    /*background: {
       levelDistance: 200,
       numberOfCircles: 4,
       CanvasStyles: {
         strokeStyle: '#333',
         lineWidth: 1.5
       }
-    },
+    },*/
     levelDistance: 200
   },
   onMouseEnter: function(edge) {

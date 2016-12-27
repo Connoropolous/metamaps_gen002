@@ -22,6 +22,7 @@ class Synapse < ApplicationRecord
     where(topic1_id: topic_id).or(where(topic2_id: topic_id))
   }
 
+  after_create :after_created
   after_update :after_updated
 
   delegate :name, to: :user, prefix: true
@@ -40,6 +41,25 @@ class Synapse < ApplicationRecord
 
   def as_json(_options = {})
     super(methods: [:user_name, :user_image, :collaborator_ids])
+  end
+
+  def filtered
+    {
+      id: id,
+      permission: permission,
+      user_id: user_id,
+      collaborator_ids: collaborator_ids
+    }
+  end
+
+  def after_created
+    data = {
+      synapse: filtered,
+      topic1: topic1.filtered,
+      topic2: topic2.filtered
+    }
+    ActionCable.server.broadcast 'topic_' + topic1_id.to_s, type: 'newSynapse', data: data 
+    ActionCable.server.broadcast 'topic_' + topic2_id.to_s, type: 'newSynapse', data: data 
   end
 
   def after_updated
