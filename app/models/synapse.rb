@@ -38,6 +38,15 @@ class Synapse < ApplicationRecord
     end
   end
 
+  def filtered
+    {
+      id: id,
+      permission: permission,
+      user_id: user_id,
+      collaborator_ids: collaborator_ids
+    }
+  end
+
   def as_json(_options = {})
     super(methods: [:user_name, :user_image, :collaborator_ids])
   end
