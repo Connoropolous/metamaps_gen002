@@ -161,7 +161,6 @@ const ChatView = {
     m.save(null, {
       success: function(model, response) {
         self.addMessages(new DataModel.MessageCollection(model), false, true)
-        $(document).trigger(ChatView.events.newMessage, [model])
       },
       error: function(model, response) {
         console.log('error!', response)
@@ -197,7 +196,6 @@ const ChatView = {
  * @static
  */
 ChatView.events = {
-  newMessage: 'ChatView:newMessage',
   openTray: 'ChatView:openTray',
   closeTray: 'ChatView:closeTray',
   inputFocus: 'ChatView:inputFocus',

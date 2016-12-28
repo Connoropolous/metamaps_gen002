@@ -25,6 +25,7 @@ import {
   MAPPER_LEFT_CALL,
   NEW_MAPPER,
   LOST_MAPPER,
+  PEER_COORDS_UPDATED,
   MESSAGE_CREATED,
   TOPIC_DRAGGED,
   TOPIC_CREATED,
@@ -35,7 +36,6 @@ import {
   SYNAPSE_UPDATED,
   SYNAPSE_REMOVED,
   SYNAPSE_DELETED,
-  PEER_COORDS_UPDATED,
   MAP_UPDATED
 } from './events'
 
@@ -80,17 +80,7 @@ import {
   leaveCall,
   sendCoords,
   sendMapperInfo,
-  createMessage,
-  dragTopic,
-  createTopic,
-  updateTopic,
-  removeTopic,
-  deleteTopic,
-  createSynapse,
-  updateSynapse,
-  removeSynapse,
-  deleteSynapse,
-  updateMap
+  dragTopic
 } from './sendable'
 
 let Realtime = {
@@ -292,41 +282,6 @@ let Realtime = {
       self.dragTopic(positions)
     }
     $(document).on(JIT.events.topicDrag + '.map', dragTopic)
-
-    var createTopic = function(event, data) {
-      self.createTopic(data)
-    }
-    $(document).on(JIT.events.newTopic + '.map', createTopic)
-
-    var deleteTopic = function(event, data) {
-      self.deleteTopic(data)
-    }
-    $(document).on(JIT.events.deleteTopic + '.map', deleteTopic)
-
-    var removeTopic = function(event, data) {
-      self.removeTopic(data)
-    }
-    $(document).on(JIT.events.removeTopic + '.map', removeTopic)
-
-    var createSynapse = function(event, data) {
-      self.createSynapse(data)
-    }
-    $(document).on(JIT.events.newSynapse + '.map', createSynapse)
-
-    var deleteSynapse = function(event, data) {
-      self.deleteSynapse(data)
-    }
-    $(document).on(JIT.events.deleteSynapse + '.map', deleteSynapse)
-
-    var removeSynapse = function(event, data) {
-      self.removeSynapse(data)
-    }
-    $(document).on(JIT.events.removeSynapse + '.map', removeSynapse)
-
-    var createMessage = function(event, data) {
-      self.createMessage(data)
-    }
-    $(document).on(ChatView.events.newMessage + '.map', createMessage)
   },
   countOthersInConversation: function() {
     var self = Realtime
@@ -520,8 +475,10 @@ const subscribeToEvents = (Realtime, socket) => {
   socket.on(PEER_COORDS_UPDATED, peerCoordsUpdated(Realtime))
   socket.on(NEW_MAPPER, newMapper(Realtime))
   socket.on(LOST_MAPPER, lostMapper(Realtime))
-  socket.on(MESSAGE_CREATED, messageCreated(Realtime))
   socket.on(TOPIC_DRAGGED, topicDragged(Realtime))
+
+/*
+  socket.on(MESSAGE_CREATED, messageCreated(Realtime))
   socket.on(TOPIC_CREATED, topicCreated(Realtime))
   socket.on(TOPIC_UPDATED, topicUpdated(Realtime))
   socket.on(TOPIC_REMOVED, topicRemoved(Realtime))
@@ -531,6 +488,7 @@ const subscribeToEvents = (Realtime, socket) => {
   socket.on(SYNAPSE_REMOVED, synapseRemoved(Realtime))
   socket.on(SYNAPSE_DELETED, synapseDeleted(Realtime))
   socket.on(MAP_UPDATED, mapUpdated(Realtime))
+*/
 }
 
 export default Realtime
