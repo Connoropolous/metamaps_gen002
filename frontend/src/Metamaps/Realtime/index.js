@@ -4,6 +4,7 @@ import SimpleWebRTC from 'simplewebrtc'
 import SocketIoConnection from 'simplewebrtc/socketioconnection'
 
 import Active from '../Active'
+import Cable from '../Cable'
 import DataModel from '../DataModel'
 import JIT from '../JIT'
 import Util from '../Util'
@@ -26,16 +27,7 @@ import {
   NEW_MAPPER,
   LOST_MAPPER,
   PEER_COORDS_UPDATED,
-  TOPIC_DRAGGED,
-
-  MESSAGE_CREATED,
-  TOPIC_ADDED,
-  TOPIC_UPDATED,
-  TOPIC_REMOVED,
-  SYNAPSE_ADDED,
-  SYNAPSE_UPDATED,
-  SYNAPSE_REMOVED,
-  MAP_UPDATED
+  TOPIC_DRAGGED
 } from './events'
 
 import {
@@ -112,10 +104,7 @@ let Realtime = {
     self.socket.on('connect', function() {
       console.log('connected')
       subscribeToEvents(self, self.socket)
-
-      if (!self.disconnected) {
-        self.startActiveMap()
-      } else self.disconnected = false
+      self.disconnected = false
     })
     self.socket.on('disconnect', function() {
       self.disconnected = true
@@ -168,6 +157,8 @@ let Realtime = {
         config: { DOUBLE_CLICK_TOLERANCE: 200 }
       })
       self.room.videoAdded(self.handleVideoAdded)
+      
+      self.startActiveMap()
     } // if Active.Mapper
   },
   addJuntoListeners: function() {
@@ -201,10 +192,13 @@ let Realtime = {
     if (Active.Map && Active.Mapper) {
       if (Active.Map.authorizeToEdit(Active.Mapper)) {
         self.turnOn()
-        self.setupSocket()
-        self.setupLocalSendables()
+        if (self.socket.connected) {
+          self.checkForCall()
+          self.joinMap()
+        }
       }
       self.setupChat() // chat can happen on public maps too
+      Cable.subscribeToMap(Active.Map.id) // people with edit rights can still see live updates
     }
   },
   endActiveMap: function() {
@@ -218,6 +212,7 @@ let Realtime = {
     ChatView.hide()
     ChatView.close()
     ChatView.reset()
+    Cable.unsubscribeFromMap()
   },
   turnOn: function(notify) {
     var self = Realtime
@@ -234,6 +229,7 @@ let Realtime = {
     self.localVideo.view.$container.find('.video-cutoff').css({
       border: '4px solid ' + self.activeMapper.color
     })
+    self.setupLocalEvents()
   },
   setupChat: function() {
     const self = Realtime
@@ -242,44 +238,22 @@ let Realtime = {
     ChatView.addMessages(new DataModel.MessageCollection(DataModel.Messages), true)
     ChatView.show()
   },
-  setupSocket: function() {
+  setupLocalEvents: function() {
     var self = Realtime
-    self.checkForCall()
-    self.joinMap()
-  },
-  setupLocalSendables: function() {
-    var self = Realtime
-
     // local event listeners that trigger events
-    var sendCoords = function(event) {
+    $(document).on(JIT.events.zoom + '.map', self.positionPeerIcons)
+    $(document).on(JIT.events.pan + '.map', self.positionPeerIcons)
+    $(document).on('mousemove.map', function(event) {
       var pixels = {
         x: event.pageX,
         y: event.pageY
       }
       var coords = Util.pixelsToCoords(Visualize.mGraph, pixels)
       self.sendCoords(coords)
-    }
-    $(document).on('mousemove.map', sendCoords)
-
-    var zoom = function(event, e) {
-      if (e) {
-        var pixels = {
-          x: e.pageX,
-          y: e.pageY
-        }
-        var coords = Util.pixelsToCoords(Visualize.mGraph, pixels)
-        self.sendCoords(coords)
-      }
-      self.positionPeerIcons()
-    }
-    $(document).on(JIT.events.zoom + '.map', zoom)
-
-    $(document).on(JIT.events.pan + '.map', self.positionPeerIcons)
-
-    var dragTopic = function(event, positions) {
+    })
+    $(document).on(JIT.events.topicDrag + '.map', function(event, positions) {
       self.dragTopic(positions)
-    }
-    $(document).on(JIT.events.topicDrag + '.map', dragTopic)
+    })
   },
   countOthersInConversation: function() {
     var self = Realtime
@@ -442,17 +416,7 @@ const sendables = [
   ['leaveCall', leaveCall],
   ['sendMapperInfo', sendMapperInfo],
   ['sendCoords', sendCoords],
-  ['createMessage', createMessage],
-  ['dragTopic', dragTopic],
-  ['createTopic', createTopic],
-  ['updateTopic', updateTopic],
-  ['removeTopic', removeTopic],
-  ['deleteTopic', deleteTopic],
-  ['createSynapse', createSynapse],
-  ['updateSynapse', updateSynapse],
-  ['removeSynapse', removeSynapse],
-  ['deleteSynapse', deleteSynapse],
-  ['updateMap', updateMap]
+  ['dragTopic', dragTopic]
 ]
 sendables.forEach(sendable => {
   Realtime[sendable[0]] = sendable[1](Realtime)
@@ -474,17 +438,6 @@ const subscribeToEvents = (Realtime, socket) => {
   socket.on(NEW_MAPPER, newMapper(Realtime))
   socket.on(LOST_MAPPER, lostMapper(Realtime))
   socket.on(TOPIC_DRAGGED, topicDragged(Realtime))
-
-/*
-  socket.on(MESSAGE_CREATED, messageCreated(Realtime))
-  socket.on(TOPIC_ADDED, topicAdded(Realtime))
-  socket.on(TOPIC_UPDATED, topicUpdated(Realtime))
-  socket.on(TOPIC_REMOVED, topicRemoved(Realtime))
-  socket.on(SYNAPSE_ADDED, synapseAdded(Realtime))
-  socket.on(SYNAPSE_UPDATED, synapseUpdated(Realtime))
-  socket.on(SYNAPSE_REMOVED, synapseRemoved(Realtime))
-  socket.on(MAP_UPDATED, mapUpdated(Realtime))
-*/
 }
 
 export default Realtime

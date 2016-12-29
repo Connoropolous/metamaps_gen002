@@ -33,10 +33,16 @@ class Mapping < ApplicationRecord
     if mappable_type == 'Topic'
       meta = {'x': xloc, 'y': yloc, 'mapping_id': id}
       Events::TopicAddedToMap.publish!(mappable, map, user, meta)
-      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicAdded', topic: mappable.filtered
+      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicAdded', topic: mappable.filtered, mapping_id: id
     elsif mappable_type == 'Synapse'
       Events::SynapseAddedToMap.publish!(mappable, map, user, meta)
-      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'synapseAdded', synapse: synapse.filtered
+      ActionCable.server.broadcast(
+        'map_' + map.id.to_s,
+        type: 'synapseAdded',
+        synapse: mappable.filtered,
+        topic1: mappable.topic1.filtered,
+        topic2: mappable.topic2.filtered,
+        mapping_id: id)
     end
   end
 
@@ -44,8 +50,7 @@ class Mapping < ApplicationRecord
     if mappable_type == 'Topic' and (xloc_changed? or yloc_changed?)
       meta = {'x': xloc, 'y': yloc, 'mapping_id': id}
       Events::TopicMovedOnMap.publish!(mappable, map, updated_by, meta)
-      # should we add another actioncable event here? don't need it right now because sockets handles 
-      # the moving/dragging of topics. it could be moved via the api or some other source though
+      # we should add another action cable event here
     end
   end
 
@@ -59,10 +64,10 @@ class Mapping < ApplicationRecord
     meta = {'mapping_id': id}
     if mappable_type == 'Topic'
       Events::TopicRemovedFromMap.publish!(mappable, map, updated_by, meta)
-      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicRemoved', id: mappable.id
+      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicRemoved', id: mappable.id, mapping_id: id
     elsif mappable_type == 'Synapse'
       Events::SynapseRemovedFromMap.publish!(mappable, map, updated_by, meta)
-      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'synapseRemoved', id: mappable.id
+      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'synapseRemoved', id: mappable.id, mapping_id: id
     end
   end
 end

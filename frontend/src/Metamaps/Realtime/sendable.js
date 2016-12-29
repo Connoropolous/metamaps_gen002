@@ -148,7 +148,7 @@ export const inviteToJoin = self => userid => {
 export const sendCoords = self => coords => {
   var map = Active.Map
   var mapper = Active.Mapper
-  if (map.authorizeToEdit(mapper)) {
+  if (map && map.authorizeToEdit(mapper)) {
     var update = {
       usercoords: coords,
       userid: Active.Mapper.id,

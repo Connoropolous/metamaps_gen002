@@ -120,10 +120,10 @@ const ChatView = {
     ChatView.render()
   },
   close: () => {
-    ChatView.mapChat.close()
+    ChatView.mapChat && ChatView.mapChat.close()
   },
   open: () => {
-    ChatView.mapChat.open()
+    ChatView.mapChat && ChatView.mapChat.open()
   },
   videoToggleClick: function() {
     ChatView.videosShowing = !ChatView.videosShowing
@@ -176,9 +176,9 @@ const ChatView = {
     messages.models.forEach(m => ChatView.addMessage(m, isInitial, wasMe))
   },
   reset: () => {
-    ChatView.mapChat.reset()
-    ChatView.participants.reset()
-    ChatView.messages.reset()
+    ChatView.mapChat && ChatView.mapChat.reset()
+    ChatView.participants && ChatView.participants.reset()
+    ChatView.messages && ChatView.messages.reset()
     ChatView.render()
   }
 }
