@@ -45,16 +45,7 @@ import {
   peerCoordsUpdated,
   newMapper,
   lostMapper,
-  topicDragged,
-
-  messageCreated,
-  topicAdded,
-  topicUpdated,
-  topicRemoved,
-  synapseAdded,
-  synapseUpdated,
-  synapseRemoved,
-  mapUpdated
+  topicDragged
 } from './receivable'
 
 import {
