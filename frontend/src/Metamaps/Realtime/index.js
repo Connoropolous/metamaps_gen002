@@ -26,16 +26,15 @@ import {
   NEW_MAPPER,
   LOST_MAPPER,
   PEER_COORDS_UPDATED,
-  MESSAGE_CREATED,
   TOPIC_DRAGGED,
-  TOPIC_CREATED,
+
+  MESSAGE_CREATED,
+  TOPIC_ADDED,
   TOPIC_UPDATED,
   TOPIC_REMOVED,
-  TOPIC_DELETED,
-  SYNAPSE_CREATED,
+  SYNAPSE_ADDED,
   SYNAPSE_UPDATED,
   SYNAPSE_REMOVED,
-  SYNAPSE_DELETED,
   MAP_UPDATED
 } from './events'
 
@@ -54,16 +53,15 @@ import {
   peerCoordsUpdated,
   newMapper,
   lostMapper,
-  messageCreated,
   topicDragged,
-  topicCreated,
+
+  messageCreated,
+  topicAdded,
   topicUpdated,
   topicRemoved,
-  topicDeleted,
-  synapseCreated,
+  synapseAdded,
   synapseUpdated,
   synapseRemoved,
-  synapseDeleted,
   mapUpdated
 } from './receivable'
 
@@ -479,14 +477,12 @@ const subscribeToEvents = (Realtime, socket) => {
 
 /*
   socket.on(MESSAGE_CREATED, messageCreated(Realtime))
-  socket.on(TOPIC_CREATED, topicCreated(Realtime))
+  socket.on(TOPIC_ADDED, topicAdded(Realtime))
   socket.on(TOPIC_UPDATED, topicUpdated(Realtime))
   socket.on(TOPIC_REMOVED, topicRemoved(Realtime))
-  socket.on(TOPIC_DELETED, topicDeleted(Realtime))
-  socket.on(SYNAPSE_CREATED, synapseCreated(Realtime))
+  socket.on(SYNAPSE_ADDED, synapseAdded(Realtime))
   socket.on(SYNAPSE_UPDATED, synapseUpdated(Realtime))
   socket.on(SYNAPSE_REMOVED, synapseRemoved(Realtime))
-  socket.on(SYNAPSE_DELETED, synapseDeleted(Realtime))
   socket.on(MAP_UPDATED, mapUpdated(Realtime))
 */
 }

@@ -59,6 +59,9 @@ class Synapse < ApplicationRecord
       meta = new.merge(old) # we are prioritizing the old values, keeping them 
       meta['changed'] = changed_attributes.keys.select {|k| attrs.include?(k) }
       Events::SynapseUpdated.publish!(self, user, meta)
+      maps.each {|map|
+        ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'synapseUpdated', id: id
+      }
     end
   end
 end

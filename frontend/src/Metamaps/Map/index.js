@@ -5,6 +5,7 @@ import { find as _find } from 'lodash'
 
 import Active from '../Active'
 import AutoLayout from '../AutoLayout'
+import Cable from '../Cable'
 import Create from '../Create'
 import DataModel from '../DataModel'
 import DataModelMap from '../DataModel/Map'
@@ -124,6 +125,7 @@ const Map = {
       Filter.checkMappers()
 
       Realtime.startActiveMap()
+      Cable.subscribeToMap(id)
       Loading.hide()
 
       // for mobile
@@ -148,6 +150,7 @@ const Map = {
       Filter.close()
       InfoBox.close()
       Realtime.endActiveMap()
+      Cable.unsubscribeFromMap()
       $('.viewOnly').removeClass('isViewOnly')
     }
   },
