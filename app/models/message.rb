@@ -17,6 +17,6 @@ class Message < ApplicationRecord
   end
   
   def after_created
-    ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'messageCreated', message: self.as_json
+    ActionCable.server.broadcast 'map_' + resource.id.to_s, type: 'messageCreated', message: self.as_json
   end
 end
