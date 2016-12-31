@@ -8,6 +8,7 @@ import Mapper from './Mapper'
 import Synapse from './Synapse'
 import Topic from './Topic'
 import { ChatView } from './Views'
+import Visualize from './Visualize'
 
 const Cable = {
   init: () => {
@@ -29,8 +30,6 @@ const Cable = {
     delete self.sub
   },
   synapseAdded: event => {
-    // make sure we don't have the relevant synapse first
-    
     // we receive contentless models from the server
     // containing only the information we need to determine whether the active mapper
     // can view this synapse and the two topics it connects,
@@ -40,8 +39,8 @@ const Cable = {
     const t1 = new DataModel.Topic(event.topic1)
     const t2 = new DataModel.Topic(event.topic2)
 
-    if (t1.authorizeToShow(m) && t2.authorizeToShow(m) && s.authorizeToShow(m)) {
-      // refactor the heck outta this
+    if (t1.authorizeToShow(m) && t2.authorizeToShow(m) && s.authorizeToShow(m) && !DataModel.Synapses.get(event.synapse.id)) {
+      // refactor the heck outta this, its adding wicked wait time
       var topic1, topic2, node1, node2, synapse, mapping, cancel, mapper
  
       function waitThenRenderSynapse() {
@@ -88,6 +87,7 @@ const Cable = {
     }
   },
   synapseUpdated: event => {
+    // handle case where permission changed
     var synapse = DataModel.Synapses.get(event.id)
     if (synapse) {
       // edge reset necessary because fetch causes model reset
@@ -101,7 +101,6 @@ const Cable = {
     }
   },
   synapseRemoved: event => {
-    // remove by the mapping id instead
     var synapse = DataModel.Synapses.get(event.id)
     if (synapse) {
       var edge = synapse.get('edge')
@@ -121,16 +120,14 @@ const Cable = {
     }
   },
   topicAdded: event => {
-    // make sure we don't have the relevant topic first
-
     const m = Active.Mapper
     // we receive a contentless model from the server
     // containing only the information we need to determine whether the active mapper
     // can view this topic, then if we determine it can, we make a call for the full model
     const t = new DataModel.Topic(event.topic)
 
-    if (t.authorizeToShow(m)) {
-      // refactor the heck outta this
+    if (t.authorizeToShow(m) && !DataModel.Topics.get(event.topic.id)) {
+      // refactor the heck outta this, its adding wicked wait time
       var topic, mapping, mapper, cancel
     
       function waitThenRenderTopic() {
@@ -172,6 +169,7 @@ const Cable = {
     }
   },
   topicUpdated: event => {
+    // handle case where permission changed
     var topic = DataModel.Topics.get(event.id)
     if (topic) {
       var node = topic.get('node')
@@ -183,8 +181,19 @@ const Cable = {
       })
     }
   },
+  topicMoved: event => {
+    var topic, node, mapping
+    if (Active.Map) {
+      topic = DataModel.Topics.get(event.id)
+      mapping = DataModel.Mappings.get(event.mapping_id)
+      mapping.set('xloc', event.x)
+      mapping.set('yloc', event.y)
+      if (topic) node = topic.get('node')
+      if (node) node.pos.setc(event.x, event.y)
+      Visualize.mGraph.plot()
+    }
+  },
   topicRemoved: event => {
-    // remove by the mapping id instead
     var topic = DataModel.Topics.get(event.id)
     if (topic) {
       var node = topic.get('node')
@@ -195,6 +204,7 @@ const Cable = {
     }
   },
   messageCreated: event => {
+    if (Active.Mapper && Active.Mapper.id === event.message.user_id) return
     ChatView.addMessages(new DataModel.MessageCollection(event.message))
   },
   mapUpdated: event => {

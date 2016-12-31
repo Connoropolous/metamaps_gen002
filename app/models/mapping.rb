@@ -50,7 +50,7 @@ class Mapping < ApplicationRecord
     if mappable_type == 'Topic' and (xloc_changed? or yloc_changed?)
       meta = {'x': xloc, 'y': yloc, 'mapping_id': id}
       Events::TopicMovedOnMap.publish!(mappable, map, updated_by, meta)
-      # we should add another action cable event here
+      ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicMoved', id: mappable.id, mapping_id: id, x: xloc, y: yloc
     end
   end
 
