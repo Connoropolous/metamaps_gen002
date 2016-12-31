@@ -87,7 +87,7 @@ const Cable = {
     }
   },
   synapseUpdated: event => {
-    // handle case where permission changed
+    // TODO: handle case where permission changed
     var synapse = DataModel.Synapses.get(event.id)
     if (synapse) {
       // edge reset necessary because fetch causes model reset
@@ -169,7 +169,7 @@ const Cable = {
     }
   },
   topicUpdated: event => {
-    // handle case where permission changed
+    // TODO: handle case where permission changed
     var topic = DataModel.Topics.get(event.id)
     if (topic) {
       var node = topic.get('node')
