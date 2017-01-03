@@ -148,12 +148,12 @@ class MapChat extends Component {
             className: 'chat-input',
             ref: textarea => this.messageInput = textarea,
             placeholder: 'Send a message...',
-            value: this.state.messageText,
-            onChange: this.handleChange('messageText'),
             onKeyUp: this.handleTextareaKeyUp,
             onFocus: this.props.inputFocus,
             onBlur: this.props.inputBlur
           }}
+          handleChange={this.handleChange('messageText')}
+          messageText={this.state.messageText}
         />
       </div>
     )
