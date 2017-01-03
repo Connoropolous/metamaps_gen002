@@ -94,6 +94,10 @@ let Realtime = {
 
     self.socket.on('connect', function() {
       console.log('connected')
+      if (Active.Map && Active.Mapper && Active.Map.authorizeToEdit(Active.Mapper)) {
+        self.checkForCall()
+        self.joinMap()
+      }
       subscribeToEvents(self, self.socket)
       self.disconnected = false
     })
@@ -183,10 +187,8 @@ let Realtime = {
     if (Active.Map && Active.Mapper) {
       if (Active.Map.authorizeToEdit(Active.Mapper)) {
         self.turnOn()
-        if (self.socket.connected) {
-          self.checkForCall()
-          self.joinMap()
-        }
+        self.checkForCall()
+        self.joinMap()
       }
       self.setupChat() // chat can happen on public maps too
       Cable.subscribeToMap(Active.Map.id) // people with edit rights can still see live updates
