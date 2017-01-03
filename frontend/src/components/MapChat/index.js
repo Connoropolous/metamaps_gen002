@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import Unread from './Unread'
 import Participant from './Participant'
 import Message from './Message'
+import NewMessage from './NewMessage'
 
 function makeList(messages) {
   let currentHeader
@@ -143,14 +144,16 @@ class MapChat extends Component {
         <div className="chat-messages" ref={div => this.messagesDiv = div}>
           {makeList(messages)}
         </div>
-        <textarea className="chat-input"
-          ref={textarea => this.messageInput = textarea}
-          placeholder="Send a message..."
-          value={this.state.messageText}
-          onChange={this.handleChange('messageText')}
-          onKeyUp={this.handleTextareaKeyUp}
-          onFocus={this.props.inputFocus}
-          onBlur={this.props.inputBlur}
+        <NewMessage textAreaProps={{
+            className: 'chat-input',
+            ref: textarea => this.messageInput = textarea,
+            placeholder: 'Send a message...',
+            value: this.state.messageText,
+            onChange: this.handleChange('messageText'),
+            onKeyUp: this.handleTextareaKeyUp,
+            onFocus: this.props.inputFocus,
+            onBlur: this.props.inputBlur
+          }}
         />
       </div>
     )
