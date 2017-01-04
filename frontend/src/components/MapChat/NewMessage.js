@@ -1,14 +1,13 @@
 import React, { PropTypes, Component } from 'react'
-import { Picker, emojiIndex } from 'emoji-mart'
-import { escapeRegExp } from 'lodash'
+import { Picker } from 'emoji-mart'
+import Util from '../../Metamaps/Util'
 
 class NewMessage extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      //showEmojiPicker: false
-      showEmojiPicker: true
+      showEmojiPicker: false
     }
   }
 
@@ -17,16 +16,7 @@ class NewMessage extends Component {
   }
 
   textAreaValue = () => {
-    let { messageText } = this.props
-    Object.keys(emojiIndex.emoticons).forEach(key => {
-      const value = emojiIndex.emoticons[key]
-      messageText = messageText.replace(new RegExp(escapeRegExp(key), 'g'), `:${value}:`)
-    })
-    Object.keys(emojiIndex.emojis).forEach(key => {
-      const emoji = emojiIndex.emojis[key]
-      messageText = messageText.replace(new RegExp(escapeRegExp(emoji.colons), 'g'), emoji.native)
-    })
-    return messageText
+    return Util.addEmoji(this.props.messageText)
   }
 
   handleClick = (emoji, event) => {

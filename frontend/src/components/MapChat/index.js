@@ -3,6 +3,7 @@ import Unread from './Unread'
 import Participant from './Participant'
 import Message from './Message'
 import NewMessage from './NewMessage'
+import Util from '../../Metamaps/Util'
 
 function makeList(messages) {
   let currentHeader
@@ -95,7 +96,7 @@ class MapChat extends Component {
   handleTextareaKeyUp = e => {
     if (e.which === 13) {
       e.preventDefault()
-      const text = this.state.messageText
+      const text = Util.removeEmoji(this.state.messageText)
       this.props.handleInputMessage(text)
       this.setState({ messageText: '' })
     }
