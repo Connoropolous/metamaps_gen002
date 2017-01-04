@@ -167,13 +167,13 @@ const Util = {
     })
     return text
   },
-  addEmoji: function(withoutEmoji, emoticons = true) {
+  addEmoji: function(withoutEmoji, opts = { emoticons: false }) {
     let text = withoutEmoji
     Object.keys(emojiIndex.emojis).forEach(key => {
       const emoji = emojiIndex.emojis[key]
       text = text.replace(new RegExp(escapeRegExp(emoji.colons), 'g'), emoji.native)
     })
-    if (emoticons) {
+    if (opts.emoticons) {
       Object.keys(emojiIndex.emoticons).forEach(emoticon => {
         const key = emojiIndex.emoticons[emoticon]
         const emoji = emojiIndex.emojis[key]
