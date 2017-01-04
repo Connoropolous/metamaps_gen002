@@ -24,19 +24,25 @@ class NewMessage extends Component {
     this.props.handleChange({ target: {
       value: messageText + emoji.colons
     }})
+
+    this.setState({ showEmojiPicker: false })
   }
 
   render = () => {
     return (
       <div className="new-message-area">
-        <span onClick={this.toggleEmojiPicker}>Emoji</span>
-        <Picker set='emojione'
+        <Picker set="emojione"
           onClick={this.handleClick}
           style={{
             display: this.state.showEmojiPicker ? 'block' : 'none',
-            width: '100%'
+            maxWidth: '100%'
           }}
+          emoji="upside_down_face"
+          title="Emoji"
         />
+        <div className="extra-message-options">
+          <span className="emoji-picker-button" onClick={this.toggleEmojiPicker}>🙃</span>
+        </div>
         <textarea value={this.textAreaValue()}
           onChange={this.props.handleChange}
           {...this.props.textAreaProps}

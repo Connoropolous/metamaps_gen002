@@ -279,11 +279,13 @@
     }
   }
 
+  $chat_font_size: 16px;
+
   .chat-input {
     min-height: 80px;
-    width: 94%;
-    padding: 8px 3% 8px 3%;
-    font-size: 13px;
+    width: 88%;
+    padding: 8px 9% 8px 3%;
+    font-size: $chat_font_size;
     outline: none;
     resize: none;
   }
@@ -299,8 +301,8 @@
       padding: 8px 8px 2px 8px;
       color: #f5f5f5;
       font-family: arial, sans-serif;
-      font-size: 16px;
-      line-height: 17px;
+      font-size: $chat_font_size;
+      line-height: $chat_font_size + 1px;
 
       a:link {
         color: #4fb5c0;
@@ -344,6 +346,24 @@
       .chat-message-time {
         font-size: 10px;
         color: #757575;
+      }
+    }
+  }
+
+  .new-message-area {
+    position: relative;
+
+    .extra-message-options {
+      height: 20px;
+      position: absolute;
+      right: 2px;
+      bottom: 74px;
+    
+      .emoji-picker-button {
+        font-size: 16px;
+        line-height: 20px;
+        cursor: pointer;
+        padding: 4px;
       }
     }
   }
