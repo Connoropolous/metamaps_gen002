@@ -31,7 +31,7 @@ class MapChat extends Component {
       messageText: '',
       alertSound: true, // whether to play sounds on arrival of new messages or not
       cursorsShowing: true,
-      videosShowing:  true
+      videosShowing: true
     }
   }
 
@@ -42,7 +42,7 @@ class MapChat extends Component {
       messageText: '',
       alertSound: true, // whether to play sounds on arrival of new messages or not
       cursorsShowing: true,
-      videosShowing:  true
+      videosShowing: true
     })
   }
 
@@ -118,12 +118,12 @@ class MapChat extends Component {
         <div className="participants">
           {conversationLive && <div className="conversation-live">
             LIVE
-	      {isParticipating && <span className="call-action leave" onClick={this.props.leaveCall}>
-                LEAVE
-              </span>}
-              {!isParticipating && <span className="call-action join"  onClick={this.props.joinCall}>
-                JOIN
-              </span>}
+            {isParticipating && <span className="call-action leave" onClick={this.props.leaveCall}>
+              LEAVE
+            </span>}
+            {!isParticipating && <span className="call-action join" onClick={this.props.joinCall}>
+              JOIN
+            </span>}
           </div>}
           {participants.map(participant => <Participant
             key={participant.id}
@@ -142,17 +142,17 @@ class MapChat extends Component {
           <div className="tooltips">Chat</div>
           <Unread count={unreadMessages} />
         </div>
-        <div className="chat-messages" ref={div => this.messagesDiv = div}>
+        <div className="chat-messages" ref={div => { this.messagesDiv = div }}>
           {makeList(messages)}
         </div>
         <NewMessage textAreaProps={{
-            className: 'chat-input',
-            ref: textarea => this.messageInput = textarea,
-            placeholder: 'Send a message...',
-            onKeyUp: this.handleTextareaKeyUp,
-            onFocus: this.props.inputFocus,
-            onBlur: this.props.inputBlur
-          }}
+          className: 'chat-input',
+          ref: textarea => { this.messageInput = textarea },
+          placeholder: 'Send a message...',
+          onKeyUp: this.handleTextareaKeyUp,
+          onFocus: this.props.inputFocus,
+          onBlur: this.props.inputBlur
+        }}
           handleChange={this.handleChange('messageText')}
           messageText={this.state.messageText}
         />
@@ -172,7 +172,7 @@ MapChat.propTypes = {
   inviteToJoin: PropTypes.func,
   videoToggleClick: PropTypes.func,
   cursorToggleClick: PropTypes.func,
-  soundToggleClick: PropTypes.func, 
+  soundToggleClick: PropTypes.func,
   participants: PropTypes.arrayOf(PropTypes.shape({
     color: PropTypes.string, // css color
     id: PropTypes.number,
