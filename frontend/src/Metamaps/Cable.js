@@ -1,5 +1,7 @@
 /* global $, ActionCable */
 
+import { indexOf } from 'lodash'
+
 import Active from './Active'
 import Control from './Control'
 import DataModel from './DataModel'
@@ -43,7 +45,7 @@ const Cable = {
       // refactor the heck outta this, its adding wicked wait time
       var topic1, topic2, node1, node2, synapse, mapping, cancel, mapper
 
-      function waitThenRenderSynapse() {
+      const waitThenRenderSynapse = () => {
         if (synapse && mapping && mapper) {
           topic1 = synapse.getTopic1()
           node1 = topic1.get('node')
@@ -130,7 +132,7 @@ const Cable = {
       // refactor the heck outta this, its adding wicked wait time
       var topic, mapping, mapper, cancel
 
-      function waitThenRenderTopic() {
+      const waitThenRenderTopic = () => {
         if (topic && mapping && mapper) {
           Topic.renderTopic(mapping, topic, false, false)
         } else if (!cancel) {
