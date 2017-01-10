@@ -152,7 +152,7 @@ let Realtime = {
         config: { DOUBLE_CLICK_TOLERANCE: 200 }
       })
       self.room.videoAdded(self.handleVideoAdded)
-      
+
       self.startActiveMap()
     } // if Active.Mapper
   },

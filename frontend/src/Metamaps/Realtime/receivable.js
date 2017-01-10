@@ -210,7 +210,7 @@ export const callInProgress = self => () => {
   GlobalUI.notifyUser(notifyText, true)
   $('#toast button.yes').click(e => self.joinCall())
   $('#toast button.no').click(e => GlobalUI.clearNotify())
-  ChatView.conversationInProgress() 
+  ChatView.conversationInProgress()
 }
 
 export const callStarted = self => () => {
