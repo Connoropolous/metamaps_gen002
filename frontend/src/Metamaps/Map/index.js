@@ -251,6 +251,39 @@ const Map = {
     }
   },
   exportImage: function() {
+    const canvas = Map.getMapCanvasForScreenshots()
+    const filename = Map.getMapScreenshotFilename(Active.Map)
+
+    Map.offerScreenshotDownload(canvas, filename)
+    Map.uploadMapScreenshot(canvas, filename)
+  },
+  offerScreenshotDownload: (canvas, filename) => {
+    var downloadMessage = outdent`
+      Captured map screenshot!
+      <a href="${canvas.canvas.toDataURL()}" download="${filename}">DOWNLOAD</a>`
+    GlobalUI.notifyUser(downloadMessage)
+  },
+  uploadMapScreenshot: (canvas, filename) => {
+    canvas.canvas.toBlob(imageBlob => {
+      const formData = new window.FormData()
+      formData.append('map[screenshot]', imageBlob, filename)
+      $.ajax({
+        type: 'PATCH',
+        dataType: 'json',
+        url: `/maps/${Active.Map.id}`,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          console.log('successfully uploaded map screenshot')
+        },
+        error: function() {
+          console.log('failed to save map screenshot')
+        }
+      })
+    })
+  },
+  getMapCanvasForScreenshots: () => {
     var canvas = {}
 
     canvas.canvas = document.createElement('canvas')
@@ -336,8 +369,9 @@ const Map = {
       node.visited = !T
     })
 
-    var map = Active.Map
-
+    return canvas
+  },
+  getMapScreenshotFilename: map => {
     var today = new Date()
     var dd = today.getDate()
     var mm = today.getMonth() + 1 // January is 0!
@@ -352,30 +386,7 @@ const Map = {
 
     var mapName = map.get('name').split(' ').join(['-'])
     const filename = `metamap-${map.id}-${mapName}-${today}.png`
-
-    var downloadMessage = outdent`
-      Captured map screenshot!
-      <a href="${canvas.canvas.toDataURL()}" download="${filename}">DOWNLOAD</a>`
-    GlobalUI.notifyUser(downloadMessage)
-
-    canvas.canvas.toBlob(imageBlob => {
-      const formData = new window.FormData()
-      formData.append('map[screenshot]', imageBlob, filename)
-      $.ajax({
-        type: 'PATCH',
-        dataType: 'json',
-        url: `/maps/${map.id}`,
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-          console.log('successfully uploaded map screenshot')
-        },
-        error: function() {
-          console.log('failed to save map screenshot')
-        }
-      })
-    })
+    return filename
   }
 }
 
