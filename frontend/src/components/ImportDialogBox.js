@@ -28,7 +28,7 @@ class ImportDialogBox extends Component {
           Export as JSON
         </div>
         <div className="import-blue-button" onClick={this.props.downloadScreenshot}>
-          Download screenshot of map
+          Download screenshot
         </div>
         <h3>IMPORT</h3>
         <p>To upload a file, drop it here:</p>
