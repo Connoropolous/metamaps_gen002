@@ -2052,6 +2052,26 @@ and it won't be important on password protected instances */
 .yourMap .mapInfoDelete {
     display: block;
 }
+
+.mapInfoButtonsWrapper .mapInfoThumbnail {
+  display: block;
+  background-image: url(<%= asset_path('screenshot_sprite.png') %>);
+  width: 32px;
+  height: 32px;
+
+  .tooltip {
+    display: none;
+  }
+
+  &:hover {
+    background-position: -32px 0;
+
+    .tooltip {
+      display: block;
+    }
+  }
+}
+
 .mapInfoButtonsWrapper span {
     position: absolute;
     width: 100%;
