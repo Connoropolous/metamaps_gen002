@@ -34,6 +34,7 @@ class ImportDialogBox extends Component {
         >
           Drop files here!
         </Dropzone>
+        <p>See <a href="https://docs.metamaps.cc/importing_and_exporting_data.html">docs.metamaps.cc</a> for instructions.</p>
       </div>
     )
   }
