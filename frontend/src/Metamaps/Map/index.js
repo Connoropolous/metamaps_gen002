@@ -45,7 +45,10 @@ const Map = {
     GlobalUI.CreateMap.emptyForkMapForm = $('#fork_map').html()
 
     self.updateStar()
-    InfoBox.init(serverData)
+
+    InfoBox.init(serverData, function updateThumbnail() {
+      self.uploadMapScreenshot()
+    })
     CheatSheet.init(serverData)
 
     $('.viewOnly .requestAccess').click(self.requestAccess)
@@ -251,8 +254,8 @@ const Map = {
     }
   },
   exportImage: function() {
-    Map.offerScreenshotDownload()
     Map.uploadMapScreenshot()
+    Map.offerScreenshotDownload()
   },
   offerScreenshotDownload: () => {
     const canvas = Map.getMapCanvasForScreenshots()
@@ -278,10 +281,10 @@ const Map = {
         processData: false,
         contentType: false,
         success: function(data) {
-          console.log('successfully uploaded map screenshot')
+          GlobalUI.notifyUser('Successfully updated map screenshot.')
         },
         error: function() {
-          console.log('failed to save map screenshot')
+          GlobalUI.notifyUser('Failed to update map screenshot.')
         }
       })
     })
