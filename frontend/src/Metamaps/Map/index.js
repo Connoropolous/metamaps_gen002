@@ -251,19 +251,22 @@ const Map = {
     }
   },
   exportImage: function() {
+    Map.offerScreenshotDownload()
+    Map.uploadMapScreenshot()
+  },
+  offerScreenshotDownload: () => {
     const canvas = Map.getMapCanvasForScreenshots()
     const filename = Map.getMapScreenshotFilename(Active.Map)
 
-    Map.offerScreenshotDownload(canvas, filename)
-    Map.uploadMapScreenshot(canvas, filename)
-  },
-  offerScreenshotDownload: (canvas, filename) => {
     var downloadMessage = outdent`
       Captured map screenshot!
       <a href="${canvas.canvas.toDataURL()}" download="${filename}">DOWNLOAD</a>`
     GlobalUI.notifyUser(downloadMessage)
   },
-  uploadMapScreenshot: (canvas, filename) => {
+  uploadMapScreenshot: () => {
+    const canvas = Map.getMapCanvasForScreenshots()
+    const filename = Map.getMapScreenshotFilename(Active.Map)
+
     canvas.canvas.toBlob(imageBlob => {
       const formData = new window.FormData()
       formData.append('map[screenshot]', imageBlob, filename)

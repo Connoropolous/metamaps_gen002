@@ -24,7 +24,8 @@ const ImportDialog = {
     `))
     ReactDOM.render(React.createElement(ImportDialogBox, {
       onFileAdded: PasteInput.handleFile,
-      exampleImageUrl: serverData['import-example.png']
+      exampleImageUrl: serverData['import-example.png'],
+      downloadScreenshot: ImportDialog.downloadScreenshot
     }), $('.importDialogWrapper').get(0))
   },
   show: function() {
@@ -32,6 +33,10 @@ const ImportDialog = {
   },
   hide: function() {
     ImportDialog.closeLightbox('import-dialog')
+  },
+  downloadScreenshot: function() {
+    ImportDialog.hide()
+    Map.offerScreenshotDownload()
   }
 }
 
