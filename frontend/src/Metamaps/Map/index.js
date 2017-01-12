@@ -256,6 +256,7 @@ const Map = {
   exportImage: function() {
     Map.uploadMapScreenshot()
     Map.offerScreenshotDownload()
+    GlobalUI.notifyUser("Note: this button is going away. Check the map card or the import box for setting the map thumbnail or downloading a screenshot.")
   },
   offerScreenshotDownload: () => {
     const canvas = Map.getMapCanvasForScreenshots()
