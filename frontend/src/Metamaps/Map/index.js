@@ -264,8 +264,14 @@ const Map = {
 
     var downloadMessage = outdent`
       Captured map screenshot!
-      <a href="${canvas.canvas.toDataURL()}" download="${filename}">DOWNLOAD</a>`
+      <a id="map-screenshot-download-link"
+         href="${canvas.canvas.toDataURL()}"
+         download="${filename}"
+      >
+        DOWNLOAD
+      </a>`
     GlobalUI.notifyUser(downloadMessage)
+    $('#map-screenshot-download-link').click()
   },
   uploadMapScreenshot: () => {
     const canvas = Map.getMapCanvasForScreenshots()
