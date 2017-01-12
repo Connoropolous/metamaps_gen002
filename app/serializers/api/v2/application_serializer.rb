@@ -34,7 +34,7 @@ module Api
                       opts.merge(unless: -> { embeds.include?(key) })) do
               Pundit.policy_scope(scope[:current_user], object.send(attr))&.map(&:id) || []
             end
-            has_many(attr, opts.merge(if: -> { embeds.include?(key) })) do |serializer|
+            has_many(attr, opts.merge(if: -> { embeds.include?(key) })) do
               list = Pundit.policy_scope(scope[:current_user], object.send(attr)) || []
               child_serializer = "Api::V2::#{attr.to_s.singularize.camelize}Serializer".constantize
               resource = ActiveModelSerializers::SerializableResource.new(
