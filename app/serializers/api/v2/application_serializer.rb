@@ -41,7 +41,12 @@ module Api
             id_opts = opts.merge(key: "#{key}_id")
             attribute("#{attr}_id".to_sym,
                       id_opts.merge(unless: -> { embeds.include?(key) }))
-            attribute(key, opts.merge(if: -> { embeds.include?(key) }))
+            attribute(key, opts.merge(if: -> { embeds.include?(key) })) do |serializer|
+              child_object = serializer.object.send(key)
+              child_serializer = "Api::V2::#{child_object.class.name}Serializer".constantize
+              resource = child_serializer.new(child_object, scope: serializer.scope.merge(embeds: []))
+              resource.as_json
+            end
           end
         end
       end
