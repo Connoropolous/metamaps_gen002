@@ -2059,6 +2059,17 @@ and it won't be important on password protected instances */
   width: 32px;
   height: 32px;
 
+  & > span {
+    bottom: -9px;
+    right: 3px;
+    font-size: 10px;
+    color: #eee;
+
+    &:hover {
+      color: white;
+    }
+  }
+
   .tooltip {
     display: none;
   }
@@ -2068,6 +2079,12 @@ and it won't be important on password protected instances */
 
     .tooltip {
       display: block;
+      position: absolute;
+      bottom: 30px;
+      background: black;
+      color: white;
+      border-radius: 2px;
+      padding: 3px 5px 2px 5px;
     }
   }
 }
