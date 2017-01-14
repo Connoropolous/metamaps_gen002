@@ -112,7 +112,7 @@ const GlobalUI = {
   _notifyUser: function(message, opts = {}) {
     const self = GlobalUI
 
-    const { leaveOpen: false, timeOut: 8000 } = opts
+    const { leaveOpen = false, timeOut = 8000 } = opts
 
     $('#toast').html(message)
     self.showDiv('#toast')
