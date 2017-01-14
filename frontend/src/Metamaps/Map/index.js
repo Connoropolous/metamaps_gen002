@@ -271,7 +271,7 @@ const Map = {
         DOWNLOAD
       </a>`
     GlobalUI.notifyUser(downloadMessage)
-    $('#map-screenshot-download-link').click()
+    //$('#map-screenshot-download-link').click()
   },
   uploadMapScreenshot: () => {
     const canvas = Map.getMapCanvasForScreenshots()
