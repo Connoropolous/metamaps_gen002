@@ -51,6 +51,17 @@ class Synapse < ApplicationRecord
     super(methods: [:user_name, :user_image, :collaborator_ids])
   end
 
+  def as_rdf
+    output = ''
+    output += %(d:synapse_#{id} a mm:synapse ;\n)
+    output += %(  mm:topic1 d:topic_#{topic1_id} ;\n)
+    output += %(  mm:topic2 d:topic_#{topic2_id} ;\n)
+    output += %(  mm:direction "#{category}" ;\n)
+    output[-2] = '.'
+    output += %(\n)
+    output
+  end
+
   def after_updated
     attrs = ['desc', 'category', 'permission', 'defer_to_map_id']
     if attrs.any? {|k| changed_attributes.key?(k)}

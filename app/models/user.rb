@@ -67,6 +67,16 @@ class User < ApplicationRecord
     json
   end
 
+  def as_rdf
+    output = ''
+    output += %(d:mapper_#{id} a foaf:OnlineAccount ;\n)
+    output += %(  foaf:accountName "#{name}";\n)
+    output += %(  foaf:accountServiceHomepage "https://metamaps.cc/mapper/#{id}";\n)
+    output[-2] = '.' # change last ; to a .
+    output += %(\n)
+    output
+  end
+
   def all_accessible_maps
     maps + shared_maps
   end

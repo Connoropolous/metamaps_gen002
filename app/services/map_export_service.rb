@@ -22,6 +22,15 @@ class MapExportService
     end
   end
 
+  def rdf
+    output = ''
+    output += rdf_header
+    output += rdf_mappers
+    output += rdf_topics
+    output += rdf_synapses
+    output
+  end
+
   private
 
   def topic_headings
@@ -86,5 +95,39 @@ class MapExportService
     end
 
     spreadsheet
+  end
+
+  def rdf_header
+    output = ''
+    output += "PREFIX d: <https://metamaps.cc/maps/#{map.id}>\n"
+    output += "PREFIX gr: <https://metamaps.cc/rdf/map.owl.ttl>\n"
+    output += "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+    output += "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+    output += "\n"
+    output
+  end
+
+  def rdf_mappers
+    output = ''
+    map.contributors.each do |mapper|
+      output += mapper.as_rdf
+    end
+    output 
+  end
+
+  def rdf_topics
+    output = ''
+    map.topics.each do |topic|
+      output += topic.as_rdf
+    end
+    output
+  end
+
+  def rdf_synapses
+    output = ''
+    map.synapses.each do |synapse|
+      output += synapse.as_rdf
+    end
+    output
   end
 end

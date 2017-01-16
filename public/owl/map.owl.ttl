@@ -1,0 +1,34 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+@prefix :   <http://metamaps.cc/owl/map.owl.ttl#> .
+@prefix mm:   <http://metamaps.cc/owl/map.owl.ttl#> .
+
+: a owl:Ontology ;
+	rdfs:label "Metamaps Map"@en ;
+
+mm:topic a owl:Class ;
+	rdfs:label "One concept on a metamap"@en .
+
+mm:synapse a owl:Class ;
+  rdfs:label "Link between two topics on a metamap"@en .
+
+mm:topic1 a owl:ObjectProperty ;
+	a owl:FunctionalProperty ;
+	rdfs:label "first topic of a synapse"@en ;
+	rdfs:domain mm:topic ;
+	rdfs:range owl:Thing .
+
+mm:topic2 a owl:ObjectProperty ;
+	a owl:FunctionalProperty ;
+	rdfs:label "second topic of a synapse"@en ;
+	rdfs:domain mm:topic ;
+	rdfs:range owl:Thing .
+
+mm:direction a owl:objectProprty ;
+  a owl:FunctionalProperty ;
+  rdfs:label "from-to, both, or none"@en ;
+  rdfs:domain mm:synapse ;
+  rdfs:range xsd:string .

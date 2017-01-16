@@ -82,6 +82,17 @@ class Topic < ApplicationRecord
              map_count: map_count(options[:user]), synapse_count: synapse_count(options[:user]))
   end
 
+  def as_rdf
+    output = ''
+    output += %(d:topic_#{id} a mm:topic\n)
+    output += %(  rdfs:label "#{name}";\n)
+    output += %(  rdfs:comment "#{desc}";\n)
+    output += %(  foaf:homepage <#{link}>;\n) if link.present?
+    output[-2] = '.' # change last ; to a .
+    output += %(\n)
+    output
+  end
+
   def collaborator_ids
     if defer_to_map
       defer_to_map.editors.select { |mapper| mapper != user }.map(&:id)
