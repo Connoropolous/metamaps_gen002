@@ -20,7 +20,7 @@ class MapsController < ApplicationController
       end
       format.json { render json: @map }
       format.csv { redirect_to action: :export, format: :csv }
-      format.rdf { redirect_to action: :export, format: :rdf }
+      format.ttl { redirect_to action: :export, format: :ttl }
     end
   end
 
