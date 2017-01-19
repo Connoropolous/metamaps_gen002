@@ -36,6 +36,7 @@
     "getScreenMedia": "git://github.com/devvmh/getScreenMedia#patch-1",
     "hark": "git://github.com/devvmh/hark#patch-1",
     "howler": "2.0.2",
+    "jquery": "^3.1.1",
     "jquery.ajaxq": "^0.5.2",
     "json-loader": "0.5.4",
     "lodash": "4.17.2",
