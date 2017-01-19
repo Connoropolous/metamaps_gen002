@@ -100,7 +100,7 @@ class MapExportService
   def rdf_header
     output = ''
     output += "PREFIX d: <https://metamaps.cc/maps/#{map.id}>\n"
-    output += "PREFIX gr: <https://metamaps.cc/owl/map.owl.ttl>\n"
+    output += "PREFIX mm: <https://metamaps.cc/owl/map.owl.ttl>\n"
     output += "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
     output += "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
     output += "\n"
