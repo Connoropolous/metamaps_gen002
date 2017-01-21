@@ -5,4 +5,4 @@
 # Mime::Type.register "text/richtext", :rtf
 
 # RDF export
-Mime::Type.register "text/turtle", :ttl
+Mime::Type.register 'text/turtle', :ttl
