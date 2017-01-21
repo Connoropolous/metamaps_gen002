@@ -71,8 +71,8 @@ class User < ApplicationRecord
     base_url = opts[:base_url] || 'https://metamaps.cc'
     output = ''
     output += %(d:mapper_#{id} a foaf:OnlineAccount ;\n)
-    output += %(  foaf:accountName "#{name}";\n)
-    output += %(  foaf:accountServiceHomepage "#{base_url}/mapper/#{id}";\n)
+    output += %(  foaf:accountName "#{name}" ;\n)
+    output += %(  foaf:accountServiceHomepage "#{base_url}/mapper/#{id}" ;\n)
     output[-2] = '.' # change last ; to a .
     output += %(\n)
     output
