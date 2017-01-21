@@ -57,6 +57,7 @@ class Synapse < ApplicationRecord
     output += %(  mm:topic1 d:topic_#{topic1_id} ;\n)
     output += %(  mm:topic2 d:topic_#{topic2_id} ;\n)
     output += %(  mm:direction "#{category}" ;\n)
+    output += %(  rdfs:comment "#{desc}" ;\n)
     output[-2] = '.'
     output += %(\n)
     output
