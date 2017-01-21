@@ -84,12 +84,12 @@ class Topic < ApplicationRecord
 
   def as_rdf
     output = ''
-    output += %(d:topic_#{id} a mm:topic\n)
+    output += %(d:topic_#{id} a mm:topic ;\n)
     output += %(  rdfs:label "#{name}";\n)
     output += %(  rdfs:comment "#{desc}";\n)
     output += %(  foaf:homepage <#{link}>;\n) if link.present?
     output += %(  mm:mapper d:mapper_#{user_id} ;\n)
-    output += %(  mm:metacode "#{metacode.name} ;\n)
+    output += %(  mm:metacode "#{metacode.name}" ;\n)
     output[-2] = '.' # change last ; to a .
     output += %(\n)
     output

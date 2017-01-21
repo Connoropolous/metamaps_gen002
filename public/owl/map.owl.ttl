@@ -7,7 +7,7 @@
 @prefix mm:   <http://metamaps.cc/owl/map.owl.ttl#> .
 
 : a owl:Ontology ;
-	rdfs:label "Metamaps Map"@en ;
+	rdfs:label "Metamaps Map"@en .
 
 mm:topic a owl:Class ;
 	rdfs:label "One concept on a metamap"@en .
