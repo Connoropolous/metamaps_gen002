@@ -32,7 +32,7 @@ class MapExportService
     output += "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
     output += "\n"
     map.contributors.each do |mapper|
-      output += mapper.as_rdf
+      output += mapper.as_rdf(base_url: base_url)
     end
     map.topics.each do |topic|
       output += topic.as_rdf
