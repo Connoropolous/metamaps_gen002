@@ -3,7 +3,7 @@ import Backbone from 'backbone'
 
 // make changes to Backbone before loading Metamaps code
 try { Backbone.$ = window.$ } catch(err) {}
-Backbone.ajax = window.$.ajaxq
+Backbone.ajax = (opts) => window.$.ajaxq('backbone-ajaxq', opts)
 
 import Metamaps from './Metamaps'
 
