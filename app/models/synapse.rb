@@ -53,7 +53,7 @@ class Synapse < ApplicationRecord
 
   def as_rdf
     output = ''
-    output += %(d:synapse_#{id} a mm:synapse ;\n)
+    output += %(d:synapse_#{id} a mm:Synapse ;\n)
     output += %(  mm:topic1 d:topic_#{topic1_id} ;\n)
     output += %(  mm:topic2 d:topic_#{topic2_id} ;\n)
     output += %(  mm:direction "#{category}" ;\n)

@@ -84,7 +84,7 @@ class Topic < ApplicationRecord
 
   def as_rdf
     output = ''
-    output += %(d:topic_#{id} a mm:topic ;\n)
+    output += %(d:topic_#{id} a mm:Topic ;\n)
     output += %(  rdfs:label "#{name}" ;\n)
     output += %(  rdfs:comment "#{desc}" ;\n) if desc.present?
     output += %(  foaf:homepage <#{link}> ;\n) if link.present?

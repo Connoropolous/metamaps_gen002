@@ -9,26 +9,34 @@
 : a owl:Ontology ;
 	rdfs:label "Metamaps Map"@en .
 
-mm:topic a owl:Class ;
-	rdfs:label "One concept on a metamap"@en .
+mm:Topic a owl:Class ;
+	rdfs:label "One topic on a metamap"@en .
 
-mm:synapse a owl:Class ;
+mm:Synapse a owl:Class ;
   rdfs:label "Link between two topics on a metamap"@en .
 
 mm:topic1 a owl:ObjectProperty ;
 	a owl:FunctionalProperty ;
 	rdfs:label "first topic of a synapse"@en ;
-	rdfs:domain mm:topic ;
-	rdfs:range owl:Thing .
+	rdfs:domain mm:Synapse ;
+	rdfs:range mm:Topic .
 
 mm:topic2 a owl:ObjectProperty ;
 	a owl:FunctionalProperty ;
 	rdfs:label "second topic of a synapse"@en ;
-	rdfs:domain mm:topic ;
+	rdfs:domain mm:Topic ;
 	rdfs:range owl:Thing .
 
-mm:direction a owl:objectProprty ;
+mm:mapper a owl:ObjectProperty ;
+  a owl:FunctionalProperty ;
+  rdfs:label "Metamaps user who created this topic"@en ;
+  rdfs:domain mm:Topic ;
+  rdfs:range foaf:OnlineAccount .
+
+mm:direction a owl:ObjectProprty ;
   a owl:FunctionalProperty ;
   rdfs:label "from-to, both, or none"@en ;
-  rdfs:domain mm:synapse ;
-  rdfs:range xsd:string .
+  rdfs:domain mm:Synapse ;
+  rdfs:range [ owl:oneOf mm:from-to, mm:both, mm:none ] .
+
+mm:frome-to a owl:
