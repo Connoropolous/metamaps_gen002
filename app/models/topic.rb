@@ -21,22 +21,7 @@ class Topic < ApplicationRecord
   validates :permission, presence: true
   validates :permission, inclusion: { in: Perm::ISSIONS.map(&:to_s) }
 
-  # This method associates the attribute ":image" with a file attachment
-  has_attached_file :image
-
-  # , styles: {
-  # thumb: '100x100>',
-  # square: '200x200#',
-  # medium: '300x300>'
-  # }
-
-  # Validate the attached image is image/jpg, image/png, etc
-  validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/
-
-  # This method associates the attribute ":image" with a file attachment
-  has_attached_file :audio
-  # Validate the attached audio is audio/wav, audio/mp3, etc
-  validates_attachment_content_type :audio, content_type: /\Aaudio\/.*\Z/
+  has_many :attachments, as: :attachable, dependent: :destroy
 
   def synapses
     synapses1.or(synapses2)
