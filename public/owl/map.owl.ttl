@@ -33,7 +33,7 @@ mm:mapper a owl:ObjectProperty ;
   rdfs:domain mm:Topic ;
   rdfs:range foaf:OnlineAccount .
 
-mm:direction a owl:ObjectProprty ;
+mm:direction a owl:ObjectProperty ;
   a owl:FunctionalProperty ;
   rdfs:label "from-to, both, or none"@en ;
   rdfs:domain mm:Synapse ;
