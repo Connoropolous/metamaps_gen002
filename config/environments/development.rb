@@ -30,6 +30,6 @@ Rails.application.configure do
   config.assets.debug = false
   config.assets.quiet = true
 
-	# S3 file storage
-	config.paperclip_defaults = {} # store on local machine for dev
+  # S3 file storage
+  config.paperclip_defaults = {} # store on local machine for dev
 end
