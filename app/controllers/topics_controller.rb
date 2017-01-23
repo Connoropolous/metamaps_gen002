@@ -11,13 +11,15 @@ class TopicsController < ApplicationController
   def autocomplete_topic
     term = params[:term]
     if term && !term.empty?
-      topics = policy_scope(Topic).where('LOWER("name") like ?', term.downcase + '%').order('"name"')
+      topics = policy_scope(Topic)
+               .where('LOWER("name") like ?', term.downcase + '%')
+               .order('"name"')
       map_topics = topics.select { |t| t&.metacode&.name == 'Metamap' }
       # prioritize topics which point to maps, over maps
       exclude = map_topics.length.positive? ? map_topics.map(&:name) : ['']
       maps = policy_scope(Map)
-        .where('LOWER("name") like ? AND name NOT IN (?)', term.downcase + '%', exclude)
-        .order('"name"')
+             .where('LOWER("name") like ? AND name NOT IN (?)', term.downcase + '%', exclude)
+             .order('"name"')
     else
       topics = []
       maps = []

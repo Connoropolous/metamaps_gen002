@@ -142,8 +142,8 @@ class SearchController < ApplicationController
 
     if term && !term.empty?
       @synapses = policy_scope(Synapse)
-        .where('LOWER("desc") like ?', '%' + term.downcase.strip + '%')
-        .order('"desc"')
+                  .where('LOWER("desc") like ?', '%' + term.downcase.strip + '%')
+                  .order('"desc"')
 
       @synapses = @synapses.uniq(&:desc)
     elsif topic1id && !topic1id.empty?

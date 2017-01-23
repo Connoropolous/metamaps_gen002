@@ -19,7 +19,8 @@ class MainController < ApplicationController
   end
 
   # GET /request
-  def requestinvite; end
+  def requestinvite
+  end
 
   private
 
