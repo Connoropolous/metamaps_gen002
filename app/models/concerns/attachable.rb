@@ -7,23 +7,23 @@ module Attachable
   end
 
   def images
-    attachments.where(file_content_type: self.image_types)
+    attachments.where(file_content_type: image_types)
   end
 
   def audios
-    attachments.where(file_content_type: self.audio_types)
+    attachments.where(file_content_type: audio_types)
   end
 
   def texts
-    attachments.where(file_content_type: self.text_types)
+    attachments.where(file_content_type: text_types)
   end
 
   def pdfs
-    attachments.where(file_content_type: self.pdf_types)
+    attachments.where(file_content_type: pdf_types)
   end
 
   def documents
-    attachments.where(file_content_type: self.text_types + self.pdf_types)
+    attachments.where(file_content_type: text_types + pdf_types)
   end
 
   class << self
