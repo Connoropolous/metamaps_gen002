@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class Topic < ApplicationRecord
   include TopicsHelper
+  include Attachable
 
   belongs_to :user
   belongs_to :defer_to_map, class_name: 'Map', foreign_key: 'defer_to_map_id'
@@ -20,8 +21,6 @@ class Topic < ApplicationRecord
 
   validates :permission, presence: true
   validates :permission, inclusion: { in: Perm::ISSIONS.map(&:to_s) }
-
-  has_many :attachments, as: :attachable, dependent: :destroy
 
   def synapses
     synapses1.or(synapses2)
