@@ -2,7 +2,9 @@
 module Attachable
   extend ActiveSupport::Concern
 
-  has_many :attachments, as: :attachable, dependent: :destroy
+  included do
+    has_many :attachments, as: :attachable, dependent: :destroy
+  end
 
   def images
     attachments.where(file_content_type: self.image_types)
