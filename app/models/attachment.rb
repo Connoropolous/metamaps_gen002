@@ -6,9 +6,8 @@ class Attachment < ApplicationRecord
                     styles: lambda { |a|
                       if a.instance.image?
                         {
-                          small: 'x200>',
-                          medium: 'x300>',
-                          large: 'x400>'
+                          thumb: 'x128#',
+                          medium: 'x320>'
                         }
                       else
                         {}
@@ -18,19 +17,19 @@ class Attachment < ApplicationRecord
   validates_attachment_content_type :file, content_type: Attachable.allowed_types
 
   def image?
-    file.instance.file_content_type =~ %r{\Aimage}
+    Attachable.image_types.include(file.instance.file_content_type)
   end
 
   def audio?
-    file.instance.file_content_type ~= %r{\Aaudio}
+    Attachable.audio_types.include(file.instance.file_content_type)
   end
 
   def text?
-    file.instance.file_content_type ~= %r{\Atext}
+    Attachable.text_types.include(file.instance.file_content_type)
   end
 
   def pdf?
-    file.instance.file_content_type == 'application/pdf'
+    Attachable.pdf_types.include(file.instance.file_content_type)
   end
 
   def document?
