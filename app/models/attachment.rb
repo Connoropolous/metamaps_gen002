@@ -17,19 +17,19 @@ class Attachment < ApplicationRecord
   validates_attachment_content_type :file, content_type: Attachable.allowed_types
 
   def image?
-    Attachable.image_types.include(file.instance.file_content_type)
+    Attachable.image_types.include?(file.instance.file_content_type)
   end
 
   def audio?
-    Attachable.audio_types.include(file.instance.file_content_type)
+    Attachable.audio_types.include?(file.instance.file_content_type)
   end
 
   def text?
-    Attachable.text_types.include(file.instance.file_content_type)
+    Attachable.text_types.include?(file.instance.file_content_type)
   end
 
   def pdf?
-    Attachable.pdf_types.include(file.instance.file_content_type)
+    Attachable.pdf_types.include?(file.instance.file_content_type)
   end
 
   def document?

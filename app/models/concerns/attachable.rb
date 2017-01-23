@@ -36,7 +36,7 @@ module Attachable
     end
 
     def text_types
-      ['text/plain', 'text/markdown']
+      ['text/plain']
     end
 
     def pdf_types
