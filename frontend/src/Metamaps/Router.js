@@ -204,7 +204,7 @@ const Router = new _Router()
 
 Router.navigateAndTrack = (fragment, options) => {
   Router.navigate(fragment, options)
-  ga && ga('send', 'pageview')
+  window.ga && window.ga('send', 'pageview', location.pathname, {title: document.title})
 }
 
 Router.intercept = function(evt) {
