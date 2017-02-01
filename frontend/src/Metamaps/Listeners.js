@@ -113,6 +113,12 @@ const Listeners = {
             })
           }
           break
+        case 127: // if DEL is pressed
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault()
+            Control.deleteSelected()
+          }
+          break
         case 191: // if / is pressed
           if (e.ctrlKey || e.metaKey) {
             Search.focus()
