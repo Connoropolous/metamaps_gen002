@@ -23,6 +23,23 @@ class MapsController < ApplicationController
       format.ttl { redirect_to action: :export, format: :ttl }
     end
   end
+  
+  # GET maps/:id/conversation
+  def conversation
+    respond_to do |format|
+      format.html do
+        UserMap.where(map: @map, user: current_user).map(&:mark_invite_notifications_as_read)
+        @allmappers = @map.contributors
+        @allcollaborators = @map.editors
+        @alltopics = policy_scope(@map.topics)
+        @allsynapses = policy_scope(@map.synapses)
+        @allmappings = policy_scope(@map.mappings)
+        @allmessages = @map.messages.sort_by(&:created_at)
+        @allstars = @map.stars
+        @allrequests = @map.access_requests
+      end
+    end
+  end
 
   # GET maps/new
   def new
