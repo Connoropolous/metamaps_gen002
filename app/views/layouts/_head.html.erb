@@ -30,9 +30,9 @@
   <% end %>
 
   <% if controller_name == 'maps' && action_name == "conversation" %>
-    <%= stylesheet_link_tag    "precompiled-convo", :media => "all" %>
     <%= stylesheet_link_tag    "application", :media => "all" %>
-    <%= javascript_include_tag "precompiled-convo" %>
+    <%= stylesheet_link_tag    "application-secret", :media => "all" %>
+    <%= javascript_include_tag "application-secret" %>
   <% else %>
     <%= stylesheet_link_tag    "application", :media => "all" %>
     <%= javascript_include_tag "application" %>
