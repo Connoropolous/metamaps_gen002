@@ -106,11 +106,7 @@
         </div>
 
         <div class="lightboxContent" id="switchMetacodes">
-          <% if controller_name == 'maps' && action_name == "conversation" %>
-            <%= render :partial => 'shared/switchmetacodessecret' %>
-          <% else %>
-            <%= render :partial => 'shared/switchmetacodes' %>
-          <% end %>
+          <%= render :partial => 'shared/switchmetacodes' %>
         </div>
       <% end %>
 
