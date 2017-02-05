@@ -29,7 +29,7 @@
     <meta name="twitter:url" content="<%= request.original_url %>" />
   <% end %>
 
-  <% if controller.class.name == 'MapsController' && action_name == "conversation" %>
+  <% if controller_name == 'maps' && action_name == "conversation" %>
     <%= stylesheet_link_tag    "precompiled-convo", :media => "all" %>
     <%= stylesheet_link_tag    "application", :media => "all" %>
     <%= javascript_include_tag "precompiled-convo" %>

@@ -39,7 +39,11 @@
             <div class="showcard mapElement mapElementHidden" id="showcard"></div> <!-- the topic card -->
             <% if authenticated? %>
                 <% # for creating and pulling in topics and synapses %>
-                <%= render :partial => 'maps/newtopic' %>
+                <% if controller_name == 'maps' && action_name == "conversation" %>
+                  <%= render :partial => 'maps/newtopicsecret' %>
+                <% else %>
+                  <%= render :partial => 'maps/newtopic' %>
+                <% end %>
                 <%= render :partial => 'maps/newsynapse' %>
                 <% # for populating the change metacode list on the topic card %>
                 <%= render :partial => 'shared/metacodeoptions' %>
