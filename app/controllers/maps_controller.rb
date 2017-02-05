@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class MapsController < ApplicationController
   before_action :require_user, only: [:create, :update, :destroy, :events]
-  before_action :set_map, only: [:show, :update, :destroy, :contains, :events, :export]
+  before_action :set_map, only: [:show, :conversation, :update, :destroy, :contains, :events, :export]
   after_action :verify_authorized
 
   # GET maps/:id

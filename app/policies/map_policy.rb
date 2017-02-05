@@ -20,6 +20,10 @@ class MapPolicy < ApplicationPolicy
       record.collaborators.include?(user) ||
       record.user == user
   end
+  
+  def conversation?
+    show?
+  end
 
   def create?
     user.present?
