@@ -14,7 +14,9 @@ class Mapping < ApplicationRecord
   delegate :name, to: :user, prefix: true
 
   after_create :after_created
+  after_create :after_created_async
   after_update :after_updated
+  after_update :after_updated_async
   before_destroy :before_destroyed
 
   def user_image
@@ -42,6 +44,11 @@ class Mapping < ApplicationRecord
       )
     end
   end
+  
+  def after_created_async
+    FollowService.follow(map, user, 'contributed')
+  end
+  handle_asynchronously :after_created_async
 
   def after_updated
     if (mappable_type == 'Topic') && (xloc_changed? || yloc_changed?)
@@ -50,6 +57,13 @@ class Mapping < ApplicationRecord
       ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicMoved', id: mappable.id, mapping_id: id, x: xloc, y: yloc
     end
   end
+  
+  def after_updated_async
+    if (mappable_type == 'Topic') && (xloc_changed? || yloc_changed?)
+      FollowService.follow(map, updated_by, 'contributed')
+    end
+  end
+  handle_asynchronously :after_updated_async
 
   def before_destroyed
     if mappable.defer_to_map
@@ -66,5 +80,6 @@ class Mapping < ApplicationRecord
       Events::SynapseRemovedFromMap.publish!(mappable, map, updated_by, meta)
       ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'synapseRemoved', id: mappable.id, mapping_id: id
     end
+    FollowService.follow(map, updated_by, 'contributed')
   end
 end
