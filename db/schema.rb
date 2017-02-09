@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170208161305) do
+ActiveRecord::Schema.define(version: 20170209215920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,53 @@ ActiveRecord::Schema.define(version: 20170208161305) do
     t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable_type_and_eventable_id", using: :btree
     t.index ["map_id"], name: "index_events_on_map_id", using: :btree
     t.index ["user_id"], name: "index_events_on_user_id", using: :btree
+  end
+
+  create_table "follow_reasons", force: :cascade do |t|
+    t.integer  "follow_id"
+    t.boolean  "created"
+    t.boolean  "contributed"
+    t.boolean  "commented"
+    t.boolean  "followed"
+    t.boolean  "shared_on"
+    t.boolean  "starred"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["follow_id"], name: "index_follow_reasons_on_follow_id", using: :btree
+  end
+
+  create_table "follow_types", force: :cascade do |t|
+    t.integer  "follow_id"
+    t.boolean  "all",                    default: true
+    t.boolean  "acccess_approved"
+    t.boolean  "access_request"
+    t.boolean  "invite_to_edit"
+    t.boolean  "map_activity"
+    t.boolean  "map_collaborator_added"
+    t.boolean  "map_message"
+    t.boolean  "map_starred"
+    t.boolean  "map_updated"
+    t.boolean  "topic_added_to_map"
+    t.boolean  "topic_connected"
+    t.boolean  "topic_deleted"
+    t.boolean  "topic_disconnected"
+    t.boolean  "topic_updated"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.index ["follow_id"], name: "index_follow_types_on_follow_id", using: :btree
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.integer  "user_id"
+    t.boolean  "email",         default: true
+    t.boolean  "app",           default: true
+    t.boolean  "push",          default: true
+    t.string   "followed_type"
+    t.integer  "followed_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["followed_type", "followed_id"], name: "index_follows_on_followed_type_and_followed_id", using: :btree
+    t.index ["user_id"], name: "index_follows_on_user_id", using: :btree
   end
 
   create_table "in_metacode_sets", force: :cascade do |t|
