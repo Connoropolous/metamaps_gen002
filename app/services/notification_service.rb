@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 class NotificationService
+  # for strip_tags
+  include ActionView::Helpers::SanitizeHelper
+
   def self.renderer
     renderer ||= ApplicationController.renderer.new(
       http_host: ENV['MAILER_DEFAULT_URL'],
@@ -25,14 +28,16 @@ class NotificationService
 
   def self.text_for_notification(notification)
     if notification.notification_code == MAILBOXER_CODE_ACCESS_REQUEST
-      map = notification.notified_object.map
+      map = notification.notified_object&.map
       'wants permission to map with you on <span class="in-bold">' + map.name + '</span>&nbsp;&nbsp;<div class="action">Offer a response</div>'
     elsif notification.notification_code == MAILBOXER_CODE_ACCESS_APPROVED
-      map = notification.notified_object.map
+      map = notification.notified_object&.map
       'granted your request to edit map <span class="in-bold">' + map.name + '</span>'
     elsif notification.notification_code == MAILBOXER_CODE_INVITE_TO_EDIT
-      map = notification.notified_object.map
+      map = notification.notified_object&.map
       'gave you edit access to map  <span class="in-bold">' + map.name + '</span>'
+    elsif notification.notification_code == MAILBOXER_CODE_MESSAGE_FROM_DEVS
+      strip_tags(notification.body).truncate(70)
     end
   end
 end
