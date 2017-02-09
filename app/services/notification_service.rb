@@ -33,7 +33,7 @@ class NotificationService
     sanitize_text = opts[:sanitize_text] || false
     notification_code = opts[:notification_code] || MAILBOXER_CODE_MESSAGE_FROM_DEVS
     send_mail = opts[:send_mail] || true
-    sender = opts[:sender] || User.find_by_email('ishanshapiro@gmail.com')
+    sender = opts[:sender] || User.find_by(email: 'ishanshapiro@gmail.com')
     Mailboxer::Notification.notify_all(users, subject, body, obj, sanitize_text, notification_code, send_mail, sender)
   end
 
