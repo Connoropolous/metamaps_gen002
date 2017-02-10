@@ -96,9 +96,7 @@ class NotificationService
   end
 
   def self.notify_followers(entity, event_type, event, reason_filter = nil, exclude_follows = nil)
-    follows = entity.follows.joins(:follow_type).where("follow_types.all = ? OR follow_types.#{event_type} = ?", true, true)
-    
-    follows = follows.where.not(user_id: event.user.id)
+    follows = entity.follows.joins(:follow_type).where.not(user_id: event.user.id)
     
     if exclude_follows
       follows = follows.where.not(id: exclude_follows)
@@ -114,8 +112,6 @@ class NotificationService
     return follows.map(&:id)
   end
 
-
-  # TODO: refactor this
   def self.access_request(request)
     event_type = 'access_request'
     template = get_template_for_event_type(event_type)
@@ -125,7 +121,6 @@ class NotificationService
     request.map.user.notify(subject, body, request, false, mailboxer_code, true, request.user)
   end
 
-  # TODO: refactor this
   def self.access_approved(request)
     event_type = 'access_approved'
     template = get_template_for_event_type(event_type)
@@ -135,7 +130,6 @@ class NotificationService
     request.user.notify(subject, body, request, false, mailboxer_code, true, request.map.user)
   end
 
-  # TODO: refactor this
   def self.invite_to_edit(user_map)
     event_type = 'invite_to_edit'
     template = get_template_for_event_type(event_type)

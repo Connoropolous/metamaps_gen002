@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209215920) do
+ActiveRecord::Schema.define(version: 20170209215911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,27 +78,6 @@ ActiveRecord::Schema.define(version: 20170209215920) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["follow_id"], name: "index_follow_reasons_on_follow_id", using: :btree
-  end
-
-  create_table "follow_types", force: :cascade do |t|
-    t.integer  "follow_id"
-    t.boolean  "all",                    default: true
-    t.boolean  "acccess_approved"
-    t.boolean  "access_request"
-    t.boolean  "invite_to_edit"
-    t.boolean  "map_activity"
-    t.boolean  "map_collaborator_added"
-    t.boolean  "map_message"
-    t.boolean  "map_starred"
-    t.boolean  "map_updated"
-    t.boolean  "topic_added_to_map"
-    t.boolean  "topic_connected"
-    t.boolean  "topic_deleted"
-    t.boolean  "topic_disconnected"
-    t.boolean  "topic_updated"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.index ["follow_id"], name: "index_follow_types_on_follow_id", using: :btree
   end
 
   create_table "follows", force: :cascade do |t|
