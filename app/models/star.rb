@@ -4,8 +4,8 @@ class Star < ActiveRecord::Base
   belongs_to :map
   validates :map, uniqueness: { scope: :user, message: 'You have already starred this map' }
 
-  after_create :after_created_async
-  before_destroy :before_destroyed
+  #after_create :after_created_async
+  #before_destroy :before_destroyed
   
   protected
   

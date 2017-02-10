@@ -6,7 +6,7 @@ class Message < ApplicationRecord
   delegate :name, to: :user, prefix: true
 
   after_create :after_created
-  after_create :after_created_async
+  #after_create :after_created_async
   
 
   def user_image

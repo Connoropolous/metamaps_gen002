@@ -62,7 +62,7 @@ class NotificationService
         'placeholder'
       when 'map_updated' #disabled
         'placeholder'
-      when 'map_message' # event is a Message
+      when 'map_message' # disabled  , but event is a Message
         entity.name + ' - received a chat message'
       when 'map_starred' # event is a Star
         entity.name + ' was starred by ' + event.user.name
@@ -88,8 +88,6 @@ class NotificationService
     # we'll prbly want to put the body into the actual loop so we can pass the current user in as a local
     body = renderer.render(template: template, locals: { entity: entity, event: event }, layout: false)
     follows.each{|follow|
-      # don't send if they've indicated disinterest in this event_type
-      return unless follow.follow_type.all || follow.follow_type.read_attribute(event_type)
       # this handles email and in-app notifications, in the future, include push
       receipt = follow.user.notify(subject, body, event, false, mailboxer_code, (follow.user.emails_allowed && follow.email), event.user)
       # push could be handled with Actioncable to send transient notifications to the UI
@@ -97,8 +95,14 @@ class NotificationService
     }
   end
 
-  def self.notify_followers(entity, event_type, event, reason_filter = nil)
-    follows = entity.follows
+  def self.notify_followers(entity, event_type, event, reason_filter = nil, exclude_follows = nil)
+    follows = entity.follows.joins(:follow_type).where("follow_types.all = ? OR follow_types.#{event_type} = ?", true, true)
+    
+    follows = follows.where.not(user_id: event.user.id)
+    
+    if exclude_follows
+      follows = follows.where.not(id: exclude_follows)
+    end
     
     if reason_filter.class == String && FollowReason::REASONS.include?(reason_filter)
       follows = follows.joins(:follow_reason).where('follow_reasons.' + reason_filter => true)
@@ -106,9 +110,8 @@ class NotificationService
       # TODO: throw an error here if all the reasons aren't valid
       follows = follows.joins(:follow_reason).where(reason_filter.map{|r| "follow_reasons.#{r} = 't'"}.join(' OR '))
     end
-    # filter out the person who took the action
-    follows = follows.to_a.delete_if{|f| f.user.id == event.user.id}
     send_for_follows(follows, entity, event_type, event)
+    return follows.map(&:id)
   end
 
 
