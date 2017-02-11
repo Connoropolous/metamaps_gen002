@@ -29,11 +29,8 @@ class Mapping < ApplicationRecord
 
   def after_created
     if mappable_type == 'Topic'
-      meta = { 'x': xloc, 'y': yloc, 'mapping_id': id }
-      Events::TopicAddedToMap.publish!(mappable, map, user, meta)
       ActionCable.server.broadcast 'map_' + map.id.to_s, type: 'topicAdded', topic: mappable.filtered, mapping_id: id
     elsif mappable_type == 'Synapse'
-      Events::SynapseAddedToMap.publish!(mappable, map, user, meta)
       ActionCable.server.broadcast(
         'map_' + map.id.to_s,
         type: 'synapseAdded',
@@ -47,6 +44,12 @@ class Mapping < ApplicationRecord
   
   def after_created_async
     FollowService.follow(map, user, 'contributed')
+    if mappable_type == 'Topic'
+      meta = { 'x': xloc, 'y': yloc, 'mapping_id': id }
+      Events::TopicAddedToMap.publish!(mappable, map, user, meta)
+    elsif mappable_type == 'Synapse'
+      Events::SynapseAddedToMap.publish!(mappable, map, user, nil)
+    end
   end
   handle_asynchronously :after_created_async
 
