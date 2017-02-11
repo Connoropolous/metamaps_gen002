@@ -82,12 +82,6 @@ ActiveRecord::Schema.define(version: 20170209215911) do
 
   create_table "follows", force: :cascade do |t|
     t.integer  "user_id"
-<<<<<<< HEAD
-    t.boolean  "email",         default: true
-    t.boolean  "app",           default: true
-    t.boolean  "push",          default: true
-=======
->>>>>>> develop
     t.string   "followed_type"
     t.integer  "followed_id"
     t.datetime "created_at",                   null: false
