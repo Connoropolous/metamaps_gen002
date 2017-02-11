@@ -19,10 +19,8 @@ class ApplicationMailer < ActionMailer::Base
         when MAILBOXER_CODE_INVITE_TO_EDIT
           user_map = notification.notified_object
           MapMailer.invite_to_edit(user_map)
-        when MAILBOXER_CODE_MAP_MESSAGE
-        when MAILBOXER_CODE_MAP_STARRED
-        when MAILBOXER_CODE_TOPIC_ADDED_TO_MAP
-        when MAILBOXER_CODE_TOPIC_CONNECTED
+        when TOPIC_ADDED_TO_MAP
+        when TOPIC_CONNECTED
       end
     end
   end

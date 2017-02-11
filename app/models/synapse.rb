@@ -76,8 +76,8 @@ class Synapse < ApplicationRecord
   end
   
   def after_created_async
-    follow_ids = NotificationService.notify_followers(topic1, 'topic_connected', self)
-    NotificationService.notify_followers(topic2, 'topic_connected', self, nil, follow_ids)
+    follow_ids = NotificationService.notify_followers(topic1, TOPIC_CONNECTED, self)
+    NotificationService.notify_followers(topic2, TOPIC_CONNECTED, self, nil, follow_ids)
   end
   handle_asynchronously :after_created_async
 

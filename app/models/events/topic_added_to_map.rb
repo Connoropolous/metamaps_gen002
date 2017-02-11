@@ -13,8 +13,8 @@ module Events
     
     def notify_users!
       # in the future, notify followers of both the topic, and the map
-      NotificationService.notify_followers(eventable, 'topic_added_to_map', self)
-      # NotificationService.notify_followers(map, 'topic_added_to_map', self)
+      NotificationService.notify_followers(eventable, TOPIC_ADDED_TO_MAP, self)
+      # NotificationService.notify_followers(map, MAP_RECEIVED_TOPIC, self)
     end
     handle_asynchronously :notify_users!
   end
