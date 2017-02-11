@@ -2,11 +2,6 @@
 class MapMailer < ApplicationMailer
   default from: 'team@metamaps.cc'
 
-# when 'map_message' # disabled  , but event is a Message
-#   entity.name + ' - received a chat message'
-# when 'map_starred' # event is a Star
-#   entity.name + ' was starred by ' + event.user.name
-
   def access_approved_subject(map)
     map.name + ' - access approved'
   end
@@ -14,7 +9,7 @@ class MapMailer < ApplicationMailer
   def access_approved(request)
     @request = request
     @map = request.map
-    mail(to: request.user, subject: access_approved_subject(@map))
+    mail(to: request.user.email, subject: access_approved_subject(@map))
   end
 
   def access_request_subject(map)
