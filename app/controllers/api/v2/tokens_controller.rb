@@ -18,6 +18,12 @@ module Api
         create_action
         respond_with_resource
       end
+
+      private
+
+      def current_user
+        token_user || doorkeeper_user || super
+      end
     end
   end
 end
