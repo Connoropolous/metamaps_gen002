@@ -22,7 +22,7 @@ module Api
       private
 
       def current_user
-        token_user || doorkeeper_user || super
+        token_user || doorkeeper_user || method(:current_user).super_method.super_method.call
       end
     end
   end
