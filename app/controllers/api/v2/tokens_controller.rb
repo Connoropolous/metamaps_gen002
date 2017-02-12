@@ -2,6 +2,8 @@
 module Api
   module V2
     class TokensController < RestfulController
+      protect_from_forgery
+
       def searchable_columns
         [:description]
       end
