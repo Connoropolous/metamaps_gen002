@@ -2,7 +2,7 @@
 class TopicsController < ApplicationController
   include TopicsHelper
 
-  before_action :require_user, only: [:create, :update, :destroy]
+  before_action :require_user, only: [:create, :update, :destroy, :follow, :unfollow]
   before_action :set_topic, only: [:show, :update, :relative_numbers, :relatives, :network, :destroy, :follow, :unfollow]
   after_action :verify_authorized, except: :autocomplete_topic
 
