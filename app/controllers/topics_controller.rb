@@ -165,8 +165,11 @@ class TopicsController < ApplicationController
 
     respond_to do |format|
       format.json do
-        head :ok if follow
-        head :bad_request
+        if follow
+          head :ok
+        else
+          head :bad_request
+        end
       end
     end
   end
