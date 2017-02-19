@@ -24,7 +24,7 @@ module MetacodesHelper
                  end
     
     focus_code = user_metacode()
-    focus_code != nil && @metacodes.index{|m| m.id == focus_code.id} == nil
+    if focus_code != nil && @metacodes.index{|m| m.id == focus_code.id} == nil
       @metacodes.push(focus_code)
     end
 
