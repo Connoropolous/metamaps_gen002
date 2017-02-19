@@ -5,6 +5,9 @@ import React, { PropTypes, Component } from 'react'
 import Metacode from './Metacode'
 import Permission from './Permission'
 
+// TODO use a callback instead of an import
+import Visualize from '../../Metamaps/Visualize'
+
 const inmaps = (topic) => {
   const inmapsArray = topic.get('inmaps') || []
   const inmapsLinks = topic.get('inmapsLinks') || []
@@ -60,18 +63,22 @@ class Links extends Component {
     bindShowCardListeners(this.props.topic, this.props.ActiveMapper)
   }
 
+  handleMetacodeClick = metacodeId => {
+    this.props.updateTopic({
+      metacode_id: metacodeId
+    })
+    Visualize.mGraph.plot()
+  }
+
   render = () => {
     const { topic, ActiveMapper } = this.props
-    const topicId = topic.isNew() ? topic.cid : topic.id // TODO should we really be using cid here?!?
     const metacode = topic.getMetacode()
 
     return (
       <div className="links">
         <Metacode
-          topic={topic}
           metacode={metacode}
-          ActiveMapper={ActiveMapper}
-          updateTopic={this.props.updateTopic}
+          onMetacodeClick={this.handleMetacodeClick}
           metacodeSets={this.props.metacodeSets}
         />
         <div className="linkItem contributor">
@@ -84,7 +91,7 @@ class Links extends Component {
           <div className="hoverTip">Click to see which maps topic appears on</div>
           <div className="tip"><ul>{inmaps(topic)}</ul></div>
         </div>
-        <a href={`/topics/${topicId}`} target="_blank" className="linkItem synapseCount">
+        <a href={`/topics/${topic.id}`} target="_blank" className="linkItem synapseCount">
           <div className="synapseCountIcon"></div>
           {topic.get('synapse_count').toString()}
           <div className="tip">Click to see this topics synapses</div>
