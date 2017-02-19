@@ -1422,7 +1422,7 @@ const JIT = {
           <div class="expandLi"></div>
         </li>`
 
-      menustring += '<li class="rc-metacode"><div class="rc-icon"></div>Change metacode<span id="metacodeOptionsWrapper"></span><div class="expandLi"></div></li>'
+      menustring += '<li class="rc-metacode"><div class="rc-icon"></div>Change metacode<div id="metacodeOptionsWrapper"></div><div class="expandLi"></div></li>'
     }
     if (Active.Topic) {
       if (!Active.Mapper) {
@@ -1480,11 +1480,11 @@ const JIT = {
     ReactDOM.render(
       React.createElement(MetacodeSelect, {
         onMetacodeSelect: metacodeId => {
-          const topic = Topic.get(node.id)
-          debugger
+          const topic = DataModel.Topics.get(node.id)
           topic.save({
             metacode_id: metacodeId
           })
+          Visulaize.mGraph.plot()
         },
         metacodeSets: TopicCard.metacodeSets
       }),
