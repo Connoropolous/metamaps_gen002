@@ -1480,11 +1480,16 @@ const JIT = {
     ReactDOM.render(
       React.createElement(MetacodeSelect, {
         onMetacodeSelect: metacodeId => {
-          const topic = DataModel.Topics.get(node.id)
-          topic.save({
-            metacode_id: metacodeId
-          })
-          Visulaize.mGraph.plot()
+          if (Selected.Nodes.length > 1) {
+            // batch update multiple topics
+            Control.updateSelectedMetacodes(metacodeId)
+          } else {
+            const topic = DataModel.Topics.get(node.id)
+            topic.save({
+              metacode_id: metacodeId
+            })
+          }
+          $(rightclickmenu).remove()
         },
         metacodeSets: TopicCard.metacodeSets
       }),
@@ -1535,12 +1540,6 @@ const JIT = {
       $('.rightclickmenu').remove()
       // $(this).text() will be 'commons' 'public' or 'private'
       Control.updateSelectedPermissions($(this).text())
-    })
-
-    // change the metacode of all the selected nodes that you have edit permission for
-    $('.rc-metacode li li').click(function() {
-      $('.rightclickmenu').remove()
-      Control.updateSelectedMetacodes($(this).attr('data-id'))
     })
 
     // fetch relatives
