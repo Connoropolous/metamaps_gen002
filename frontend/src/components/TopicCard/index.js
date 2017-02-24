@@ -36,8 +36,8 @@ class ReactTopicCard extends Component {
             authorizedToEdit={authorizedToEdit}
             onChange={this.props.updateTopic}
           />
-          <Attachments topic={this.props.topic}
-            ActiveMapper={this.props.ActiveMapper}
+          <Attachments link={this.props.topic.get('link')}
+            authorizedToEdit={authorizedToEdit}
             updateTopic={this.props.updateTopic}
           />
           <div className="clearfloat"></div>

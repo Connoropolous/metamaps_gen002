@@ -14,9 +14,8 @@ class Attachments extends Component {
   }
 
   componentDidMount = () => {
-    const { topic } = this.props
     embedly('on', 'card.rendered', this.embedlyCardRendered)
-    topic.get('link') && topic.get('link') !== '' && this.loadLink()
+    if (this.props.link) this.loadLink()
   }
 
   componentWillUnmount = () => {
@@ -24,9 +23,8 @@ class Attachments extends Component {
   }
 
   componentDidUpdate = () => {
-    const { topic } = this.props
     const { embedlyLinkStarted } = this.state
-    !embedlyLinkStarted && topic.get('link') && topic.get('link') !== '' && this.loadLink()
+    !embedlyLinkStarted && this.props.link && this.loadLink()
   }
 
   embedlyCardRendered = (iframe, test) => {
@@ -59,7 +57,8 @@ class Attachments extends Component {
   }
 
   loadLink = () => {
-    this.setState({embedlyLinkStarted: true})
+    debugger
+    this.setState({ embedlyLinkStarted: true })
     var e = embedly('card', document.getElementById('embedlyLink'))
     if (e && e.type === 'error') this.setState({embedlyLinkError: true})
   }
@@ -71,15 +70,14 @@ class Attachments extends Component {
       embedlyLinkError: false
     })
     this.props.updateTopic({ link: null })
-    $('.embedly-card').remove() // failsafe
+    $('div.embedly-card').after(`<a href="" id="embedlyLink" target="_blank" data-card-description="0"></a>`)
+    $('.embedly-card').remove()
   }
 
   render = () => {
-    const { topic, ActiveMapper } = this.props
+    const { link, authorizedToEdit } = this.props
     const { linkEdit, embedlyLinkLoaded, embedlyLinkStarted, embedlyLinkError } = this.state
-
-    const authorizedToEdit = topic.authorizeToEdit(ActiveMapper)
-    const hasAttachment = topic.get('link') && topic.get('link') !== ''
+    const hasAttachment = !!link
 
     if (!hasAttachment && !authorizedToEdit) return null
 
@@ -103,12 +101,12 @@ class Attachments extends Component {
           </div>
         </div>
         <a style={{ display: hasAttachment ? 'block' : 'none' }}
-          href={topic.get('link')}
+          href={link}
           id="embedlyLink"
           target="_blank"
           data-card-description="0"
         >
-          {topic.get('link')}
+          {link}
         </a>
         {embedlyLinkStarted && !embedlyLinkLoaded && !embedlyLinkError && <div id="embedlyLinkLoader">loading...</div>}
         {authorizedToEdit && (
@@ -123,8 +121,8 @@ class Attachments extends Component {
 }
 
 Attachments.propTypes = {
-  topic: PropTypes.object,
-  ActiveMapper: PropTypes.object,
+  link: PropTypes.string,
+  authorizedToEdit: PropTypes.bool,
   updateTopic: PropTypes.func
 }
 
