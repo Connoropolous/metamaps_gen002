@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 
-// TODO how do we make it so that clicking elsewhere on the topic
-// card cancels this
+import onClickOutsideAddon from 'react-onclickoutside'
+
 class Permission extends Component {
   constructor(props) {
     super(props)
@@ -20,6 +20,10 @@ class Permission extends Component {
 
   closePermissionSelect = () => {
     this.setState({selectingPermission: false})
+  }
+
+  handleClickOutside = instance => {
+    this.closePermissionSelect()
   }
 
   liClick = value => event => {
@@ -62,4 +66,4 @@ Permission.propTypes = {
   updateTopic: PropTypes.func
 }
 
-export default Permission
+export default onClickOutsideAddon(Permission)
