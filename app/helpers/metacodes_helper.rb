@@ -22,23 +22,23 @@ module MetacodesHelper
                  else
                    Metacode.where(id: @m).to_a
                  end
-    
-    focus_code = user_metacode()
-    if focus_code != nil && @metacodes.index{|m| m.id == focus_code.id} == nil
+
+    focus_code = user_metacode
+    if !focus_code.nil? && @metacodes.index { |m| m.id == focus_code.id }.nil?
       @metacodes.push(focus_code)
     end
 
     @metacodes.sort! { |m1, m2| m2.name.downcase <=> m1.name.downcase }
 
-    if focus_code != nil
-      @metacodes.rotate!(@metacodes.index{|m| m.id == focus_code.id})
+    if !focus_code.nil?
+      @metacodes.rotate!(@metacodes.index { |m| m.id == focus_code.id })
     else
       @metacodes.rotate!(-1)
     end
   end
 
   def user_metacode
-     current_user.settings.metacode_focus ? Metacode.find(current_user.settings.metacode_focus.to_i) : nil
+    current_user.settings.metacode_focus ? Metacode.find(current_user.settings.metacode_focus.to_i) : nil
   end
 
   def user_most_used_metacodes
@@ -54,24 +54,24 @@ module MetacodesHelper
     metacode_sets << {
       name: 'Recently Used',
       metacodes: user_recent_metacodes
-        .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
+                     .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
     }
     metacode_sets << {
       name: 'Most Used',
       metacodes: user_most_used_metacodes
-        .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
+                     .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
     }
-    metacode_sets += MetacodeSet.order("name").all.map do |set|
+    metacode_sets += MetacodeSet.order('name').all.map do |set|
       {
         name: set.name,
-        metacodes: set.metacodes.order("name")
-          .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
+        metacodes: set.metacodes.order('name')
+                      .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
       }
     end
     metacode_sets << {
       name: 'All',
-      metacodes: Metacode.order("name").all
-        .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
+      metacodes: Metacode.order('name').all
+                         .map { |m| { id: m.id, icon_path: asset_path(m.icon), name: m.name } }
     }
     metacode_sets.to_json
   end
