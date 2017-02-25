@@ -72,6 +72,7 @@ class Links extends Component {
 
   render = () => {
     const { topic, ActiveMapper } = this.props
+    const authorizedToEdit = topic.authorizeToEdit(ActiveMapper)
     const metacode = topic.getMetacode()
 
     return (
@@ -125,8 +126,8 @@ class Links extends Component {
           {this.state.hoveringSynapseCount && <div className="tip">Click to see this topics synapses</div>}
         </a>
         <Permission
-          topic={topic}
-          ActiveMapper={ActiveMapper}
+          permission={topic.get('permission')}
+          authorizedToEdit={authorizedToEdit}
           updateTopic={this.props.updateTopic}
         />
         <div className="clearfloat"></div>

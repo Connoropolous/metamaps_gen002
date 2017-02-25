@@ -22,54 +22,43 @@ class Permission extends Component {
     this.setState({selectingPermission: false})
   }
 
+  liClick = value => event => {
+    this.closePermissionSelect()
+    this.props.updateTopic({
+      permission: value,
+      defer_to_map_id: null
+    })
+    // prevents it from also firing the event listener on the parent
+    event.preventDefault()
+  }
+
   render = () => {
-    const self = this
-    const { topic, ActiveMapper, updateTopic } = this.props
+    const { permission, authorizedToEdit } = this.props
     const { selectingPermission } = this.state
-    const permission = topic.get('permission')
-    const canChange = topic.authorizePermissionChange(ActiveMapper)
-    const onClick = canChange ? this.togglePermissionSelect : () => {}
+
     let classes = `linkItem mapPerm ${permission.substring(0, 2)}`
     if (selectingPermission) classes += ' minimize'
-    const liClick = value => {
-      return event => {
-        self.closePermissionSelect()
-        updateTopic({
-          permission: value,
-          defer_to_map_id: null
-        })
-        // prevents it from also firing the event listener on the parent
-        event.preventDefault()
-      }
-    }
-    const selectCommons = <li key='1' className='commons' onClick={liClick('commons')}></li>
-    const selectPublic = <li key='2' className='public' onClick={liClick('public')}></li>
-    const selectPrivate = <li key='3' className='private' onClick={liClick('private')}></li>
-    let permOptions
-    if (permission === 'commons') {
-      permOptions = [selectPublic, selectPrivate]
-    } else if (permission === 'public') {
-      permOptions = [selectCommons, selectPrivate]
-    } else if (permission === 'private') {
-      permOptions = [selectCommons, selectPublic]
-    }
 
     return (
-      <div
-          className={classes}
-          title={permission}
-          onClick={onClick}>
-        {selectingPermission && <ul className="permissionSelect">
-          {permOptions}
-        </ul>}
+      <div className={classes}
+        title={permission}
+        onClick={authorizedToEdit ? this.togglePermissionSelect : null}
+      >
+        <ul className="permissionSelect"
+          style={{ display: selectingPermission ? 'block' : 'none' }}
+        >
+          {permission !== 'commons' && <li className='commons' onClick={this.liClick('commons')}></li>}
+          {permission !== 'public' && <li className='public' onClick={this.liClick('public')}></li>}
+          {permission !== 'private' && <li className='private' onClick={this.liClick('private')}></li>}
+        </ul>
       </div>
     )
   }
 }
 
 Permission.propTypes = {
-  topic: PropTypes.object, // backbone object
-  ActiveMapper: PropTypes.object,
+  permission: PropTypes.string, // 'co', 'pu', or 'pr'
+  authorizedToEdit: PropTypes.bool,
   updateTopic: PropTypes.func
 }
 
