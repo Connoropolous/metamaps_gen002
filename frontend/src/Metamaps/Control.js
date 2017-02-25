@@ -3,6 +3,7 @@ import outdent from 'outdent'
 
 import Active from './Active'
 import DataModel from './DataModel'
+import Engine from './Engine'
 import Filter from './Filter'
 import GlobalUI from './GlobalUI'
 import Mouse from './Mouse'

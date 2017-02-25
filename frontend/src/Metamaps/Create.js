@@ -1,10 +1,16 @@
-/* global $, Hogan, Bloodhound */
+/* global Metamaps, $, Hogan, Bloodhound */
+
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 import DataModel from './DataModel'
+import Engine from './Engine'
+import MetacodeSelect from '../components/MetacodeSelect'
 import Mouse from './Mouse'
 import Selected from './Selected'
 import Synapse from './Synapse'
 import Topic from './Topic'
+import Util from './Util'
 import Visualize from './Visualize'
 import GlobalUI from './GlobalUI'
 
@@ -16,9 +22,11 @@ const Create = {
   newSelectedMetacodeNames: [],
   selectedMetacodes: [],
   newSelectedMetacodes: [],
-  init: function() {
+  recentMetacodes: [],
+  mostUsedMetacodes: [],
+  init: function (serverData) {
     var self = Create
-    self.newTopic.init()
+    self.newTopic.init(serverData)
     self.newSynapse.init()
 
     // // SWITCHING METACODE SETS
@@ -58,10 +66,11 @@ const Create = {
     if (!custom) {
       codesToSwitchToIds = $('#metacodeSwitchTabs' + set).attr('data-metacodes').split(',')
       $('.customMetacodeList li').addClass('toggledOff')
-      Create.selectedMetacodes = []
-      Create.selectedMetacodeNames = []
-      Create.newSelectedMetacodes = []
-      Create.newSelectedMetacodeNames = []
+console.log(codesToSwitchToIds)
+      Create.selectedMetacodes = codesToSwitchToIds
+      Create.selectedMetacodeNames = DataModel.Metacodes.filter(m => codesToSwitchToIds.indexOf(m.id) > -1).map(m => m.get('name'))  
+      Create.newSelectedMetacodes = codesToSwitchToIds
+      Create.newSelectedMetacodeNames = DataModel.Metacodes.filter(m => codesToSwitchToIds.indexOf(m.id) > -1).map(m => m.get('name'))  
     } else if (custom) {
       // uses .slice to avoid setting the two arrays to the same actual array
       Create.selectedMetacodes = Create.newSelectedMetacodes.slice(0)
@@ -70,12 +79,13 @@ const Create = {
     }
 
     // sort by name
-    for (var i = 0; i < codesToSwitchToIds.length; i++) {
-      metacodeModels.add(DataModel.Metacodes.get(codesToSwitchToIds[i]))
-    }
+    codesToSwitchToIds.forEach(id => {
+      const metacode = DataModel.Metacodes.get(id)
+      metacodeModels.add(metacode)
+      $('.customMetacodeList #' + id).removeClass('toggledOff')
+    })
     metacodeModels.sort()
 
-    $('#metacodeImg, #metacodeImgTitle').empty()
     $('#metacodeImg').removeData('cloudcarousel')
     var newMetacodes = ''
     metacodeModels.each(function(metacode) {
@@ -83,15 +93,15 @@ const Create = {
     })
 
     $('#metacodeImg').empty().append(newMetacodes).CloudCarousel({
-      titleBox: $('#metacodeImgTitle'),
       yRadius: 40,
       xRadius: 190,
       xPos: 170,
       yPos: 40,
       speed: 0.3,
-      mouseWheel: true,
       bringToFront: true
     })
+
+    Create.newTopic.setMetacode(metacodeModels.models[0].id)
 
     GlobalUI.closeLightbox()
     $('#topic_name').focus()
@@ -119,13 +129,7 @@ const Create = {
     var self = Create
     self.isSwitchingSet = false
 
-    if (self.selectedMetacodeSet !== 'metacodeset-custom') {
-      $('.customMetacodeList li').addClass('toggledOff')
-      self.selectedMetacodes = []
-      self.selectedMetacodeNames = []
-      self.newSelectedMetacodes = []
-      self.newSelectedMetacodeNames = []
-    } else { // custom set is selected
+    if (self.selectedMetacodeSet === 'metacodeset-custom') {
       // reset it to the current actual selection
       $('.customMetacodeList li').addClass('toggledOff')
       for (var i = 0; i < self.selectedMetacodes.length; i++) {
@@ -139,27 +143,33 @@ const Create = {
     $('#topic_name').focus()
   },
   newTopic: {
-    init: function() {
-      $('#topic_name').keyup(function(e) {
-        const ESC = 27
+    init: function (serverData) {
+      const DOWN_ARROW = 40
+      const ESC = 27
+
+      if (!serverData.ActiveMapper) return
+
+      $('#topic_name').keyup(function (e) {
+
+        Create.newTopic.name = $(this).val()
+        if (e.which == DOWN_ARROW && !Create.newTopic.name.length) {
+          Create.newTopic.openSelector()
+        }
 
         if (e.keyCode === ESC) {
           Create.newTopic.hide()
         } // if
-
-        Create.newTopic.name = $(this).val()
       })
-
-      $('.pinCarousel').click(function() {
-        if (Create.newTopic.pinned) {
-          $('.pinCarousel').removeClass('isPinned')
-          Create.newTopic.pinned = false
-        } else {
-          $('.pinCarousel').addClass('isPinned')
-          Create.newTopic.pinned = true
-        }
+      
+      $('.selectedMetacode').click(function() {
+        if (Create.newTopic.metacodeSelectorOpen) {
+          Create.newTopic.hideSelector()
+          $('#topic_name').focus()
+        } else Create.newTopic.openSelector()
       })
-
+      
+      Create.newTopic.initSelector()
+      
       var topicBloodhound = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -200,52 +210,86 @@ const Create = {
           })
         }
       })
+      $('#topic_name').click(function() { Create.newTopic.hideSelector() })
 
       // initialize metacode spinner and then hide it
       $('#metacodeImg').CloudCarousel({
-        titleBox: $('#metacodeImgTitle'),
         yRadius: 40,
         xRadius: 190,
         xPos: 170,
         yPos: 40,
         speed: 0.3,
-        mouseWheel: true,
         bringToFront: true
       })
-      $('.new_topic').hide()
-      $('#new_topic').attr('oncontextmenu', 'return false') // prevents the mouse up event from opening the default context menu on this element
+      $('#new_topic').hide()
+        .css({ left: '50%', top: '50%' })
+        .attr('oncontextmenu', 'return false') // prevents the mouse up event from opening the default context menu on this element
     },
     name: null,
     newId: 1,
     beingCreated: false,
+    metacodeSelectorOpen: false,
     metacode: null,
     x: null,
     y: null,
     addSynapse: false,
     pinned: false,
-    open: function() {
-      $('#new_topic').fadeIn('fast', function() {
-        $('#topic_name').focus()
-      })
-      Create.newTopic.beingCreated = true
-      Create.newTopic.name = ''
-      GlobalUI.hideDiv('#instructions')
+    initSelector: function () {
+      ReactDOM.render(
+        React.createElement(MetacodeSelect, {
+          onClick: function (id) {
+            Create.newTopic.setMetacode(id)
+            Create.newTopic.hideSelector()
+            $('#topic_name').focus()
+          },
+          close: function () {
+            Create.newTopic.hideSelector()
+            $('#topic_name').focus()
+          },
+          metacodes: DataModel.Metacodes.filter(m => Create.selectedMetacodes.indexOf(m.id.toString()) > -1)
+        }),
+        document.getElementById('metacodeSelector')
+      )
     },
-    hide: function(force) {
-      if (force || !Create.newTopic.pinned) {
-        $('#new_topic').fadeOut('fast')
-      }
-      if (force) {
-        $('.pinCarousel').removeClass('isPinned')
-        Create.newTopic.pinned = false
-      }
-      if (DataModel.Topics.length === 0) {
-        GlobalUI.showDiv('#instructions')
-      }
-      Create.newTopic.beingCreated = false
+    openSelector: function () {
+      Create.newTopic.initSelector()
+      $('#metacodeSelector').show()
+      Create.newTopic.metacodeSelectorOpen = true
+      $('.metacodeFilterInput').focus()
+      $('.selectedMetacode').addClass('isBeingSelected')
+    },
+    hideSelector: function () {
+      ReactDOM.unmountComponentAtNode(document.getElementById('metacodeSelector'))
+      $('#metacodeSelector').hide()
+      Create.newTopic.metacodeSelectorOpen = false
+      $('.selectedMetacode').removeClass('isBeingSelected')
+    },
+    setMetacode: function (id) {
+      Create.newTopic.metacode = id
+      var metacode = DataModel.Metacodes.get(id)
+      $('.selectedMetacode img').attr('src', metacode.get('icon'))
+      $('.selectedMetacode span').html(metacode.get('name'))
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: '/user/update_metacode_focus',
+        data: { value: id },
+        success: function (data) {},
+        error: function () {
+          console.log('failed to save metacode focus')
+        }
+      })
     },
     reset: function() {
       $('#topic_name').typeahead('val', '')
+      Create.newTopic.hideSelector()
+    },
+    position: function() {
+      const pixels = Util.coordsToPixels(Visualize.mGraph, Mouse.newNodeCoords)
+      $('#new_topic').css({
+        left: pixels.x,
+        top: pixels.y
+      })
     }
   },
   newSynapse: {
@@ -317,7 +361,9 @@ const Create = {
 
       $('#synapse_desc').focusout(function() {
         if (Create.newSynapse.beingCreated) {
-          Synapse.createSynapseLocally()
+          Synapse.createSynapseLocally(Create.newSynapse.topic1id, Create.newSynapse.topic2id)
+          Engine.runLayout()
+          Create.newSynapse.hide()
         }
       })
 
@@ -325,7 +371,9 @@ const Create = {
         const TAB = 9
         if (Create.newSynapse.beingCreated && e.keyCode === TAB) {
           e.preventDefault()
-          Synapse.createSynapseLocally()
+          Synapse.createSynapseLocally(Create.newSynapse.topic1id, Create.newSynapse.topic2id)
+          Engine.runLayout()
+          Create.newSynapse.hide()
         }
       })
 
@@ -334,10 +382,13 @@ const Create = {
           Synapse.getSynapseFromAutocomplete(datum.id)
         } else {
           Create.newSynapse.description = datum.value
-          Synapse.createSynapseLocally()
+          Synapse.createSynapseLocally(Create.newSynapse.topic1id, Create.newSynapse.topic2id)
+          Engine.runLayout()
+          Create.newSynapse.hide()
         }
       })
     },
+    focusNode: null,
     beingCreated: false,
     description: null,
     topic1id: null,
@@ -356,8 +407,26 @@ const Create = {
       Create.newTopic.addSynapse = false
       Create.newSynapse.topic1id = 0
       Create.newSynapse.topic2id = 0
+      Create.newSynapse.node1 = null
+      Create.newSynapse.node2 = null
       Mouse.synapseStartCoordinates = []
+      Mouse.synapseEndCoordinates = null
       if (Visualize.mGraph) Visualize.mGraph.plot()
+    },
+    updateForm: function() {
+      let pixelPos, midpoint = {}
+      if (Create.newSynapse.beingCreated) {
+        Mouse.synapseEndCoordinates = {
+          x: Create.newSynapse.node2.pos.getc().x,
+          y: Create.newSynapse.node2.pos.getc().y
+        }
+        // position the form
+        midpoint.x = Create.newSynapse.node1.pos.getc().x + (Create.newSynapse.node2.pos.getc().x - Create.newSynapse.node1.pos.getc().x) / 2
+        midpoint.y = Create.newSynapse.node1.pos.getc().y + (Create.newSynapse.node2.pos.getc().y - Create.newSynapse.node1.pos.getc().y) / 2
+        pixelPos = Util.coordsToPixels(Visualize.mGraph, midpoint)
+        $('#new_synapse').css('left', pixelPos.x + 'px')
+        $('#new_synapse').css('top', pixelPos.y + 'px')
+      }
     }
   }
 }

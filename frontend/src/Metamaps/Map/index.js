@@ -8,6 +8,7 @@ import AutoLayout from '../AutoLayout'
 import Create from '../Create'
 import DataModel from '../DataModel'
 import DataModelMap from '../DataModel/Map'
+import Engine from '../Engine'
 import Filter from '../Filter'
 import GlobalUI from '../GlobalUI'
 import JIT from '../JIT'
@@ -146,11 +147,12 @@ const Map = {
       $('.rightclickmenu').remove()
       TopicCard.hideCard()
       SynapseCard.hideCard()
-      Create.newTopic.hide(true) // true means force (and override pinned)
+      $('#new_topic').hide()
       Create.newSynapse.hide()
       Filter.close()
       InfoBox.close()
       Realtime.endActiveMap()
+      Engine.endActiveMap()
       $('.viewOnly').removeClass('isViewOnly')
     }
   },

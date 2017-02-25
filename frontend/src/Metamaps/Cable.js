@@ -4,7 +4,9 @@ import { indexOf } from 'lodash'
 
 import Active from './Active'
 import Control from './Control'
+import Create from './Create'
 import DataModel from './DataModel'
+import Engine from './Engine'
 import Map from './Map'
 import Mapper from './Mapper'
 import Synapse from './Synapse'
@@ -28,7 +30,7 @@ const Cable = {
   },
   unsubscribeFromMap: () => {
     let self = Cable
-    self.sub.unsubscribe()
+    self.sub && self.sub.unsubscribe()
     delete self.sub
   },
   synapseAdded: event => {
@@ -44,15 +46,15 @@ const Cable = {
     if (t1.authorizeToShow(m) && t2.authorizeToShow(m) && s.authorizeToShow(m) && !DataModel.Synapses.get(event.synapse.id)) {
       // refactor the heck outta this, its adding wicked wait time
       var topic1, topic2, node1, node2, synapse, mapping, cancel, mapper
-
+ 
       const waitThenRenderSynapse = () => {
-        if (synapse && mapping && mapper) {
+        if (synapse && mapping && mapper && synapse.getTopic1() && synapse.getTopic2()) {
           topic1 = synapse.getTopic1()
           node1 = topic1.get('node')
           topic2 = synapse.getTopic2()
           node2 = topic2.get('node')
-
-          Synapse.renderSynapse(mapping, synapse, node1, node2, false)
+          Synapse.renderSynapse(mapping, synapse, node1, node2, true)
+          Engine.runLayout()
         } else if (!cancel) {
           setTimeout(waitThenRenderSynapse, 10)
         }
@@ -119,6 +121,7 @@ const Cable = {
       }
       DataModel.Synapses.remove(synapse)
       DataModel.Mappings.remove(mapping)
+      Engine.runLayout()
     }
   },
   topicAdded: event => {
@@ -134,7 +137,8 @@ const Cable = {
 
       const waitThenRenderTopic = () => {
         if (topic && mapping && mapper) {
-          Topic.renderTopic(mapping, topic, false, false)
+          Topic.renderTopic(mapping, topic, true)
+          Engine.runLayout()
         } else if (!cancel) {
           setTimeout(waitThenRenderTopic, 10)
         }
@@ -185,7 +189,7 @@ const Cable = {
   },
   topicMoved: event => {
     var topic, node, mapping
-    if (Active.Map) {
+    /*if (Active.Map) {
       topic = DataModel.Topics.get(event.id)
       mapping = DataModel.Mappings.get(event.mapping_id)
       mapping.set('xloc', event.x)
@@ -193,7 +197,7 @@ const Cable = {
       if (topic) node = topic.get('node')
       if (node) node.pos.setc(event.x, event.y)
       Visualize.mGraph.plot()
-    }
+    }*/
   },
   topicRemoved: event => {
     var topic = DataModel.Topics.get(event.id)
@@ -203,6 +207,7 @@ const Cable = {
       Control.hideNode(node.id)
       DataModel.Topics.remove(topic)
       DataModel.Mappings.remove(mapping)
+      Engine.runLayout()
     }
   },
   messageCreated: event => {

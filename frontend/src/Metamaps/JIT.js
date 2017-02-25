@@ -9,6 +9,7 @@ import Active from './Active'
 import Control from './Control'
 import Create from './Create'
 import DataModel from './DataModel'
+import Engine from './Engine'
 import Filter from './Filter'
 import GlobalUI from './GlobalUI'
 import Map from './Map'
@@ -392,7 +393,6 @@ const JIT = {
               Visualize.mGraph.busy = false
               Mouse.boxEndCoordinates = eventInfo.getPos()
               JIT.selectWithBox(e)
-
               return
             }
           }
@@ -404,6 +404,7 @@ const JIT = {
             JIT.selectEdgeOnClickHandler(node, e)
           } else if (node && !node.nodeFrom) {
             JIT.selectNodeOnClickHandler(node, e)
+            Engine.setFocusNode(node)
           } else {
             JIT.canvasClickHandler(eventInfo.getPos(), e)
           } // if
@@ -415,7 +416,6 @@ const JIT = {
 
           if (Mouse.boxStartCoordinates) {
             Create.newSynapse.hide()
-            Create.newTopic.hide()
             Visualize.mGraph.busy = false
             Mouse.boxEndCoordinates = eventInfo.getPos()
             JIT.selectWithBox(e)
@@ -432,7 +432,6 @@ const JIT = {
           } else {
             // right click open space
             Create.newSynapse.hide()
-            Create.newTopic.hide()
           }
         }
       },
@@ -721,14 +720,16 @@ const JIT = {
       $('canvas').css('cursor', 'default')
     }
   }, // onMouseMoveHandler
-  enterKeyHandler: function() {
+  enterKeyHandler: function(e) {
     const creatingMap = GlobalUI.lightbox
     if (creatingMap === 'newmap' || creatingMap === 'forkmap') {
       GlobalUI.CreateMap.submit()
-    } else if (Create.newTopic.beingCreated) {
+    } else if (e.target.id === 'topic_name' && !Create.newTopic.metacodeSelectorOpen) {
       Topic.createTopicLocally()
     } else if (Create.newSynapse.beingCreated) {
-      Synapse.createSynapseLocally()
+      Synapse.createSynapseLocally(Create.newSynapse.topic1id, Create.newSynapse.topic2id)
+      Engine.runLayout()
+      Create.newSynapse.hide()
     }
   }, // enterKeyHandler
   escKeyHandler: function() {
@@ -741,131 +742,28 @@ const JIT = {
     var authorized = Active.Map && Active.Map.authorizeToEdit(Active.Mapper)
 
     if (node && !node.nodeFrom) {
-      self.handleSelectionBeforeDragging(node, e)
 
       const pos = eventInfo.getPos()
-      const EDGE_THICKNESS = 30
-      const SHIFT = 2 / Visualize.mGraph.canvas.scaleOffsetX
-      const PERIOD = 5
-
-      // self.virtualPointer = pos;
-
-      // if it's a left click, or a touch, move the node
-      if (e.touches || (e.button === 0 && !e.altKey && !e.ctrlKey && (e.buttons === 0 || e.buttons === 1 || e.buttons === undefined))) {
-        const width = Visualize.mGraph.canvas.getSize().width
-        const height = Visualize.mGraph.canvas.getSize().height
-        const xPix = Util.coordsToPixels(Visualize.mGraph, pos).x
-        const yPix = Util.coordsToPixels(Visualize.mGraph, pos).y
-
-        if (self.dragFlag === 0) {
-          self.mouseDownPix = Util.coordsToPixels(Visualize.mGraph, eventInfo.getPos())
-          self.dragFlag = 1
-        }
-
-        if (Util.getDistance(Util.coordsToPixels(Visualize.mGraph, pos), self.mouseDownPix) > 2 && !self.dragTolerance) {
-          self.dragTolerance = 1
-        }
-
-        if (xPix < EDGE_THICKNESS && self.dragTolerance) {
-          clearInterval(self.dragLeftEdge)
-          clearInterval(self.dragRightEdge)
-          clearInterval(self.dragTopEdge)
-          clearInterval(self.dragBottomEdge)
-          self.virtualPointer = { x: Util.pixelsToCoords(Visualize.mGraph, { x: EDGE_THICKNESS, y: yPix }).x - SHIFT, y: pos.y }
-          Visualize.mGraph.canvas.translate(SHIFT, 0)
-          self.updateTopicPositions(node, self.virtualPointer)
-          Visualize.mGraph.plot()
-
-          self.dragLeftEdge = setInterval(function() {
-            self.virtualPointer = { x: Util.pixelsToCoords(Visualize.mGraph, { x: EDGE_THICKNESS, y: yPix }).x - SHIFT, y: pos.y }
-            Visualize.mGraph.canvas.translate(SHIFT, 0)
-            self.updateTopicPositions(node, self.virtualPointer)
-            Visualize.mGraph.plot()
-          }, PERIOD)
-        }
-        if (width - xPix < EDGE_THICKNESS && self.dragTolerance) {
-          clearInterval(self.dragLeftEdge)
-          clearInterval(self.dragRightEdge)
-          clearInterval(self.dragTopEdge)
-          clearInterval(self.dragBottomEdge)
-          self.virtualPointer = { x: Util.pixelsToCoords(Visualize.mGraph, { x: width - EDGE_THICKNESS, y: yPix }).x + SHIFT, y: pos.y }
-          Visualize.mGraph.canvas.translate(-SHIFT, 0)
-          self.updateTopicPositions(node, self.virtualPointer)
-          Visualize.mGraph.plot()
-
-          self.dragRightEdge = setInterval(function() {
-            self.virtualPointer = { x: Util.pixelsToCoords(Visualize.mGraph, { x: width - EDGE_THICKNESS, y: yPix }).x + SHIFT, y: pos.y }
-            Visualize.mGraph.canvas.translate(-SHIFT, 0)
-            self.updateTopicPositions(node, self.virtualPointer)
-            Visualize.mGraph.plot()
-          }, PERIOD)
-        }
-        if (yPix < EDGE_THICKNESS && self.dragTolerance) {
-          clearInterval(self.dragLeftEdge)
-          clearInterval(self.dragRightEdge)
-          clearInterval(self.dragTopEdge)
-          clearInterval(self.dragBottomEdge)
-          self.virtualPointer = { x: pos.x, y: Util.pixelsToCoords(Visualize.mGraph, { x: xPix, y: EDGE_THICKNESS }).y - SHIFT }
-          Visualize.mGraph.canvas.translate(0, SHIFT)
-          self.updateTopicPositions(node, self.virtualPointer)
-          Visualize.mGraph.plot()
-
-          self.dragTopEdge = setInterval(function() {
-            self.virtualPointer = { x: pos.x, y: Util.pixelsToCoords(Visualize.mGraph, { x: xPix, y: EDGE_THICKNESS }).y - SHIFT }
-            Visualize.mGraph.canvas.translate(0, SHIFT)
-            self.updateTopicPositions(node, self.virtualPointer)
-            Visualize.mGraph.plot()
-          }, PERIOD)
-        }
-        if (height - yPix < EDGE_THICKNESS && self.dragTolerance) {
-          clearInterval(self.dragLeftEdge)
-          clearInterval(self.dragRightEdge)
-          clearInterval(self.dragTopEdge)
-          clearInterval(self.dragBottomEdge)
-          self.virtualPointer = { x: pos.x, y: Util.pixelsToCoords(Visualize.mGraph, { x: xPix, y: height - EDGE_THICKNESS }).y + SHIFT }
-          Visualize.mGraph.canvas.translate(0, -SHIFT)
-          self.updateTopicPositions(node, self.virtualPointer)
-          Visualize.mGraph.plot()
-
-          self.dragBottomEdge = setInterval(function() {
-            self.virtualPointer = { x: pos.x, y: Util.pixelsToCoords(Visualize.mGraph, { x: xPix, y: height - EDGE_THICKNESS }).y + SHIFT }
-            Visualize.mGraph.canvas.translate(0, -SHIFT)
-            self.updateTopicPositions(node, self.virtualPointer)
-            Visualize.mGraph.plot()
-          }, PERIOD)
-        }
-
-        if (xPix >= EDGE_THICKNESS && width - xPix >= EDGE_THICKNESS && yPix >= EDGE_THICKNESS && height - yPix >= EDGE_THICKNESS) {
-          clearInterval(self.dragLeftEdge)
-          clearInterval(self.dragRightEdge)
-          clearInterval(self.dragTopEdge)
-          clearInterval(self.dragBottomEdge)
-
-          self.updateTopicPositions(node, pos)
-          Visualize.mGraph.plot()
-        }
-      } else if ((e.button === 2 || (e.button === 0 && e.altKey) || e.buttons === 2) && authorized) {
-        // if it's a right click or holding down alt, start synapse creation  ->third option is for firefox
+      if ((e.button === 0 || e.buttons === 0) && authorized) {
+        // start synapse creation  ->second option is for firefox
         if (JIT.tempInit === false) {
           JIT.tempNode = node
           JIT.tempInit = true
-
-          Create.newTopic.hide()
           Create.newSynapse.hide()
           // set the draw synapse start positions
-          var l = Selected.Nodes.length
-          if (l > 0) {
-            for (let i = l - 1; i >= 0; i -= 1) {
-              const n = Selected.Nodes[i]
+          Mouse.synapseStartCoordinates = []
+          if (Selected.Nodes.length) {
+            Selected.Nodes.forEach(n => {
               Mouse.synapseStartCoordinates.push({
                 x: n.pos.getc().x,
                 y: n.pos.getc().y
               })
-            }
-          } else {
+            })
+          }
+          else {
             Mouse.synapseStartCoordinates = [{
-              x: JIT.tempNode.pos.getc().x,
-              y: JIT.tempNode.pos.getc().y
+              x: node.pos.getc().x,
+              y: node.pos.getc().y
             }]
           }
           Mouse.synapseEndCoordinates = {
@@ -877,43 +775,28 @@ const JIT = {
         let temp = eventInfo.getNode()
         if (temp !== false && temp.id !== node.id && Selected.Nodes.indexOf(temp) === -1) { // this means a Node has been returned
           JIT.tempNode2 = temp
-
           Mouse.synapseEndCoordinates = {
             x: JIT.tempNode2.pos.getc().x,
             y: JIT.tempNode2.pos.getc().y
           }
-
           // before making the highlighted one bigger, make sure all the others are regular size
           Visualize.mGraph.graph.eachNode(function(n) {
             n.setData('dim', 25, 'current')
           })
           temp.setData('dim', 35, 'current')
-          Visualize.mGraph.plot()
         } else if (!temp) {
           JIT.tempNode2 = null
-          Visualize.mGraph.graph.eachNode(function(n) {
-            n.setData('dim', 25, 'current')
-          })
-          // pop up node creation :)
-          var myX = e.clientX - 110
-          var myY = e.clientY - 30
-          $('#new_topic').css('left', myX + 'px')
-          $('#new_topic').css('top', myY + 'px')
-          Create.newTopic.x = eventInfo.getPos().x
-          Create.newTopic.y = eventInfo.getPos().y
-          Visualize.mGraph.plot()
-
           Mouse.synapseEndCoordinates = {
             x: pos.x,
             y: pos.y
           }
+          Visualize.mGraph.graph.eachNode(function(n) {
+            n.setData('dim', 25, 'current')
+          })
         }
-      } else if ((e.button === 2 || (e.button === 0 && e.altKey) || e.buttons === 2) && Active.Topic) {
-        GlobalUI.notifyUser('Cannot create in Topic view.')
-      } else if ((e.button === 2 || (e.button === 0 && e.altKey) || e.buttons === 2) && !authorized) {
-        GlobalUI.notifyUser('Cannot edit this map.')
       }
     }
+    Visualize.mGraph.plot()
   }, // onDragMoveTopicHandler
   onDragCancelHandler: function(node, eventInfo, e) {
     JIT.tempNode = null
@@ -931,30 +814,15 @@ const JIT = {
     let pixelPos
     let mapping
 
-    clearInterval(self.dragLeftEdge)
-    clearInterval(self.dragRightEdge)
-    clearInterval(self.dragTopEdge)
-    clearInterval(self.dragBottomEdge)
-
-    delete self.dragLeftEdge
-    delete self.dragRightEdge
-    delete self.dragTopEdge
-    delete self.dragBottomEdge
-
-    self.dragFlag = 0
-    self.dragTolerance = 0
-
     if (JIT.tempInit && JIT.tempNode2 === null) {
-      // this means you want to add a new topic, and then a synapse
-      Create.newTopic.addSynapse = true
-      Create.newTopic.open()
+      Mouse.synapseEndCoordinates = null
     } else if (JIT.tempInit && JIT.tempNode2 !== null) {
       // this means you want to create a synapse between two existing topics
-      Create.newTopic.addSynapse = false
       Create.newSynapse.topic1id = JIT.tempNode.getData('topic').id
       Create.newSynapse.topic2id = JIT.tempNode2.getData('topic').id
+      Create.newSynapse.node1 = JIT.tempNode
+      Create.newSynapse.node2 = JIT.tempNode2
       JIT.tempNode2.setData('dim', 25, 'current')
-      Visualize.mGraph.plot()
       midpoint.x = JIT.tempNode.pos.getc().x + (JIT.tempNode2.pos.getc().x - JIT.tempNode.pos.getc().x) / 2
       midpoint.y = JIT.tempNode.pos.getc().y + (JIT.tempNode2.pos.getc().y - JIT.tempNode.pos.getc().y) / 2
       pixelPos = Util.coordsToPixels(Visualize.mGraph, midpoint)
@@ -964,36 +832,8 @@ const JIT = {
       JIT.tempNode = null
       JIT.tempNode2 = null
       JIT.tempInit = false
-    } else if (!JIT.tempInit && node && !node.nodeFrom) {
-      // this means you dragged an existing node, autosave that to the database
-
-      // check whether to save mappings
-      const checkWhetherToSave = function() {
-        const map = Active.Map
-        if (!map) return false
-        return map.authorizeToEdit(Active.Mapper)
-      }
-
-      if (checkWhetherToSave()) {
-        mapping = node.getData('mapping')
-        mapping.save({
-          xloc: node.getPos().x,
-          yloc: node.getPos().y
-        })
-        // also save any other selected nodes that also got dragged along
-        const l = Selected.Nodes.length
-        for (var i = l - 1; i >= 0; i -= 1) {
-          const n = Selected.Nodes[i]
-          if (n !== node) {
-            mapping = n.getData('mapping')
-            mapping.save({
-              xloc: n.getPos().x,
-              yloc: n.getPos().y
-            })
-          }
-        }
-      }
     }
+    Visualize.mGraph.plot()
   }, // onDragEndTopicHandler
   canvasClickHandler: function(canvasLoc, e) {
     // grab the location and timestamp of the click
@@ -1004,27 +844,12 @@ const JIT = {
     const authorized = Active.Map && Active.Map.authorizeToEdit(Active.Mapper)
 
     if (now - storedTime < Mouse.DOUBLE_CLICK_TOLERANCE && !Mouse.didPan) {
-      if (Active.Map && !authorized) {
-        GlobalUI.notifyUser('Cannot edit Public map.')
-        return
-      } else if (Active.Topic) {
-        GlobalUI.notifyUser('Cannot create in Topic view.')
-        return
-      }
       // DOUBLE CLICK
-      // pop up node creation :)
-      Create.newTopic.addSynapse = false
-      Create.newTopic.x = canvasLoc.x
-      Create.newTopic.y = canvasLoc.y
-      $('#new_topic').css('left', e.clientX + 'px')
-      $('#new_topic').css('top', e.clientY + 'px')
-      Create.newTopic.open()
     } else if (!Mouse.didPan) {
       // SINGLE CLICK, no pan
       Filter.close()
       TopicCard.hideCard()
       SynapseCard.hideCard()
-      Create.newTopic.hide()
       $('.rightclickmenu').remove()
       // reset the draw synapse positions to false
       Mouse.synapseStartCoordinates = []
@@ -1038,7 +863,6 @@ const JIT = {
       }
     } else {
       // SINGLE CLICK, resulting from pan
-      Create.newTopic.hide()
     }
   }, // canvasClickHandler
   updateTopicPositions: function(node, pos) {
@@ -1272,26 +1096,6 @@ const JIT = {
     Mouse.boxEndCoordinates = false
     Visualize.mGraph.plot()
   }, // selectWithBox
-  drawSelectBox: function(eventInfo, e) {
-    const ctx = Visualize.mGraph.canvas.getCtx()
-
-    const startX = Mouse.boxStartCoordinates.x
-    const startY = Mouse.boxStartCoordinates.y
-    const currX = eventInfo.getPos().x
-    const currY = eventInfo.getPos().y
-
-    Visualize.mGraph.canvas.clear()
-    Visualize.mGraph.plot()
-
-    ctx.beginPath()
-    ctx.moveTo(startX, startY)
-    ctx.lineTo(startX, currY)
-    ctx.lineTo(currX, currY)
-    ctx.lineTo(currX, startY)
-    ctx.lineTo(startX, startY)
-    ctx.strokeStyle = 'black'
-    ctx.stroke()
-  }, // drawSelectBox
   selectNodeOnClickHandler: function(node, e) {
     if (Visualize.mGraph.busy) return
 
@@ -1320,43 +1124,19 @@ const JIT = {
       // wait a certain length of time, then check again, then run this code
       setTimeout(function() {
         if (!JIT.nodeWasDoubleClicked()) {
-          var nodeAlreadySelected = node.selected
+          if (e.button === 1 && !e.ctrlKey) {
+            var len = Selected.Nodes.length
 
-          if (e.button !== 1) {
-            if (!e.shiftKey) {
-              Control.deselectAllNodes()
-              Control.deselectAllEdges()
-            }
+            for (let i = 0; i < len; i += 1) {
+              let n = Selected.Nodes[i]
+              let result = Util.openLink(DataModel.Topics.get(n.id).attributes.link)
 
-            if (nodeAlreadySelected) {
-              Control.deselectNode(node)
-            } else {
-              Control.selectNode(node, e)
-            }
-
-            // trigger animation to final styles
-            Visualize.mGraph.fx.animate({
-              modes: ['edge-property:lineWidth:color:alpha'],
-              duration: 500
-            })
-            Visualize.mGraph.plot()
-          } else {
-            if (!e.ctrlKey) {
-              var len = Selected.Nodes.length
-
-              for (let i = 0; i < len; i += 1) {
-                let n = Selected.Nodes[i]
-                let result = Util.openLink(DataModel.Topics.get(n.id).attributes.link)
-
-                if (!result) { // if link failed to open
-                  break
-                }
-              }
-
-              if (!node.selected) {
-                Util.openLink(DataModel.Topics.get(node.id).attributes.link)
+              if (!result) { // if link failed to open
+                break
               }
             }
+
+            if (!node.selected) Util.openLink(DataModel.Topics.get(node.id).attributes.link)
           }
         }
       }, Mouse.DOUBLE_CLICK_TOLERANCE)

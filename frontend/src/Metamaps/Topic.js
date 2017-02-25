@@ -6,13 +6,16 @@ import Active from './Active'
 import AutoLayout from './AutoLayout'
 import Create from './Create'
 import DataModel from './DataModel'
+import Engine from './Engine'
 import Filter from './Filter'
 import GlobalUI from './GlobalUI'
 import JIT from './JIT'
 import Map from './Map'
+import Mouse from './Mouse'
 import Router from './Router'
 import Selected from './Selected'
 import Settings from './Settings'
+import Synapse from './Synapse'
 import SynapseCard from './SynapseCard'
 import TopicCard from './TopicCard'
 import Util from './Util'
@@ -165,192 +168,86 @@ const Topic = {
     })
   },
 
-  // opts is additional options in a hash
-  // TODO: move createNewInDB and permitCreateSynapseAfter into opts
-  renderTopic: function(mapping, topic, createNewInDB, permitCreateSynapseAfter, opts = {}) {
-    var nodeOnViz, tempPos
-
-    var newnode = topic.createNode()
-
-    var midpoint = {}
-    var pixelPos
-
+  renderTopic: function(mapping, topic, fromRemote) {
+    let nodeOnViz
+    const newnode = topic.createNode()
+    const createSynapse = !!Create.newSynapse.focusNode && !fromRemote
+    const connectToId = createSynapse ? Create.newSynapse.focusNode.getData('topic').id : null
     if (!$.isEmptyObject(Visualize.mGraph.graph.nodes)) {
       Visualize.mGraph.graph.addNode(newnode)
-      nodeOnViz = Visualize.mGraph.graph.getNode(newnode.id)
-      topic.set('node', nodeOnViz, {silent: true})
-      topic.updateNode() // links the topic and the mapping to the node
-
-      nodeOnViz.setData('dim', 1, 'start')
-      nodeOnViz.setData('dim', 25, 'end')
-      if (Visualize.type === 'RGraph') {
-        tempPos = new $jit.Complex(mapping.get('xloc'), mapping.get('yloc'))
-        tempPos = tempPos.toPolar()
-        nodeOnViz.setPos(tempPos, 'current')
-        nodeOnViz.setPos(tempPos, 'start')
-        nodeOnViz.setPos(tempPos, 'end')
-      } else if (Visualize.type === 'ForceDirected') {
-        nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'current')
-        nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'start')
-        nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'end')
-      }
-      if (Create.newTopic.addSynapse && permitCreateSynapseAfter) {
-        Create.newSynapse.topic1id = JIT.tempNode.getData('topic').id
-
-        // position the form
-        midpoint.x = JIT.tempNode.pos.getc().x + (nodeOnViz.pos.getc().x - JIT.tempNode.pos.getc().x) / 2
-        midpoint.y = JIT.tempNode.pos.getc().y + (nodeOnViz.pos.getc().y - JIT.tempNode.pos.getc().y) / 2
-        pixelPos = Util.coordsToPixels(Visualize.mGraph, midpoint)
-        $('#new_synapse').css('left', pixelPos.x + 'px')
-        $('#new_synapse').css('top', pixelPos.y + 'px')
-        // show the form
-        Create.newSynapse.open()
-        Visualize.mGraph.fx.animate({
-          modes: ['node-property:dim'],
-          duration: 500,
-          onComplete: function() {
-            JIT.tempNode = null
-            JIT.tempNode2 = null
-            JIT.tempInit = false
-          }
-        })
-      } else {
-        Visualize.mGraph.fx.plotNode(nodeOnViz, Visualize.mGraph.canvas)
-        Visualize.mGraph.fx.animate({
-          modes: ['node-property:dim'],
-          duration: 500,
-          onComplete: function() {}
-        })
-      }
     } else {
       Visualize.mGraph.loadJSON(newnode)
-      nodeOnViz = Visualize.mGraph.graph.getNode(newnode.id)
-      topic.set('node', nodeOnViz, {silent: true})
-      topic.updateNode() // links the topic and the mapping to the node
-
-      nodeOnViz.setData('dim', 1, 'start')
-      nodeOnViz.setData('dim', 25, 'end')
-      nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'current')
-      nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'start')
-      nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'end')
-      Visualize.mGraph.fx.plotNode(nodeOnViz, Visualize.mGraph.canvas)
-      Visualize.mGraph.fx.animate({
-        modes: ['node-property:dim'],
-        duration: 500,
-        onComplete: function() {}
+    }
+    nodeOnViz = Visualize.mGraph.graph.getNode(newnode.id)
+    topic.set('node', nodeOnViz, {silent: true})
+    topic.updateNode() // links the topic and the mapping to the node
+    nodeOnViz.setData('dim', 1, 'start')
+    nodeOnViz.setData('dim', 25, 'end')
+    nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'current')
+    nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'start')
+    nodeOnViz.setPos(new $jit.Complex(mapping.get('xloc'), mapping.get('yloc')), 'end')
+    Visualize.mGraph.fx.plotNode(nodeOnViz, Visualize.mGraph.canvas)
+    Visualize.mGraph.fx.animate({
+      modes: ['node-property:dim'],
+      duration: 200
+    })
+    if (!fromRemote && topic.isNew()) {
+      topic.save(null, {
+        success: topicModel => {
+          Active.Map && mapping.save({ mappable_id: topicModel.id })
+          createSynapse && Synapse.createSynapseLocally(connectToId, topicModel.id)
+        }
       })
-    }
-
-    var mappingSuccessCallback = function(mappingModel, response, topicModel) {
-      // call a success callback if provided
-      if (opts.success) {
-        opts.success(topicModel)
-      }
-    }
-    var topicSuccessCallback = function(topicModel, response) {
-      if (Active.Map) {
-        mapping.save({ mappable_id: topicModel.id }, {
-          success: function(model, response) {
-            mappingSuccessCallback(model, response, topicModel)
-          },
-          error: function(model, response) {
-            console.log('error saving mapping to database')
-          }
-        })
-      }
-
-      if (Create.newTopic.addSynapse) {
-        Create.newSynapse.topic2id = topicModel.id
-      }
-    }
-
-    if (!Settings.sandbox && createNewInDB) {
-      if (topic.isNew()) {
-        topic.save(null, {
-          success: topicSuccessCallback,
-          error: function(model, response) {
-            console.log('error saving topic to database')
-          }
-        })
-      } else if (!topic.isNew() && Active.Map) {
-        mapping.save(null, {
-          success: mappingSuccessCallback
-        })
-      }
+    } else if (!fromRemote && !topic.isNew()) {
+      Active.Map && mapping.save()
+      createSynapse && Synapse.createSynapseLocally(connectToId, topic.id)
     }
   },
   createTopicLocally: function() {
     var self = Topic
-
     if (Create.newTopic.name === '') {
       GlobalUI.notifyUser('Please enter a topic title...')
       return
     }
-
-    // hide the 'double-click to add a topic' message
-    GlobalUI.hideDiv('#instructions')
-
     $(document).trigger(Map.events.editedByActiveMapper)
-
     var metacode = DataModel.Metacodes.get(Create.newTopic.metacode)
-
     var topic = new DataModel.Topic({
       name: Create.newTopic.name,
       metacode_id: metacode.id,
       defer_to_map_id: Active.Map.id
     })
     DataModel.Topics.add(topic)
-
-    if (Create.newTopic.pinned) {
-      var nextCoords = AutoLayout.getNextCoord({ mappings: DataModel.Mappings })
-    }
     var mapping = new DataModel.Mapping({
-      xloc: nextCoords ? nextCoords.x : Create.newTopic.x,
-      yloc: nextCoords ? nextCoords.y : Create.newTopic.y,
+      xloc: Mouse.newNodeCoords.x,
+      yloc: Mouse.newNodeCoords.y,
       mappable_id: topic.cid,
       mappable_type: 'Topic'
     })
     DataModel.Mappings.add(mapping)
-
-    // these can't happen until the value is retrieved, which happens in the line above
-    if (!Create.newTopic.pinned) Create.newTopic.hide()
+    // these can't happen until the new topic values are retrieved
     Create.newTopic.reset()
-
-    self.renderTopic(mapping, topic, true, true) // this function also includes the creation of the topic in the database
+    self.renderTopic(mapping, topic)
+    Engine.setFocusNode(topic.get('node'), false, true)
   },
   getTopicFromAutocomplete: function(id) {
     var self = Topic
-
-    // hide the 'double-click to add a topic' message
-    GlobalUI.hideDiv('#instructions')
-
     $(document).trigger(Map.events.editedByActiveMapper)
-
-    if (!Create.newTopic.pinned) Create.newTopic.hide()
     Create.newTopic.reset()
-
     self.get(id, (topic) => {
-      if (Create.newTopic.pinned) {
-        var nextCoords = AutoLayout.getNextCoord({ mappings: DataModel.Mappings })
-      }
       var mapping = new DataModel.Mapping({
-        xloc: nextCoords ? nextCoords.x : Create.newTopic.x,
-        yloc: nextCoords ? nextCoords.y : Create.newTopic.y,
+        xloc: Mouse.newNodeCoords.x, 
+        yloc: Mouse.newNodeCoords.y,
         mappable_type: 'Topic',
         mappable_id: topic.id
       })
       DataModel.Mappings.add(mapping)
-
-      self.renderTopic(mapping, topic, true, true)
-      // this blocked the enterKeyHandler from creating a new topic as well
-      if (Create.newTopic.pinned) Create.newTopic.beingCreated = true
+      self.renderTopic(mapping, topic)
+      Engine.setFocusNode(topic.get('node'), false, true)
     })
   },
   getMapFromAutocomplete: function(data) {
     var self = Topic
-
     $(document).trigger(Map.events.editedByActiveMapper)
-
     var metacode = DataModel.Metacodes.findWhere({ name: 'Metamap' })
     var topic = new DataModel.Topic({
       name: data.name,
@@ -359,28 +256,20 @@ const Topic = {
       link: window.location.origin + '/maps/' + data.id
     })
     DataModel.Topics.add(topic)
-
     var mapping = new DataModel.Mapping({
-      xloc: Create.newTopic.x,
-      yloc: Create.newTopic.y,
+      xloc: Mouse.newNodeCoords.x, 
+      yloc: Mouse.newNodeCoords.y,
       mappable_id: topic.cid,
       mappable_type: 'Topic'
     })
     DataModel.Mappings.add(mapping)
-
-    // these can't happen until the value is retrieved, which happens in the line above
-    if (!Create.newTopic.pinned) Create.newTopic.hide()
     Create.newTopic.reset()
-
-    self.renderTopic(mapping, topic, true, true) // this function also includes the creation of the topic in the database
-    // this blocked the enterKeyHandler from creating a new topic as well
-    if (Create.newTopic.pinned) Create.newTopic.beingCreated = true
+    self.renderTopic(mapping, topic)
+    Engine.setFocusNode(topic.get('node'), false, true)
   },
   getTopicFromSearch: function(event, id) {
     var self = Topic
-
     $(document).trigger(Map.events.editedByActiveMapper)
-
     self.get(id, (topic) => {
       var nextCoords = AutoLayout.getNextCoord({ mappings: DataModel.Mappings })
       var mapping = new DataModel.Mapping({
@@ -390,10 +279,10 @@ const Topic = {
         mappable_id: topic.id
       })
       DataModel.Mappings.add(mapping)
-      self.renderTopic(mapping, topic, true, true)
-      GlobalUI.notifyUser('Topic was added to your map!')
+      self.renderTopic(mapping, topic)
+      Engine.runLayout()
+      GlobalUI.notifyUser('Topic was added to your map')
     })
-
     event.stopPropagation()
     event.preventDefault()
     return false

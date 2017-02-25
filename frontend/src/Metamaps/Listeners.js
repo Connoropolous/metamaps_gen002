@@ -2,6 +2,7 @@
 
 import Active from './Active'
 import Control from './Control'
+import Create from './Create'
 import DataModel from './DataModel'
 import JIT from './JIT'
 import Mobile from './Mobile'
@@ -24,7 +25,7 @@ const Listeners = {
         case 13: // if enter key is pressed
           // prevent topic creation if sending a message
           if (e.target.className !== 'chat-input') {
-            JIT.enterKeyHandler()
+            JIT.enterKeyHandler(e)
           }
           break
         case 27: // if esc key is pressed
@@ -130,6 +131,8 @@ const Listeners = {
     $(window).resize(function() {
       if (Visualize && Visualize.mGraph) {
         Util.resizeCanvas(Visualize.mGraph.canvas)
+        Create.newSynapse.updateForm()
+        Create.newTopic.position()
       }
 
       if (Active.Map && Realtime.inConversation) Realtime.positionVideos()
