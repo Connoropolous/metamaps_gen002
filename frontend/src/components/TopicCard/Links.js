@@ -29,7 +29,9 @@ class Links extends Component {
     Visualize.mGraph.plot()
   }
 
-  toggleShowMoreMaps = () => {
+  toggleShowMoreMaps = e => {
+    e.stopPropagation()
+    e.preventDefault()
     this.setState({ showMoreMaps: !this.state.showMoreMaps })
   }
 
@@ -58,13 +60,13 @@ class Links extends Component {
     })
 
     if (extraLinks.length > 0) {
-      const text = this.state.showMoreMaps ? 'See less...' : `See ${extraLinks.length} more...`
-      output.push(<li key="showMore"><span class="showMore" onClick={this.toggleShowMoreMaps}>{text}</span></li>)
       if (this.state.showMoreMaps) {
         extraLinks.forEach(obj => {
-          output.push(<li key={obj.mapId} class="hideExtra extraText"><a href={`/maps/${obj.mapId}`}>{obj.mapName}</a></li>)
+          output.push(<li key={obj.mapId} className="hideExtra extraText"><a href={`/maps/${obj.mapId}`}>{obj.mapName}</a></li>)
         })
       }
+      const text = this.state.showMoreMaps ? 'See less...' : `See ${extraLinks.length} more...`
+      output.push(<li key="showMore"><span className="showMore" onClick={this.toggleShowMoreMaps}>{text}</span></li>)
     }
       
     return output
