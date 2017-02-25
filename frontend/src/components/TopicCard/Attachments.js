@@ -17,6 +17,10 @@ class Attachments extends Component {
     $('.embedly-card').remove()
   }
 
+  resetLink = () => {
+    this.setState({ linkEdit: '' })
+  }
+
   onLinkChangeHandler = e => {
     this.setState({ linkEdit: e.target.value })
   }
@@ -55,7 +59,7 @@ class Attachments extends Component {
               value={linkEdit}
               onChange={this.onLinkChangeHandler}
               onKeyUp={this.onLinkKeyUpHandler}></input>
-            {linkEdit && <div id="addLinkReset"></div>}
+            {linkEdit && <div id="addLinkReset" onClick={this.resetLink}></div>}
           </div>
         </div>
         {link && <EmbedlyCard link={link} />}
