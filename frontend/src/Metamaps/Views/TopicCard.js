@@ -4,6 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import Active from '../Active'
+import Visualize from '../Visualize'
 
 import ReactTopicCard from '../../components/TopicCard'
 
@@ -16,16 +17,18 @@ const TopicCard = {
   },
   populateShowCard: function(topic) {
     const self = TopicCard
-    const topicCardObj = {
-      topic: topic,
-      ActiveMapper: Active.Mapper,
-      updateTopic: obj => {
-        topic.save(obj, { success: topic => self.populateShowCard(topic) })
-      },
-      metacodeSets: self.metacodeSets
-    }
     ReactDOM.render(
-      React.createElement(ReactTopicCard, topicCardObj),
+      React.createElement(ReactTopicCard, {
+        topic: topic,
+        ActiveMapper: Active.Mapper,
+        updateTopic: obj => {
+          topic.save(obj, { success: topic => self.populateShowCard(topic) })
+        },
+        metacodeSets: self.metacodeSets,
+        redrawCanvas: () => {
+          visualize.mGraph.plot()
+        }
+      }),
       document.getElementById('showcard')
     )
 

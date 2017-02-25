@@ -41,11 +41,7 @@ class Attachments extends Component {
 
     if (!hasAttachment && !authorizedToEdit) return null
 
-    const embedlyLinkLoaded = 'TODO how to get this value'
-
-    const className = hasAttachment
-      ? `embeds ${embedlyLinkLoaded ? '' : 'nonEmbedlyLink'}`
-      : 'attachments'
+    const className = hasAttachment ? 'embeds' : 'attachments'
 
     return (
       <div className={className}>

@@ -10,7 +10,6 @@ class ReactTopicCard extends Component {
     const { topic, ActiveMapper } = this.props
     const authorizedToEdit = topic.authorizeToEdit(ActiveMapper)
     const hasAttachment = topic.get('link') && topic.get('link') !== ''
-    const topicId = topic.isNew() ? topic.cid : topic.id // TODO should we be using cid here???
 
     let classname = 'permission'
     if (authorizedToEdit) {
@@ -22,7 +21,7 @@ class ReactTopicCard extends Component {
 
     return (
       <div className={classname}>
-        <div className={`CardOnGraph ${hasAttachment ? 'hasAttachment' : ''}`} id={`topic_${topicId}`}>
+        <div className={`CardOnGraph ${hasAttachment ? 'hasAttachment' : ''}`} id={`topic_${topic.id}`}>
           <Title name={topic.get('name')}
             authorizedToEdit={authorizedToEdit}
             onChange={this.props.updateTopic}
@@ -31,6 +30,7 @@ class ReactTopicCard extends Component {
             ActiveMapper={this.props.ActiveMapper}
             updateTopic={this.props.updateTopic}
             metacodeSets={this.props.metacodeSets}
+            redrawCanvas={this.props.redrawCanvas}
           />
           <Desc desc={topic.get('desc')}
             authorizedToEdit={authorizedToEdit}
@@ -58,7 +58,8 @@ ReactTopicCard.propTypes = {
       icon_path: PropTypes.string, // url
       name: PropTypes.string
     }))
-  }))
+  })),
+  redrawCanvas: PropTypes.func
 }
 
 export default ReactTopicCard

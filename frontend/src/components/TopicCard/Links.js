@@ -5,9 +5,6 @@ import React, { PropTypes, Component } from 'react'
 import MetacodeSelect from '../MetacodeSelect'
 import Permission from './Permission'
 
-// TODO use a callback instead of an import
-import Visualize from '../../Metamaps/Visualize'
-
 class Links extends Component {
   constructor(props) {
     super(props)
@@ -27,7 +24,7 @@ class Links extends Component {
     this.props.updateTopic({
       metacode_id: metacodeId
     })
-    Visualize.mGraph.plot()
+    this.props.redrawCanvas()
   }
 
   toggleShowMoreMaps = e => {
@@ -149,7 +146,8 @@ Links.propTypes = {
       icon_path: PropTypes.string, // url
       name: PropTypes.string
     }))
-  }))
+  })),
+  redrawCanvas: PropTypes.func
 }
 
 export default Links
