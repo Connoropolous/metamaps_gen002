@@ -8,68 +8,18 @@ import Permission from './Permission'
 // TODO use a callback instead of an import
 import Visualize from '../../Metamaps/Visualize'
 
-const inmaps = (topic) => {
-  const inmapsArray = topic.get('inmaps') || []
-  const inmapsLinks = topic.get('inmapsLinks') || []
-
-  let html = ''
-  if (inmapsArray.length < 6) {
-    for (let i = 0; i < inmapsArray.length; i++) {
-      const url = '/maps/' + inmapsLinks[i]
-      html += '<li><a href="' + url + '">' + inmapsArray[i] + '</a></li>'
-    }
-  } else {
-    for (let i = 0; i < 5; i++) {
-      const url = '/maps/' + inmapsLinks[i]
-      html += '<li><a href="' + url + '">' + inmapsArray[i] + '</a></li>'
-    }
-    const extra = inmapsArray.length - 5
-    html += '<li><span class="showMore">See ' + extra + ' more...</span></li>'
-    for (let i = 5; i < inmapsArray.length; i++) {
-      const url = '/maps/' + inmapsLinks[i]
-      html += '<li class="hideExtra extraText"><a href="' + url + '">' + inmapsArray[i] + '</a></li>'
-    }
-  }
-
-  return html
-}
-
-// TODO all of these should be largely turned into passed-in callbacks
-const bindShowCardListeners = (topic, ActiveMapper) => {
-  $('.links .mapCount').unbind().click(function(event) {
-    $('.mapCount .tip').toggle()
-    $('.showcard .hoverTip').toggleClass('hide')
-  })
-  $('.showcard').unbind('.hideTip').bind('click.hideTip', function() {
-    $('.mapCount .tip').hide()
-    $('.showcard .hoverTip').removeClass('hide')
-  })
-
-  var originalText = $('.showMore').html()
-  $('.mapCount .tip .showMore').unbind().toggle(
-    function(event) {
-      $('.extraText').toggleClass('hideExtra')
-      $('.showMore').html('Show less...')
-    },
-    function(event) {
-      $('.extraText').toggleClass('hideExtra')
-      $('.showMore').html(originalText)
-    }
-  )
-}
-
 class Links extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       showMetacodeTitle: false,
-      showMetacodeSelect: false
+      showMetacodeSelect: false,
+      showInMaps: false,
+      showMoreMaps: false,
+      hoveringMapCount: false,
+      hoveringSynapseCount: false
     }
-  }
-
-  componentDidMount = () => {
-    bindShowCardListeners(this.props.topic, this.props.ActiveMapper)
   }
 
   handleMetacodeSelect = metacodeId => {
@@ -77,6 +27,47 @@ class Links extends Component {
       metacode_id: metacodeId
     })
     Visualize.mGraph.plot()
+  }
+
+  toggleShowMoreMaps = () => {
+    this.setState({ showMoreMaps: !this.state.showMoreMaps })
+  }
+
+  updateState = (key, value) => () => {
+    this.setState({ [key]: value })
+  }
+
+  inMaps = (topic) => {
+    const inmapsArray = topic.get('inmaps') || []
+    const inmapsLinks = topic.get('inmapsLinks') || []
+
+    let firstFiveLinks = []
+    let extraLinks = []
+    for (let i = 0; i < inmapsArray.length; i ++) {
+      if (i < 5) {
+        firstFiveLinks.push({ mapName: inmapsArray[i], mapId: inmapsLinks[i] })
+      } else {
+        extraLinks.push({ mapName: inmapsArray[i], mapId: inmapsLinks[i] })
+      }
+    }
+
+    let output = []
+    
+    firstFiveLinks.forEach(obj => {
+      output.push(<li key={obj.mapId}><a href={`/maps/${obj.mapId}`}>{obj.mapName}</a></li>)
+    })
+
+    if (extraLinks.length > 0) {
+      const text = this.state.showMoreMaps ? 'See less...' : `See ${extraLinks.length} more...`
+      output.push(<li key="showMore"><span class="showMore" onClick={this.toggleShowMoreMaps}>{text}</span></li>)
+      if (this.state.showMoreMaps) {
+        extraLinks.forEach(obj => {
+          output.push(<li key={obj.mapId} class="hideExtra extraText"><a href={`/maps/${obj.mapId}`}>{obj.mapName}</a></li>)
+        })
+      }
+    }
+      
+    return output
   }
 
   render = () => {
@@ -112,16 +103,27 @@ class Links extends Component {
           <a href={`/explore/mapper/${topic.get('user_id')}`} target="_blank"><img src={topic.get('user_image')} className="contributorIcon" width="32" height="32" /></a>
           <div className="contributorName">{topic.get('user_name')}</div>
         </div>
-        <div className="linkItem mapCount">
+        <div className="linkItem mapCount"
+          onMouseOver={this.updateState('hoveringMapCount', true)}
+          onMouseOut={this.updateState('hoveringMapCount', false)}
+          onClick={this.updateState('showInMaps', !this.state.showInMaps)}
+        >
           <div className="mapCountIcon"></div>
           {topic.get('map_count').toString()}
-          <div className="hoverTip">Click to see which maps topic appears on</div>
-          <div className="tip"><ul>{inmaps(topic)}</ul></div>
+          {!this.state.showInMaps && this.state.hoveringMapCount && (
+            <div className="hoverTip">Click to see which maps topic appears on</div>
+          )}
+          {this.state.showInMaps && <div className="tip"><ul>{this.inMaps(topic)}</ul></div>}
         </div>
-        <a href={`/topics/${topic.id}`} target="_blank" className="linkItem synapseCount">
+        <a href={`/topics/${topic.id}`}
+          target="_blank"
+          className="linkItem synapseCount"
+          onMouseOver={this.updateState('hoveringSynapseCount', true)}
+          onMouseOut={this.updateState('hoveringSynapseCount', false)}
+        >
           <div className="synapseCountIcon"></div>
           {topic.get('synapse_count').toString()}
-          <div className="tip">Click to see this topics synapses</div>
+          {this.state.hoveringSynapseCount && <div className="tip">Click to see this topics synapses</div>}
         </a>
         <Permission
           topic={topic}
