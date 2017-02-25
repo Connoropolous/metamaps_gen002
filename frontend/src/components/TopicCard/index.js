@@ -36,7 +36,7 @@ class ReactTopicCard extends Component {
             authorizedToEdit={authorizedToEdit}
             onChange={this.props.updateTopic}
           />
-          <Attachments link={this.props.topic.get('link')}
+          <Attachments topic={topic}
             authorizedToEdit={authorizedToEdit}
             updateTopic={this.props.updateTopic}
           />
