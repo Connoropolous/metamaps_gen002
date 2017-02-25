@@ -70,6 +70,12 @@ class Links extends Component {
     return output
   }
 
+  handleMetacodeBarClick = () => {
+    if (this.state.showMetacodeTitle) {
+      this.setState({ showMetacodeSelect: !this.state.showMetacodeSelect })
+    }
+  }
+
   render = () => {
     const { topic, ActiveMapper } = this.props
     const authorizedToEdit = topic.authorizeToEdit(ActiveMapper)
@@ -80,7 +86,7 @@ class Links extends Component {
         <div className="linkItem icon metacodeItem"
           style={{ zIndex: this.state.showMetacodeTitle ? 4 : 1 }}
           onMouseLeave={() => this.setState({ showMetacodeTitle: false, showMetacodeSelect: false })}
-          onClick={() => this.setState({ showMetacodeSelect: !this.state.showMetacodeSelect })}
+          onClick={this.handleMetacodeBarClick}
         >
           <div className={`metacodeTitle mbg${metacode.get('id')}`}
             style={{ display: this.state.showMetacodeTitle ? 'block' : 'none' }}
