@@ -23,6 +23,7 @@ class Links extends Component {
   }
 
   handleMetacodeSelect = metacodeId => {
+    this.setState({ showMetacodeSelect: false })
     this.props.updateTopic({
       metacode_id: metacodeId
     })
@@ -81,26 +82,25 @@ class Links extends Component {
         <div className="linkItem icon metacodeItem"
           style={{ zIndex: this.state.showMetacodeTitle ? 4 : 1 }}
           onMouseLeave={() => this.setState({ showMetacodeTitle: false, showMetacodeSelect: false })}
+          onClick={() => this.setState({ showMetacodeSelect: !this.state.showMetacodeSelect })}
         >
           <div className={`metacodeTitle mbg${metacode.get('id')}`}
-						style={{ display: this.state.showMetacodeTitle ? 'block' : 'none' }}
-					>
-						{metacode.get('name')}
-						<div className="expandMetacodeSelect"
-							onClick={() => this.setState({ showMetacodeSelect: !this.state.showMetacodeSelect })}
-						/>
-					</div>
-					<div className="metacodeImage"
-						style={{backgroundImage: `url(${metacode.get('icon')})`}}
-						title="click and drag to move card"
-						onMouseEnter={() => this.setState({ showMetacodeTitle: true })}
-					/>
-					<div className="metacodeSelect"
-						style={{ display: this.state.showMetacodeSelect ? 'block' : 'none' }}
-					>
+            style={{ display: this.state.showMetacodeTitle ? 'block' : 'none' }}
+          >
+            {metacode.get('name')}
+            <div className="expandMetacodeSelect"/>
+          </div>
+          <div className="metacodeImage"
+            style={{backgroundImage: `url(${metacode.get('icon')})`}}
+            title="click and drag to move card"
+            onMouseEnter={() => this.setState({ showMetacodeTitle: true })}
+          />
+          <div className="metacodeSelect"
+            style={{ display: this.state.showMetacodeSelect ? 'block' : 'none' }}
+          >
             <MetacodeSelect onMetacodeSelect={this.handleMetacodeSelect} metacodeSets={this.props.metacodeSets} />
-					</div>
-				</div>
+          </div>
+        </div>
         <div className="linkItem contributor">
           <a href={`/explore/mapper/${topic.get('user_id')}`} target="_blank"><img src={topic.get('user_image')} className="contributorIcon" width="32" height="32" /></a>
           <div className="contributorName">{topic.get('user_name')}</div>
