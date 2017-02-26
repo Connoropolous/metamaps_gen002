@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { RIETextArea } from 'riek'
 
+const maxTitleLength = 140
+
 class Title extends Component {
   nameCounterText() {
     // for some reason, there's an error if this isn't inside a function
-    return `${this.props.name.length}/140`
+    return `${this.props.name.length}/${maxTitleLength.toString()}`
   }
 
   render() {
@@ -19,6 +21,7 @@ class Title extends Component {
             id="titleActivator"
             classEditing="riek-editing"
             editProps={{
+              maxLength: maxTitleLength,
               onKeyPress: e => {
                 const ENTER = 13
                 if (e.which === ENTER) {
