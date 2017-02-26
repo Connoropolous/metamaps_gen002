@@ -79,6 +79,7 @@ class Links extends Component {
   render = () => {
     const { topic, ActiveMapper } = this.props
     const authorizedToEdit = topic.authorizeToEdit(ActiveMapper)
+    const authorizedPermissionChange = topic.authorizePermissionChange(ActiveMapper)
     const metacode = topic.getMetacode()
 
     return (
@@ -133,7 +134,7 @@ class Links extends Component {
         </a>
         <Permission
           permission={topic.get('permission')}
-          authorizedToEdit={authorizedToEdit}
+          authorizedToEdit={authorizedPermissionChange}
           updateTopic={this.props.updateTopic}
         />
         <div className="clearfloat"></div>
