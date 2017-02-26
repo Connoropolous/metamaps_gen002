@@ -26,7 +26,7 @@ const TopicCard = {
         },
         metacodeSets: self.metacodeSets,
         redrawCanvas: () => {
-          visualize.mGraph.plot()
+          Visualize.mGraph.plot()
         }
       }),
       document.getElementById('showcard')
