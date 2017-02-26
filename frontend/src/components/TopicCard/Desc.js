@@ -24,8 +24,8 @@ class MdTextArea extends RIETextArea {
 
 class Desc extends Component {
   render = () => {
-    const descHTML = (this.props.desc === '' && this.props.authorizedToEdit)
-      ? '<p.Click to add description...</p>'
+    const descHTML = (!this.props.desc && this.props.authorizedToEdit)
+      ? '<p>Click to add description...</p>'
       : Util.mdToHTML(this.props.desc)
 
     if (this.props.authorizedToEdit) {
