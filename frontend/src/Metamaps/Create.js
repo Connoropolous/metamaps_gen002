@@ -44,6 +44,22 @@ const Create = {
       self.newSelectedMetacodeNames.push($(this).attr('data-name'))
     }
   },
+  metacodeSelectorToggleSelectAll: function() {
+    // should be called when Create.isSwitchingSet is true and .customMetacodeList is visible
+    if (!Create.isSwitchingSet) return
+    if (!$('.customMetacodeList').is(':visible')) return
+
+    // If all are selected, then select none. Otherwise, select all.
+    const anyToggledOff = $('.customMetacodeList li').toArray()
+                          .map(li => $(li).is('.toggledOff'))
+                          .reduce((curr, prev) => curr || prev)
+    if (anyToggledOff) {
+      $('.customMetacodeList li.toggledOff').each(Create.toggleMetacodeSelected)
+    } else {
+      // this should be every single one
+      $('.customMetacodeList li').not('.toggledOff').each(Create.toggleMetacodeSelected)
+    }
+  },
   updateMetacodeSet: function(set, index, custom) {
     if (custom && Create.newSelectedMetacodes.length === 0) {
       window.alert('Please select at least one metacode to use!')
@@ -114,7 +130,6 @@ const Create = {
       }
     })
   },
-
   cancelMetacodeSetSwitch: function() {
     var self = Create
     self.isSwitchingSet = false
