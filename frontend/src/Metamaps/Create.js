@@ -28,6 +28,7 @@ const Create = {
     }).addClass('ui-tabs-vertical ui-helper-clearfix')
     $('#metacodeSwitchTabs .ui-tabs-nav li').removeClass('ui-corner-top').addClass('ui-corner-left')
     $('.customMetacodeList li').click(self.toggleMetacodeSelected) // within the custom metacode set tab
+    $('.selectAll').click(self.metacodeSelectorToggleSelectAll)
   },
   toggleMetacodeSelected: function() {
     var self = Create

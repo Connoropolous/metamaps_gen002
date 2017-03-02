@@ -91,7 +91,8 @@
   </div>
   <% end %>
     <div id="metacodeSwitchTabsCustom">
-        <p class="setDesc">Choose Your Metacodes</p>
+        <div class="setDesc">Choose Your Metacodes</div>
+        <div class="selectAll">Select all</div> <%# hidden by default %>
         <% @list = '' %>
         <% metacodesInUse = user_metacodes() %> 
         <% Metacode.order("name").all.each_with_index do |m, index| %>
