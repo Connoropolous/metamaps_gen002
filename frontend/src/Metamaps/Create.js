@@ -28,7 +28,8 @@ const Create = {
     }).addClass('ui-tabs-vertical ui-helper-clearfix')
     $('#metacodeSwitchTabs .ui-tabs-nav li').removeClass('ui-corner-top').addClass('ui-corner-left')
     $('.customMetacodeList li').click(self.toggleMetacodeSelected) // within the custom metacode set tab
-    $('.selectAll').click(self.metacodeSelectorToggleSelectAll)
+    $('.selectAll').click(self.metacodeSelectorSelectAll)
+    $('.selectNone').click(self.metacodeSelectorSelectNone)
   },
   toggleMetacodeSelected: function() {
     var self = Create
@@ -44,6 +45,33 @@ const Create = {
       self.newSelectedMetacodes.push($(this).attr('id'))
       self.newSelectedMetacodeNames.push($(this).attr('data-name'))
     }
+    self.updateSelectAllColors()
+  },
+  updateSelectAllColors: function() {
+    $('.selectAll, .selectNone').removeClass('selected')
+    if (Create.metacodeSelectorAreAllSelected()) {
+      $('.selectAll').addClass('selected')
+    } else if (Create.metacodeSelectorAreNoneSelected()) {
+      $('.selectNone').addClass('selected')
+    }
+  },
+  metacodeSelectorSelectAll: function() {
+    $('.customMetacodeList li.toggledOff').each(Create.toggleMetacodeSelected)
+    Create.updateSelectAllColors()
+  },
+  metacodeSelectorSelectNone: function() {
+    $('.customMetacodeList li').not('.toggledOff').each(Create.toggleMetacodeSelected)
+    Create.updateSelectAllColors()
+  },
+  metacodeSelectorAreAllSelected: function() {
+    return $('.customMetacodeList li').toArray()
+             .map(li => !$(li).is('.toggledOff')) // note the ! on this line
+             .reduce((curr, prev) => curr && prev)
+  },
+  metacodeSelectorAreNoneSelected: function() {
+    return $('.customMetacodeList li').toArray()
+             .map(li => $(li).is('.toggledOff'))
+             .reduce((curr, prev) => curr && prev)
   },
   metacodeSelectorToggleSelectAll: function() {
     // should be called when Create.isSwitchingSet is true and .customMetacodeList is visible
@@ -51,14 +79,11 @@ const Create = {
     if (!$('.customMetacodeList').is(':visible')) return
 
     // If all are selected, then select none. Otherwise, select all.
-    const anyToggledOff = $('.customMetacodeList li').toArray()
-                          .map(li => $(li).is('.toggledOff'))
-                          .reduce((curr, prev) => curr || prev)
-    if (anyToggledOff) {
-      $('.customMetacodeList li.toggledOff').each(Create.toggleMetacodeSelected)
+    if (Create.metacodeSelectorAreAllSelected()) {
+      Create.metacodeSelectorSelectNone()
     } else {
-      // this should be every single one
-      $('.customMetacodeList li').not('.toggledOff').each(Create.toggleMetacodeSelected)
+      // if some, but not all, are selected, it still runs this function
+      Create.metacodeSelectorSelectAll()
     }
   },
   updateMetacodeSet: function(set, index, custom) {

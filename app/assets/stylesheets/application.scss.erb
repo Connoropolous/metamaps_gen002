@@ -2323,7 +2323,8 @@ and it won't be important on password protected instances */
     padding: 0;
 
     .setDesc,
-    .selectAll {
+    .selectAll,
+    .selectNone {
         margin-bottom: 5px;
         font-family: 'din-medium', helvetica, sans-serif;
         color: #424242;
@@ -2333,9 +2334,15 @@ and it won't be important on password protected instances */
         display: inline-block;
     }
 
-    .selectAll {
+    .selectAll,
+    .selectNone {
       float: right;
       cursor: pointer;
+
+      &:hover,
+      &.selected {
+        color: #00bcd4;
+      }
     }
 
     & > ul {
