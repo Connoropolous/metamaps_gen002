@@ -33,10 +33,10 @@ module.exports = {
   externals,
   devtool,
   module: {
-    preLoaders: [
-      { test: /\.json$/, loader: 'json' }
-    ],
     loaders: [
+      {
+        test: /\.json$/, loader: 'json-loader'
+      },
       {
         test: /\.(js|jsx)?$/,
         exclude: /node_modules/,
