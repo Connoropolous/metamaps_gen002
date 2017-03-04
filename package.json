@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack",
     "build:watch": "webpack --watch",
-    "test": "mocha-webpack --webpack-config webpack.test.config.js frontend/test",
+    "test": "mocha-webpack --webpack-config webpack.test.config.js --require frontend/test/support/dom.js frontend/test",
     "eslint": "eslint frontend",
     "eslint:fix": "eslint --fix frontend"
   },
@@ -61,6 +61,7 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-react": "^6.8.0",
     "eslint-plugin-standard": "^2.0.1",
+    "jsdom": "^9.11.0",
     "mocha": "^3.2.0",
     "mocha-webpack": "^0.7.0"
   },

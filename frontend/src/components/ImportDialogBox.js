@@ -2,13 +2,6 @@ import React, { PropTypes, Component } from 'react'
 import Dropzone from 'react-dropzone'
 
 class ImportDialogBox extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-    }
-  }
-
   handleExport = format => () => {
     window.open(`${window.location.pathname}/export.${format}`, '_blank')
   }
