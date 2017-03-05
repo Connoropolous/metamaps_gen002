@@ -18,3 +18,8 @@ function propagateToGlobal (window) {
     global[key] = window[key]
   }
 }
+
+// Metamaps dependencies fixes
+global.HowlerGlobal = global.HowlerGlobal || { prototype: {} }
+global.Howl = global.Howl || { prototype: {} }
+global.Sound = global.Sound || { prototype: {} }
