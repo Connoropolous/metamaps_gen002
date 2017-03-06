@@ -34,9 +34,10 @@ const Listeners = {
         case 46: // if DEL is pressed
           if(e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && (Selected.Nodes.length + Selected.Edges.length) > 0){
             e.preventDefault()
-            Control.deleteSelected()
-            break
+            Control.removeSelectedNodes()
+            Control.removeSelectedEdges()
           }
+          break
         case 65: // if a or A is pressed
           if (Create.isSwitchingSet && e.ctrlKey || e.metaKey) {
             Create.metacodeSelectorToggleSelectAll()
