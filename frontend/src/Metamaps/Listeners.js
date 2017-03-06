@@ -32,9 +32,11 @@ const Listeners = {
           JIT.escKeyHandler()
           break
         case 46: // if DEL is pressed
-          e.preventDefault()
-          Control.deleteSelected()
-          break
+          if(e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && (Selected.Nodes.length + Selected.Edges.length) > 0){
+            e.preventDefault()
+            Control.deleteSelected()
+            break
+          }
         case 65: // if a or A is pressed
           if (Create.isSwitchingSet && e.ctrlKey || e.metaKey) {
             Create.metacodeSelectorToggleSelectAll()
