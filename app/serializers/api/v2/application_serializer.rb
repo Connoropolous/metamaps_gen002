@@ -36,13 +36,15 @@ module Api
             end
             has_many(attr, opts.merge(if: -> { embeds.include?(key) })) do
               list = Pundit.policy_scope(scope[:current_user], object.send(attr)) || []
-              child_serializer = "Api::V2::#{attr.to_s.singularize.camelize}Serializer".constantize
+              child_serializer = opts[:serializer] || "Api::V2::#{attr.to_s.singularize.camelize}Serializer".constantize
               resource = ActiveModelSerializers::SerializableResource.new(
                 list,
                 each_serializer: child_serializer,
                 scope: scope.merge(embeds: [])
               )
-              resource.as_json
+              # resource.as_json will return e.g. { users: [ ... ] } for collaborators
+              # since we can't get the :users key, convert to an array and use .first.second to get the needed values
+              resource.as_json.to_a.first.second
             end
           else
             id_opts = opts.merge(key: "#{key}_id")
@@ -56,7 +58,7 @@ module Api
                 serializer: child_serializer,
                 scope: scope.merge(embeds: [])
               )
-              resource.as_json
+              resource.as_json.to_a.first.second
             end
           end
         end
