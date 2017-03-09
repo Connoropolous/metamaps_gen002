@@ -19,9 +19,12 @@ module Api
       #   },
       #   collaborators: {
       #     serializer: UserSerializer
-      #   }
+      #   },
+      #   topic: {},
+      #   synapses: {}
       # }
-      # The key has to be in embeddable, and the serializer is only needed if the key doesn't match a serializer
+      # The key has to be in embeddable or it won't show in the response, and the serializer is
+      # only needed if the key doesn't match a serializer
       def self.embed_dat
         embeddable.each_pair do |key, opts|
           is_plural = key.to_s.pluralize == key.to_s
