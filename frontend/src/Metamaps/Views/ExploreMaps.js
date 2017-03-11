@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom' // TODO ensure this isn't a double import
 import Active from '../Active'
 import DataModel from '../DataModel'
 import GlobalUI from '../GlobalUI'
+import { ReactApp } from '../GlobalUI'
 import Realtime from '../Realtime'
 import Loading from '../Loading'
 import Maps from '../../components/Maps'
@@ -13,6 +14,37 @@ import Maps from '../../components/Maps'
 const ExploreMaps = {
   pending: false,
   mapper: null,
+  updateFromPath: function(path) {
+    const self = ExploreMaps
+    const test = path.split('/')[1]
+    const section = path.split('/')[2]
+    const id = path.split('/')[3]
+
+    if (test === 'explore') {
+      const capitalize = section.charAt(0).toUpperCase() + section.slice(1)
+      self.setCollection(DataModel.Maps[capitalize])
+    } else if (test === '') {
+      self.setCollection(DataModel.Maps.Active)
+    }
+
+    if (id) {
+      if (self.collection.mapperId !== id) {
+        // empty the collection if we are trying to load the maps
+        // collection of a different mapper than we had previously
+        self.collection.reset()
+        self.collection.page = 1
+        self.render()
+      }
+      self.collection.mapperId = id
+    }
+    if (self.collection.length === 0) {
+      Loading.show()
+      self.pending = true
+      self.collection.getMaps()
+    } else {
+      id ? self.fetchUserThenRender() : self.render()
+    }
+  },
   setCollection: function(collection) {
     var self = ExploreMaps
 
@@ -26,55 +58,9 @@ const ExploreMaps = {
     self.collection.on('successOnFetch', self.handleSuccess)
     self.collection.on('errorOnFetch', self.handleError)
   },
-  render: function(cb) {
+  render: function() {
     var self = ExploreMaps
-
-    if (!self.collection) return
-
-    var exploreObj = {
-      currentUser: Active.Mapper,
-      section: self.collection.id,
-      maps: self.collection,
-      juntoState: Realtime.juntoState,
-      moreToLoad: self.collection.page !== 'loadedAll',
-      user: self.collection.id === 'mapper' ? self.mapper : null,
-      loadMore: self.loadMore,
-      pending: self.pending,
-      onStar: function(map) {
-        $.post('/maps/' + map.id + '/star')
-        map.set('star_count', map.get('star_count') + 1)
-        if (DataModel.Stars) DataModel.Stars.push({ user_id: Active.Mapper.id, map_id: map.id })
-        DataModel.Maps.Starred.add(map)
-        GlobalUI.notifyUser('Map is now starred')
-        self.render()
-      },
-      onRequest: function(map) {
-        $.post({
-          url: `/maps/${map.id}/access_request`
-        })
-        GlobalUI.notifyUser('You will be notified by email if request accepted')
-      },
-      onFollow: function(map) {
-        const isFollowing = map.isFollowedBy(Active.Mapper)
-        $.post({
-          url: `/maps/${map.id}/${isFollowing ? 'un' : ''}follow`
-        })
-        if (isFollowing) {
-          GlobalUI.notifyUser('You are no longer following this map')
-          Active.Mapper.unfollowMap(map.id)
-        } else {
-          GlobalUI.notifyUser('You are now following this map')
-          Active.Mapper.followMap(map.id)
-        }
-        self.render()
-      }
-    }
-    ReactDOM.render(
-      React.createElement(Maps, exploreObj),
-      document.getElementById('explore')
-    ).resize()
-
-    if (cb) cb()
+    ReactApp.render()
     Loading.hide()
   },
   loadMore: function() {
@@ -85,14 +71,13 @@ const ExploreMaps = {
     }
     self.render()
   },
-  handleSuccess: function(cb) {
+  handleSuccess: function() {
     var self = ExploreMaps
     self.pending = false
     if (self.collection && self.collection.id === 'mapper') {
-      self.fetchUserThenRender(cb)
+      self.fetchUserThenRender()
     } else {
-      self.render(cb)
-      Loading.hide()
+      self.render()
     }
   },
   handleError: function() {
@@ -103,8 +88,8 @@ const ExploreMaps = {
     var self = ExploreMaps
 
     if (self.mapper && self.mapper.id === self.collection.mapperId) {
-      self.render(cb)
-      return Loading.hide()
+      self.render()
+      return
     }
 
     // first load the mapper object and then call the render function
@@ -112,14 +97,40 @@ const ExploreMaps = {
       url: '/users/' + self.collection.mapperId + '/details.json',
       success: function(response) {
         self.mapper = response
-        self.render(cb)
-        Loading.hide()
+        self.render()
       },
       error: function() {
-        self.render(cb)
-        Loading.hide()
+        self.render()
       }
     })
+  },
+  onStar: function(map) {
+    $.post('/maps/' + map.id + '/star')
+    map.set('star_count', map.get('star_count') + 1)
+    if (DataModel.Stars) DataModel.Stars.push({ user_id: Active.Mapper.id, map_id: map.id })
+    DataModel.Maps.Starred.add(map)
+    GlobalUI.notifyUser('Map is now starred')
+    ReactApp.render()
+  },
+  onRequest: function(map) {
+    $.post({
+      url: `/maps/${map.id}/access_request`
+    })
+    GlobalUI.notifyUser('You will be notified by email if request accepted')
+  },
+  onMapFollow: function(map) {
+    const isFollowing = map.isFollowedBy(Active.Mapper)
+    $.post({
+      url: `/maps/${map.id}/${isFollowing ? 'un' : ''}follow`
+    })
+    if (isFollowing) {
+      GlobalUI.notifyUser('You are no longer following this map')
+      Active.Mapper.unfollowMap(map.id)
+    } else {
+      GlobalUI.notifyUser('You are now following this map')
+      Active.Mapper.followMap(map.id)
+    }
+    ReactApp.render()
   }
 }
 

@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom'
 import Active from '../Active'
 import DataModel from '../DataModel'
 import Realtime from '../Realtime'
-import MapChat from '../../components/MapChat'
+import ReactApp from '../GlobalUI/ReactApp'
 
 const ChatView = {
   isOpen: false,
@@ -51,24 +51,7 @@ const ChatView = {
   render: () => {
     if (!Active.Map) return
     const self = ChatView
-    self.mapChat = ReactDOM.render(React.createElement(MapChat, {
-      conversationLive: self.conversationLive,
-      isParticipating: self.isParticipating,
-      onOpen: self.onOpen,
-      onClose: self.onClose,
-      leaveCall: Realtime.leaveCall,
-      joinCall: Realtime.joinCall,
-      inviteACall: Realtime.inviteACall,
-      inviteToJoin: Realtime.inviteToJoin,
-      participants: self.participants.models.map(p => p.attributes),
-      messages: self.messages.models.map(m => m.attributes),
-      videoToggleClick: self.videoToggleClick,
-      cursorToggleClick: self.cursorToggleClick,
-      soundToggleClick: self.soundToggleClick,
-      inputBlur: self.inputBlur,
-      inputFocus: self.inputFocus,
-      handleInputMessage: self.handleInputMessage
-    }), document.getElementById(ChatView.domId))
+    ReactApp.render()
   },
   onOpen: () => {
     $(document).trigger(ChatView.events.openTray)

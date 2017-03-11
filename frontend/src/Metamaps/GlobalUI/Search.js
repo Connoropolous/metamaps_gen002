@@ -1,7 +1,6 @@
 /* global $, Hogan, Bloodhound, CanvasLoader */
 
 import Active from '../Active'
-import Router from '../Router'
 
 const Search = {
   locked: false,
@@ -189,11 +188,11 @@ const Search = {
 
     if (['topic', 'map', 'mapper'].indexOf(datum.rtype) !== -1) {
       if (datum.rtype === 'topic') {
-        Router.topics(datum.id)
+        // TODO: navigate to topic datum.id
       } else if (datum.rtype === 'map') {
-        Router.maps(datum.id)
+        // TODO: navigate to map datum.id
       } else if (datum.rtype === 'mapper') {
-        Router.explore('mapper', datum.id)
+        // TODO: navigate to mapper section datum.id
       }
     }
   },

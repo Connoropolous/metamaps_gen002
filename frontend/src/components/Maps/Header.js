@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
 import _ from 'lodash'
 
 const MapLink = props => {
@@ -9,10 +10,10 @@ const MapLink = props => {
   }
 
   return (
-    <a { ...otherProps } href={href} className={linkClass}>
+    <Link { ...otherProps } to={href} className={linkClass}>
       <div className="exploreMapsIcon"></div>
       {text}
-    </a>
+    </Link>
   )
 }
 
@@ -39,31 +40,26 @@ class Header extends Component {
               <MapLink show={explore}
                 href={signedIn ? '/' : '/explore/active'}
                 linkClass={activeClass('active')}
-                data-router="true"
                 text="All Maps"
               />
               <MapLink show={signedIn && explore}
                 href="/explore/mine"
                 linkClass={activeClass('my')}
-                data-router="true"
                 text="My Maps"
               />
               <MapLink show={signedIn && explore}
                 href="/explore/shared"
                 linkClass={activeClass('shared')}
-                data-router="true"
                 text="Shared With Me"
               />
               <MapLink show={signedIn && explore}
                 href="/explore/starred"
                 linkClass={activeClass('starred')}
-                data-router="true"
                 text="Starred By Me"
               />
               <MapLink show={!signedIn && explore}
                 href="/explore/featured"
                 linkClass={activeClass('featured')}
-                data-router="true"
                 text="Featured Maps"
               />
 

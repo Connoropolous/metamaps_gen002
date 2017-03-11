@@ -5,7 +5,6 @@ import outdent from 'outdent'
 import Active from '../Active'
 import DataModel from '../DataModel'
 import GlobalUI from '../GlobalUI'
-import Router from '../Router'
 import Util from '../Util'
 
 const InfoBox = {
@@ -192,7 +191,6 @@ const InfoBox = {
     $('.mapContributors .tip').unbind().click(function(event) {
       event.stopPropagation()
     })
-    $('.mapContributors .tip li a').click(Router.intercept)
 
     $('.mapInfoBox').unbind('.hideTip').bind('click.hideTip', function() {
       $('.mapContributors .tip').hide()
@@ -393,7 +391,7 @@ const InfoBox = {
       DataModel.Maps.Mine.remove(map)
       DataModel.Maps.Shared.remove(map)
       map.destroy()
-      Router.home()
+      // TODO: navigate home
       GlobalUI.notifyUser('Map eliminated')
     } else if (!authorized) {
       window.alert("Hey now. We can't just go around willy nilly deleting other people's maps now can we? Run off and find something constructive to do, eh?")

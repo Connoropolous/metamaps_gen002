@@ -4,11 +4,11 @@ import clipboard from 'clipboard-js'
 
 import Create from '../Create'
 
+import ReactApp from './ReactApp'
 import Search from './Search'
 import CreateMap from './CreateMap'
 import Account from './Account'
 import ImportDialog from './ImportDialog'
-import NotificationIcon from './NotificationIcon'
 
 const GlobalUI = {
   notifyTimeout: null,
@@ -18,11 +18,11 @@ const GlobalUI = {
   init: function(serverData) {
     const self = GlobalUI
 
+    self.ReactApp.init(serverData)
     self.Search.init(serverData)
     self.CreateMap.init(serverData)
     self.Account.init(serverData)
     self.ImportDialog.init(serverData, self.openLightbox, self.closeLightbox)
-    self.NotificationIcon.init(serverData)
 
     if ($('#toast').html().trim()) self.notifyUser($('#toast').html())
 
@@ -153,5 +153,5 @@ const GlobalUI = {
   }
 }
 
-export { Search, CreateMap, Account, ImportDialog, NotificationIcon }
+export { ReactApp, Search, CreateMap, Account, ImportDialog }
 export default GlobalUI

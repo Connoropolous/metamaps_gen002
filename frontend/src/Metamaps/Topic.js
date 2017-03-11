@@ -10,7 +10,6 @@ import Filter from './Filter'
 import GlobalUI from './GlobalUI'
 import JIT from './JIT'
 import Map from './Map'
-import Router from './Router'
 import Selected from './Selected'
 import Settings from './Settings'
 import SynapseCard from './SynapseCard'
@@ -90,7 +89,6 @@ const Topic = {
           if (callback) callback()
         }
       })
-      Router.navigate('/topics/' + nodeid)
       Active.Topic = DataModel.Topics.get(nodeid)
     }
   },

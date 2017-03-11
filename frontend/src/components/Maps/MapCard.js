@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
 import { find, values } from 'lodash'
 import Util from '../../Metamaps/Util'
 
@@ -78,7 +79,7 @@ const Metadata = (props) => {
 }
 
 const checkAndWrapInA = (shouldWrap, classString, mapId, element) => {
-  if (shouldWrap) return <a className={ classString } href={ `/maps/${mapId}` } data-router="true">{ element }</a>
+  if (shouldWrap) return <Link className={ classString } to={ `/maps/${mapId}` } >{ element }</Link>
   else return element
 }
 

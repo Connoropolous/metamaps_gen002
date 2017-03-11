@@ -7,12 +7,15 @@ import Attachments from './Attachments'
 import Follow from './Follow'
 import Util from '../../Metamaps/Util'
 
-
 class ReactTopicCard extends Component {
   render = () => {
-    const { topic, ActiveMapper, onFollow } = this.props
-    const authorizedToEdit = topic.authorizeToEdit(ActiveMapper)
-    const isFollowing = topic.isFollowedBy(ActiveMapper)
+    const { currentUser, onTopicFollow } = this.props
+    const topic = this.props.openTopic
+
+    if (!topic) return null
+
+    const authorizedToEdit = topic.authorizeToEdit(currentUser)
+    const isFollowing = topic.isFollowedBy(currentUser)
     const hasAttachment = topic.get('link') && topic.get('link') !== ''
 
     let classname = 'permission'
@@ -21,7 +24,7 @@ class ReactTopicCard extends Component {
     } else {
       classname += ' cannotEdit'
     }
-    if (topic.authorizePermissionChange(ActiveMapper)) classname += ' yourTopic'
+    if (topic.authorizePermissionChange(currentUser)) classname += ' yourTopic'
 
     return (
       <div className={classname}>
@@ -31,7 +34,7 @@ class ReactTopicCard extends Component {
             onChange={this.props.updateTopic}
           />
           <Links topic={topic}
-            ActiveMapper={this.props.ActiveMapper}
+            ActiveMapper={this.props.currentUser}
             updateTopic={this.props.updateTopic}
             metacodeSets={this.props.metacodeSets}
             redrawCanvas={this.props.redrawCanvas}
@@ -44,7 +47,7 @@ class ReactTopicCard extends Component {
             authorizedToEdit={authorizedToEdit}
             updateTopic={this.props.updateTopic}
           />
-          {Util.isTester(ActiveMapper) && <Follow isFollowing={isFollowing} onFollow={onFollow} />}
+        {Util.isTester(currentUser) && <Follow isFollowing={isFollowing} onTopicFollow={onTopicFollow} />}
           <div className="clearfloat"></div>
         </div>
       </div>
@@ -53,10 +56,10 @@ class ReactTopicCard extends Component {
 }
 
 ReactTopicCard.propTypes = {
-  topic: PropTypes.object,
-  ActiveMapper: PropTypes.object,
+  openTopic: PropTypes.object,
+  currentUser: PropTypes.object,
   updateTopic: PropTypes.func,
-  onFollow: PropTypes.func,
+  onTopicFollow: PropTypes.func,
   metacodeSets: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
     metacodes: PropTypes.arrayOf(PropTypes.shape({

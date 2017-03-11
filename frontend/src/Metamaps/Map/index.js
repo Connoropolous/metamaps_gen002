@@ -13,7 +13,6 @@ import GlobalUI from '../GlobalUI'
 import JIT from '../JIT'
 import Loading from '../Loading'
 import Realtime from '../Realtime'
-import Router from '../Router'
 import Selected from '../Selected'
 import SynapseCard from '../SynapseCard'
 import TopicCard from '../Views/TopicCard'
@@ -132,7 +131,7 @@ const Map = {
       // for mobile
       $('#header_content').html(map.get('name'))
     }
-
+    Loading.show()
     $.ajax({
       url: '/maps/' + id + '/contains.json',
       success: start
@@ -232,7 +231,7 @@ const Map = {
     var map = Active.Map
     DataModel.Maps.Active.remove(map)
     DataModel.Maps.Featured.remove(map)
-    Router.home()
+    // TODO: navigate home
     GlobalUI.notifyUser('Sorry! That map has been changed to Private.')
   },
   cantEditNow: function() {
@@ -245,7 +244,7 @@ const Map = {
     confirmString += 'Do you want to reload and enable realtime collaboration?'
     var c = window.confirm(confirmString)
     if (c) {
-      Router.maps(Active.Map.id)
+      // TODO: reload the map somehow
     }
   },
   editedByActiveMapper: function() {
