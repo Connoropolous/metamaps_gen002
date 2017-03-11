@@ -47,7 +47,7 @@ const InfoBox = {
 
     self.attachEventListeners()
 
-    self.generateBoxHTML = Hogan.compile($('#mapInfoBoxTemplate').html())
+    self.generateBoxHTML = Hogan.compile('')
 
     self.userImageUrl = serverData['user.png']
 

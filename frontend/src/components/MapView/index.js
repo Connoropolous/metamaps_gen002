@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 
-import MapInfoBox from './MapInfoBox'
+import DataVis from './DataVis'
+import MapButtons from './MapButtons'
+import InfoAndHelp from './InfoAndHelp'
+import MapControls from './MapControls'
 import MapChat from './MapChat'
 import TopicCard from '../TopicCard'
 
@@ -17,7 +20,11 @@ class MapView extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      infoBoxOpen: false,
+      filterBoxOpen: false,
+      chatOpen: false
+    }
   }
 
   componentDidMount() {
@@ -25,15 +32,24 @@ class MapView extends Component {
     this.resize()
   }
 
+  endMap() {
+    this.setState({
+      infoBoxOpen: false,
+      filterBoxOpen: false,
+      chatOpen: false
+    })
+    this.props.endActiveMap()
+  }
+
   componentDidUpdate(prevProps) {
     const oldMapId = prevProps.mapId
-    const { mapId, endActiveMap, launchNewMap } = this.props
+    const { mapId, launchNewMap } = this.props
     if (!oldMapId && mapId) launchNewMap(mapId)
     else if (oldMapId && mapId && oldMapId !== mapId) {
-      endActiveMap()
+      this.endMap()
       launchNewMap(mapId)
     }
-    else if (oldMapId && !mapId) endActiveMap()
+    else if (oldMapId && !mapId) this.endMap()
   }
 
   componentWillUnmount() {
@@ -45,36 +61,24 @@ class MapView extends Component {
   }
 
   render = () => {
-    const { mapIsStarred } = this.props
-    const starclassName = mapIsStarred ? 'starred' : ''
-    const tooltip = mapIsStarred ? 'Star' : 'Unstar'
-
+    const { map, mapIsStarred, currentUser, onOpen, onClose } = this.props
+    const { infoBoxOpen, filterBoxOpen, chatOpen } = this.state
+    const onChatOpen = () => {
+      this.setState({chatOpen: true})
+      onOpen()
+    }
+    const onChatClose = () => {
+      this.setState({chatOpen: false})
+      onClose()
+    }
+    // TODO: stop using {...this.props} and make explicit
     return <div className="mapWrapper">
-      <div id="infovis" />
-      <div className="showcard mapElement mapElementHidden" id="showcard">
-        <TopicCard {...this.props} />
-      </div>
-      <div id="chat-box-wrapper">
-        <MapChat {...this.props} />
-      </div>
-      <div className="mapControls mapElement">
-      	<div className="zoomExtents mapControl"><div className="tooltips">Center View</div></div>
-      	<div className="zoomIn mapControl"><div className="tooltips">Zoom In</div></div>
-      	<div className="zoomOut mapControl"><div className="tooltips">Zoom Out</div></div>
-      </div>
-      <div className="infoAndHelp">
-      	<MapInfoBox />
-        <div className={`starMap infoElement mapElement ${starclassName}`}>
-          <div className="tooltipsAbove">{tooltip}</div>
-        </div>
-        <div className="mapInfoIcon infoElement mapElement">
-          <div className="tooltipsAbove">Map Info</div>
-        </div>
-        <div className="openCheatsheet openLightbox infoElement mapElement" data-open="cheatsheet">
-          <div className="tooltipsAbove">Help</div>
-        </div>
-        <div className="clearfloat"></div>
-      </div>
+      <MapButtons currentUser={currentUser} filterBoxOpen={filterBoxOpen} />
+      <DataVis />
+      <TopicCard {...this.props} />
+      <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} />
+      <MapControls />
+      <InfoAndHelp infoBoxOpen={infoBoxOpen} mapIsStarred={mapIsStarred} currentUser={currentUser} map={map} />
     </div>
   }
 }
@@ -83,7 +87,6 @@ export default MapView
 
 /*
 
-<div className="showcard mapElement mapElementHidden" id="showcard"></div>
 <% if authenticated? %>
     <% # for creating and pulling in topics and synapses %>
     <% if controller_name == 'maps' && action_name == "conversation" %>

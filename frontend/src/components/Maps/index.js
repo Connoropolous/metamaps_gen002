@@ -21,7 +21,6 @@ class Maps extends Component {
     currentUser: PropTypes.object,
     loadMore: PropTypes.func,
     pending: PropTypes.bool,
-    setCollection: PropTypes.func,
     onStar: PropTypes.func,
     onRequest: PropTypes.func,
     onMapFollow: PropTypes.func
@@ -85,7 +84,6 @@ class Maps extends Component {
         <Header signedIn={ !!currentUser }
           section={ section }
           user={ user }
-          setCollection={ setCollection }
           />
       </div>
     )

@@ -27,7 +27,6 @@ class MapChat extends Component {
 
     this.state = {
       unreadMessages: 0,
-      open: false,
       messageText: '',
       alertSound: true, // whether to play sounds on arrival of new messages or not
       cursorsShowing: true,
@@ -38,7 +37,6 @@ class MapChat extends Component {
   reset = () => {
     this.setState({
       unreadMessages: 0,
-      open: false,
       messageText: '',
       alertSound: true, // whether to play sounds on arrival of new messages or not
       cursorsShowing: true,
@@ -47,14 +45,13 @@ class MapChat extends Component {
   }
 
   close = () => {
-    this.setState({open: false})
     this.props.onClose()
     this.messageInput.blur()
   }
 
   open = () => {
     this.scroll()
-    this.setState({open: true, unreadMessages: 0})
+    this.setState({unreadMessages: 0})
     this.props.onOpen()
     this.messageInput.focus()
   }
@@ -68,8 +65,8 @@ class MapChat extends Component {
   }
 
   toggleDrawer = () => {
-    if (this.state.open) this.close()
-    else if (!this.state.open) this.open()
+    if (this.props.chatOpen) this.close()
+    else if (!this.props.chatOpen) this.open()
   }
 
   toggleAlertSound = () => {
@@ -108,66 +105,69 @@ class MapChat extends Component {
   }
 
   render = () => {
-    const rightOffset = this.state.open ? '0' : '-300px'
+    const rightOffset = this.props.chatOpen ? '0' : '-300px'
     const { conversationLive, isParticipating, participants, messages, inviteACall, inviteToJoin } = this.props
     const { videosShowing, cursorsShowing, alertSound, unreadMessages } = this.state
     return (
-      <div className="chat-box"
-        style={{ right: rightOffset }}
-      >
-        <div className="junto-header">
-          PARTICIPANTS
-          <div onClick={this.toggleVideosShowing} className={`video-toggle ${videosShowing ? '' : 'active'}`} />
-          <div onClick={this.toggleCursorsShowing} className={`cursor-toggle ${cursorsShowing ? '' : 'active'}`} />
+      <div id="chat-box-wrapper">
+        <div className="chat-box"
+          style={{ right: rightOffset }}
+        >
+          <div className="junto-header">
+            PARTICIPANTS
+            <div onClick={this.toggleVideosShowing} className={`video-toggle ${videosShowing ? '' : 'active'}`} />
+            <div onClick={this.toggleCursorsShowing} className={`cursor-toggle ${cursorsShowing ? '' : 'active'}`} />
+          </div>
+          <div className="participants">
+            {conversationLive && <div className="conversation-live">
+              LIVE
+              {isParticipating && <span className="call-action leave" onClick={this.props.leaveCall}>
+                LEAVE
+              </span>}
+              {!isParticipating && <span className="call-action join" onClick={this.props.joinCall}>
+                JOIN
+              </span>}
+            </div>}
+            {participants.map(participant => <Participant
+              key={participant.id}
+              {...participant}
+              inviteACall={inviteACall}
+              inviteToJoin={inviteToJoin}
+              conversationLive={conversationLive}
+              mapperIsLive={isParticipating}/>
+            )}
+          </div>
+          <div className="chat-header">
+            CHAT
+            <div onClick={this.toggleAlertSound} className={`sound-toggle ${alertSound ? '' : 'active'}`}></div>
+          </div>
+          <div className={`chat-button ${conversationLive ? 'active' : ''}`} onClick={this.toggleDrawer}>
+            <div className="tooltips">Chat</div>
+            <Unread count={unreadMessages} />
+          </div>
+          <div className="chat-messages" ref={div => { this.messagesDiv = div }}>
+            {makeList(messages)}
+          </div>
+          <NewMessage messageText={this.state.messageText}
+            focusMessageInput={this.focusMessageInput}
+            handleChange={this.handleChange('messageText')}
+            textAreaProps={{
+              className: 'chat-input',
+              ref: textarea => { this.messageInput = textarea },
+              placeholder: 'Send a message...',
+              onKeyUp: this.handleTextareaKeyUp,
+              onFocus: this.props.inputFocus,
+              onBlur: this.props.inputBlur
+            }}
+          />
         </div>
-        <div className="participants">
-          {conversationLive && <div className="conversation-live">
-            LIVE
-            {isParticipating && <span className="call-action leave" onClick={this.props.leaveCall}>
-              LEAVE
-            </span>}
-            {!isParticipating && <span className="call-action join" onClick={this.props.joinCall}>
-              JOIN
-            </span>}
-          </div>}
-          {participants.map(participant => <Participant
-            key={participant.id}
-            {...participant}
-            inviteACall={inviteACall}
-            inviteToJoin={inviteToJoin}
-            conversationLive={conversationLive}
-            mapperIsLive={isParticipating}/>
-          )}
-        </div>
-        <div className="chat-header">
-          CHAT
-          <div onClick={this.toggleAlertSound} className={`sound-toggle ${alertSound ? '' : 'active'}`}></div>
-        </div>
-        <div className={`chat-button ${conversationLive ? 'active' : ''}`} onClick={this.toggleDrawer}>
-          <div className="tooltips">Chat</div>
-          <Unread count={unreadMessages} />
-        </div>
-        <div className="chat-messages" ref={div => { this.messagesDiv = div }}>
-          {makeList(messages)}
-        </div>
-        <NewMessage messageText={this.state.messageText}
-          focusMessageInput={this.focusMessageInput}
-          handleChange={this.handleChange('messageText')}
-          textAreaProps={{
-            className: 'chat-input',
-            ref: textarea => { this.messageInput = textarea },
-            placeholder: 'Send a message...',
-            onKeyUp: this.handleTextareaKeyUp,
-            onFocus: this.props.inputFocus,
-            onBlur: this.props.inputBlur
-          }}
-        />
       </div>
     )
   }
 }
 
 MapChat.propTypes = {
+  chatOpen: PropTypes.bool,
   conversationLive: PropTypes.bool,
   isParticipating: PropTypes.bool,
   onOpen: PropTypes.func,

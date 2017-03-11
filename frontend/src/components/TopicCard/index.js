@@ -27,28 +27,30 @@ class ReactTopicCard extends Component {
     if (topic.authorizePermissionChange(currentUser)) classname += ' yourTopic'
 
     return (
-      <div className={classname}>
-        <div className={`CardOnGraph ${hasAttachment ? 'hasAttachment' : ''}`} id={`topic_${topic.id}`}>
-          <Title name={topic.get('name')}
-            authorizedToEdit={authorizedToEdit}
-            onChange={this.props.updateTopic}
-          />
-          <Links topic={topic}
-            ActiveMapper={this.props.currentUser}
-            updateTopic={this.props.updateTopic}
-            metacodeSets={this.props.metacodeSets}
-            redrawCanvas={this.props.redrawCanvas}
-          />
-          <Desc desc={topic.get('desc')}
-            authorizedToEdit={authorizedToEdit}
-            onChange={this.props.updateTopic}
-          />
-          <Attachments topic={topic}
-            authorizedToEdit={authorizedToEdit}
-            updateTopic={this.props.updateTopic}
-          />
-        {Util.isTester(currentUser) && <Follow isFollowing={isFollowing} onTopicFollow={onTopicFollow} />}
-          <div className="clearfloat"></div>
+      <div className="showcard mapElement mapElementHidden" id="showcard">
+        <div className={classname}>
+          <div className={`CardOnGraph ${hasAttachment ? 'hasAttachment' : ''}`} id={`topic_${topic.id}`}>
+            <Title name={topic.get('name')}
+              authorizedToEdit={authorizedToEdit}
+              onChange={this.props.updateTopic}
+            />
+            <Links topic={topic}
+              ActiveMapper={this.props.currentUser}
+              updateTopic={this.props.updateTopic}
+              metacodeSets={this.props.metacodeSets}
+              redrawCanvas={this.props.redrawCanvas}
+            />
+            <Desc desc={topic.get('desc')}
+              authorizedToEdit={authorizedToEdit}
+              onChange={this.props.updateTopic}
+            />
+            <Attachments topic={topic}
+              authorizedToEdit={authorizedToEdit}
+              updateTopic={this.props.updateTopic}
+            />
+          {Util.isTester(currentUser) && <Follow isFollowing={isFollowing} onTopicFollow={onTopicFollow} />}
+            <div className="clearfloat"></div>
+          </div>
         </div>
       </div>
     )

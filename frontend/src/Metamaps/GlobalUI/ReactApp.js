@@ -74,6 +74,7 @@ const ReactApp = {
       mapIsStarred: self.mapIsStarred,
       endActiveMap: Map.end,
       launchNewMap: Map.launch
+      // filters
     }
   },
   getTopicCardProps: function() {
