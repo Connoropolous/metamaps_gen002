@@ -46,6 +46,12 @@ const ReactApp = {
     // TODO: also handle page title updates
     switch (this.state.location.pathname.split('/')[1]) {
       case '':
+        if (Active.Mapper) $('#yield').hide()
+        ExploreMaps.updateFromPath(this.state.location.pathname)
+        self.mapId = null
+        Active.Map = null
+        Active.Topic = null
+        break
       case 'explore':
         $('#yield').hide()
         ExploreMaps.updateFromPath(this.state.location.pathname)
