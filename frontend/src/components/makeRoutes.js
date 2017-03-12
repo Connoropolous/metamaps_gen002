@@ -24,15 +24,23 @@ export default function makeRoutes (currentUser) {
       <IndexRoute component={MapView} />
       <Route path="conversation" component={MapView} />
     </Route>
-    <Route path="/login" component={nullComponent} />
-    <Route path="/join" component={nullComponent} />
-    <Route path="/request" component={nullComponent} />
-    <Route path="/notifications" component={nullComponent} />
-    <Route path="/notifications/:id" component={nullComponent} />
-    <Route path="/users/:id/edit" component={nullComponent} />
-    <Route path="/metacodes" component={nullComponent} />
-    <Route path="/metacodes/new" component={nullComponent} />
-    <Route path="/metacode_sets" component={nullComponent} />
-    <Route path="/metacode_sets/new" component={nullComponent} />
+    <Route path="login" component={nullComponent} />
+    <Route path="join" component={nullComponent} />
+    <Route path="request" component={nullComponent} />
+    <Route path="notifications">
+      <IndexRoute component={nullComponent} />
+      <Route path=":id" component={nullComponent} />
+    </Route>
+    <Route path="users/:id/edit" component={nullComponent} />
+    <Route path="metacodes">
+      <IndexRoute component={nullComponent} />
+      <Route path="new" component={nullComponent} />
+      <Route path=":id/edit" component={nullComponent} />
+    </Route>
+    <Route path="metacode_sets">
+      <IndexRoute component={nullComponent} />
+      <Route path="new" component={nullComponent} />
+      <Route path=":id/edit" component={nullComponent} />
+    </Route>
   </Route>
 }
