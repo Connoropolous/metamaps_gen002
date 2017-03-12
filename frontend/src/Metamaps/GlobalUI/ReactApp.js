@@ -11,7 +11,7 @@ import Active from '../Active'
 import DataModel from '../DataModel'
 import { ExploreMaps, ChatView, TopicCard } from '../Views'
 import Realtime from '../Realtime'
-import Map from '../Map'
+import Map, { InfoBox } from '../Map'
 import Topic from '../Topic'
 import makeRoutes from '../../components/makeRoutes'
 let routes
@@ -73,7 +73,9 @@ const ReactApp = {
       map: Active.Map,
       mapIsStarred: self.mapIsStarred,
       endActiveMap: Map.end,
-      launchNewMap: Map.launch
+      launchNewMap: Map.launch,
+      toggleMapInfoBox: InfoBox.toggleBox,
+      infoBoxHtml: InfoBox.html
       // filters
     }
   },

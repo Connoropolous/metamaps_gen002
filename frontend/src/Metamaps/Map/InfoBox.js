@@ -4,12 +4,11 @@ import outdent from 'outdent'
 
 import Active from '../Active'
 import DataModel from '../DataModel'
-import GlobalUI from '../GlobalUI'
+import GlobalUI, { ReactApp } from '../GlobalUI'
 import Util from '../Util'
 
 const InfoBox = {
   isOpen: false,
-  changing: false,
   selectingPermission: false,
   changePermissionText: "<div class='tooltips'>As the creator, you can change the permission of this map, and the permission of all the topics and synapses you have authority to change will change as well.</div>",
   nameHTML: outdent`
@@ -34,12 +33,12 @@ const InfoBox = {
       data-bip-value="{{desc}}"
     >{{desc}}</span>`,
   userImageUrl: '',
+  html: '',
   init: function(serverData, updateThumbnail) {
     var self = InfoBox
 
     self.updateThumbnail = updateThumbnail
 
-    $('.mapInfoIcon').click(self.toggleBox)
     $('.mapInfoBox').click(function(event) {
       event.stopPropagation()
     })
@@ -47,7 +46,7 @@ const InfoBox = {
 
     self.attachEventListeners()
 
-    self.generateBoxHTML = Hogan.compile('')
+    self.generateBoxHTML = Hogan.compile($('#mapInfoBoxTemplate').html())
 
     self.userImageUrl = serverData['user.png']
 
@@ -71,27 +70,18 @@ const InfoBox = {
   open: function() {
     var self = InfoBox
     $('.mapInfoIcon div').addClass('hide')
-    if (!self.isOpen && !self.changing) {
-      self.changing = true
-      $('.mapInfoBox').fadeIn(200, function() {
-        self.changing = false
-        self.isOpen = true
-      })
-    }
+    $('.mapInfoBox').fadeIn(200, function() {
+      self.isOpen = true
+    })
   },
   close: function() {
     var self = InfoBox
-
     $('.mapInfoIcon div').removeClass('hide')
-    if (!self.changing) {
-      self.changing = true
-      $('.mapInfoBox').fadeOut(200, function() {
-        self.changing = false
-        self.isOpen = false
-        self.hidePermissionSelect()
-        $('.mapContributors .tip').hide()
-      })
-    }
+    $('.mapInfoBox').fadeOut(200, function() {
+      self.isOpen = false
+      self.hidePermissionSelect()
+      $('.mapContributors .tip').hide()
+    })
   },
   load: function() {
     var self = InfoBox
@@ -119,13 +109,8 @@ const InfoBox = {
     obj['created_at'] = map.get('created_at_clean')
     obj['updated_at'] = map.get('updated_at_clean')
 
-    var classes = isCreator ? 'yourMap' : ''
-    classes += canEdit ? ' canEdit' : ''
-    classes += shareable ? ' shareable' : ''
-    $('.mapInfoBox').removeClass('shareable yourMap canEdit')
-      .addClass(classes)
-      .html(self.generateBoxHTML.render(obj))
-
+    self.html = self.generateBoxHTML.render(obj)
+    ReactApp.render()
     self.attachEventListeners()
   },
   attachEventListeners: function() {

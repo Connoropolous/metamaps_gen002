@@ -13,15 +13,17 @@ class MapView extends Component {
     mapId: PropTypes.string,
     map: PropTypes.object,
     mapIsStarred: PropTypes.bool,
+    toggleFilterBox: PropTypes.func,
+    toggleMapInfoBox: PropTypes.func,
+    infoBoxHtml: PropTypes.string,
     currentUser: PropTypes.object,
     endActiveMap: PropTypes.func,
-    launchNewMap: PropTypes.func
+    launchNewMap: PropTypes.func,
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      infoBoxOpen: false,
       filterBoxOpen: false,
       chatOpen: false
     }
@@ -34,7 +36,6 @@ class MapView extends Component {
 
   endMap() {
     this.setState({
-      infoBoxOpen: false,
       filterBoxOpen: false,
       chatOpen: false
     })
@@ -61,8 +62,8 @@ class MapView extends Component {
   }
 
   render = () => {
-    const { map, mapIsStarred, currentUser, onOpen, onClose } = this.props
-    const { infoBoxOpen, filterBoxOpen, chatOpen } = this.state
+    const { map, mapIsStarred, currentUser, onOpen, onClose, toggleMapInfoBox, toggleFilterBox, infoBoxHtml } = this.props
+    const { filterBoxOpen, chatOpen } = this.state
     const onChatOpen = () => {
       this.setState({chatOpen: true})
       onOpen()
@@ -73,12 +74,16 @@ class MapView extends Component {
     }
     // TODO: stop using {...this.props} and make explicit
     return <div className="mapWrapper">
-      <MapButtons currentUser={currentUser} filterBoxOpen={filterBoxOpen} />
+      <MapButtons currentUser={currentUser} onFilterClick={toggleFilterBox} />
       <DataVis />
       <TopicCard {...this.props} />
       <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} />
       <MapControls />
-      <InfoAndHelp infoBoxOpen={infoBoxOpen} mapIsStarred={mapIsStarred} currentUser={currentUser} map={map} />
+      <InfoAndHelp mapIsStarred={mapIsStarred}
+                   currentUser={currentUser}
+                   map={map}
+                   onInfoClick={toggleMapInfoBox}
+                   infoBoxHtml={infoBoxHtml} />
     </div>
   }
 }

@@ -30,10 +30,10 @@
         <%= render :partial => 'maps/newsynapse' %>
         <% # for populating the change metacode list on the topic card %>
         <%= render :partial => 'shared/metacodeoptions' %>
+        <script type="text/javascript">
+          Metamaps.ServerData.unreadNotificationsCount = <%= user_unread_notification_count %>
+          Metamaps.ServerData.mapIsStarred = <%= @map && current_user.starred_map?(@map) ? true : false %>
+        </script>
     <% end %>
     <div id="loading"></div>
- <script type="text/javascript">
-   Metamaps.ServerData.unreadNotificationsCount = <%= user_unread_notification_count %>
-   Metamaps.ServerData.mapIsStarred = <%= current_user && @map && current_user.starred_map?(@map) ? true : false %>
- </script>
 <%= render :partial => 'layouts/foot' %>
