@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 
+import MobileHeader from './MobileHeader'
 import Toast from './Toast'
 import UpperLeftUI from './UpperLeftUI'
 import UpperRightUI from './UpperRightUI'
@@ -9,7 +10,11 @@ class App extends Component {
     children: PropTypes.object,
     toast: PropTypes.string,
     unreadNotificationsCount: PropTypes.number,
-    location: PropTypes.object
+    location: PropTypes.object,
+    mobile: PropTypes.bool,
+    mobileTitle: PropTypes.string,
+    mobileTitleWidth: PropTypes.number,
+    mobileTitleClick: PropTypes.func
   }
 
   static childContextTypes = {
@@ -23,12 +28,18 @@ class App extends Component {
   }
 
   render () {
-    const { children, toast, currentUser, unreadNotificationsCount } = this.props
+    const { children, toast, currentUser, unreadNotificationsCount,
+            mobile, mobileTitle, mobileTitleWidth, mobileTitleClick } = this.props
     return <div className="wrapper" id="wrapper">
+      {mobile && <MobileHeader currentUser={currentUser}
+                               unreadNotificationsCount={unreadNotificationsCount}
+                               mobileTitle={mobileTitle}
+                               mobileTitleWidth={mobileTitleWidth}
+                               onTitleClick={mobileTitleClick} />}
       <UpperLeftUI currentUser={currentUser} />
-      <UpperRightUI currentUser={currentUser} unreadNotificationsCount={unreadNotificationsCount} />
+      {!mobile && <UpperRightUI currentUser={currentUser} unreadNotificationsCount={unreadNotificationsCount} />}
       <Toast message={toast} />
-      {currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
+      {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}
     </div>
   }

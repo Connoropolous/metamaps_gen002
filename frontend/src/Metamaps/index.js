@@ -17,7 +17,6 @@ import Listeners from './Listeners'
 import Loading from './Loading'
 import Map, { CheatSheet, InfoBox } from './Map'
 import Mapper from './Mapper'
-import Mobile from './Mobile'
 import Mouse from './Mouse'
 import Organize from './Organize'
 import PasteInput from './PasteInput'
@@ -57,7 +56,6 @@ Metamaps.Map.CheatSheet = CheatSheet
 Metamaps.Map.InfoBox = InfoBox
 Metamaps.Maps = {}
 Metamaps.Mapper = Mapper
-Metamaps.Mobile = Mobile
 Metamaps.Mouse = Mouse
 Metamaps.Organize = Organize
 Metamaps.PasteInput = PasteInput

@@ -30,14 +30,15 @@ const ReactApp = {
   unreadNotificationsCount: 0,
   mapsWidth: 0,
   mobile: false,
+  mobileTitle: '',
+  mobileTitleWidth: 0,
   init: function(serverData, openLightbox) {
     const self = ReactApp
     self.unreadNotificationsCount = serverData.unreadNotificationsCount
+    self.mobileTitle = serverData.mobileTitle
     self.openLightbox = openLightbox
     routes = makeRoutes()
     self.resize()
-    self.setMobile()
-    self.render()
     window && window.addEventListener('resize', self.resize)
   },
   handleUpdate: function(location) {
@@ -72,7 +73,10 @@ const ReactApp = {
     return merge({
       unreadNotificationsCount: self.unreadNotificationsCount,
       currentUser: Active.Mapper,
-      mobile: self.mobile
+      mobile: self.mobile,
+      mobileTitle: self.mobileTitle,
+      mobileTitleWidth: self.mobileTitleWidth,
+      mobileTitleClick: (e) => Active.Map && InfoBox.toggleBox(e)
     },
     self.getMapProps(),
     self.getTopicProps(),
@@ -155,11 +159,6 @@ const ReactApp = {
       handleInputMessage: ChatView.handleInputMessage
     }
   },
-  setMobile: function() {
-    const self = ReactApp
-    self.mobile = document && document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
-    self.render()
-  },
   resize: function() {
     const self = ReactApp
     const maps = ExploreMaps.collection
@@ -170,7 +169,10 @@ const ReactApp = {
     const mapsWidth = document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
                         ? document.body.clientWidth - MOBILE_VIEW_PADDING
                         : Math.min(MAX_COLUMNS, Math.min(numCards, mapSpaces)) * MAP_WIDTH
+
     self.mapsWidth = mapsWidth
+    self.mobileTitleWidth = document ? document.body.clientWidth - 70 : 0
+    self.mobile = document && document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
     self.render()
   }
 }

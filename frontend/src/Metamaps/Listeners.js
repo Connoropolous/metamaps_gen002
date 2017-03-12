@@ -20,7 +20,7 @@ const Listeners = {
       if (!(Active.Map || Active.Topic)) return
 
       const onCanvas = e.target.tagName === 'BODY'
-      
+
       switch (e.which) {
         case 13: // if enter key is pressed
           // prevent topic creation if sending a message
@@ -141,7 +141,6 @@ const Listeners = {
       }
 
       if (Active.Map && Realtime.inConversation) Realtime.positionVideos()
-      Mobile.resizeTitle()
     })
   },
   centerAndReveal: function(nodes, opts) {

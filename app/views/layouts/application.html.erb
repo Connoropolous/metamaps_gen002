@@ -9,7 +9,6 @@
 <body class="<%= authenticated? ? "authenticated" : "unauthenticated" %> controller-<%= controller_name %> action-<%= action_name %>">
     <%= content_tag :div, class: "main", id: "react-app" do %>
       <%= yield %>
-      <%= render :partial => 'layouts/mobilemenu' %>
     <% end %>
     <% if devise_error_messages? %>
       <%= devise_error_messages! %>
@@ -35,6 +34,9 @@
           Metamaps.ServerData.mapIsStarred = <%= @map && current_user.starred_map?(@map) ? true : false %>
         </script>
     <% end %>
+<script type="text/javascript">
+  Metamaps.ServerData.mobileTitle = "<%= yield(:mobile_title) %>"
+</script>
     <div class="hidden"><%= render :partial => 'shared/filterBox' %></div>
     <div id="loading"></div>
 <%= render :partial => 'layouts/foot' %>

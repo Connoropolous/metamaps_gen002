@@ -10,9 +10,12 @@ import TopicCard from '../TopicCard'
 class MapView extends Component {
 
   static propTypes = {
+    mobile: PropTypes.bool,
     mapId: PropTypes.string,
     map: PropTypes.object,
     mapIsStarred: PropTypes.bool,
+    onMapStar: PropTypes.func,
+    onMapUnstar: PropTypes.func,
     toggleFilterBox: PropTypes.func,
     filterBoxHtml: PropTypes.string,
     toggleMapInfoBox: PropTypes.func,
@@ -20,6 +23,12 @@ class MapView extends Component {
     currentUser: PropTypes.object,
     endActiveMap: PropTypes.func,
     launchNewMap: PropTypes.func,
+    openImportLightbox: PropTypes.func,
+    forkMap: PropTypes.func,
+    openHelpLightbox: PropTypes.func,
+    onZoomExtents: PropTypes.func,
+    onZoomIn: PropTypes.func,
+    onZoomOut: PropTypes.func
   }
 
   constructor(props) {
@@ -31,7 +40,6 @@ class MapView extends Component {
 
   endMap() {
     this.setState({
-      filterBoxOpen: false,
       chatOpen: false
     })
     this.props.endActiveMap()
