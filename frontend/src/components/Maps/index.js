@@ -4,12 +4,6 @@ import Header from './Header'
 import MapperCard from './MapperCard'
 import MapCard from './MapCard'
 
-// 220 wide + 16 padding on both sides
-const MAP_WIDTH = 252
-const MOBILE_VIEW_BREAKPOINT = 504
-const MOBILE_VIEW_PADDING = 40
-const MAX_COLUMNS = 4
-
 class Maps extends Component {
 
   static propTypes = {
@@ -23,37 +17,17 @@ class Maps extends Component {
     pending: PropTypes.bool,
     onStar: PropTypes.func,
     onRequest: PropTypes.func,
-    onMapFollow: PropTypes.func
+    onMapFollow: PropTypes.func,
+    mapsWidth: PropTypes.number,
+    mobile: PropTypes.bool
   }
 
   static contextTypes = {
     location: PropTypes.object
   }
 
-  constructor(props) {
-    super(props)
-    this.state = { mapsWidth: 0 }
-  }
-
   componentDidMount() {
-    window && window.addEventListener('resize', this.resize)
-    this.refs.maps && this.refs.maps.addEventListener('scroll', throttle(this.scroll, 500, { leading: true, trailing: false }))
-    this.resize()
-  }
-
-  componentWillUnmount() {
-    window && window.removeEventListener('resize', this.resize)
-  }
-
-  resize = () => {
-    const { maps, user, currentUser } = this.props
-    if (!maps) return
-    const numCards = maps.length + (user || currentUser ? 1 : 0)
-    const mapSpaces = Math.floor(document.body.clientWidth / MAP_WIDTH)
-    const mapsWidth = document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
-                        ? document.body.clientWidth - MOBILE_VIEW_PADDING
-                        : Math.min(MAX_COLUMNS, Math.min(numCards, mapSpaces)) * MAP_WIDTH
-    this.setState({ mapsWidth })
+    this.maps && this.maps.addEventListener('scroll', throttle(this.scroll, 500, { leading: true, trailing: false }))
   }
 
   scroll = () => {
@@ -65,15 +39,14 @@ class Maps extends Component {
   }
 
   render = () => {
-    const { maps, currentUser, juntoState, pending, section, user, onStar, onRequest, onMapFollow } = this.props
-    const style = { width: this.state.mapsWidth + 'px' }
-    const mobile = document && document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
+    const { mobile, maps, mapsWidth, currentUser, juntoState, pending, section, user, onStar, onRequest, onMapFollow } = this.props
+    const style = { width: mapsWidth + 'px' }
 
     if (!maps) return null // do loading here instead
 
     return (
       <div>
-        <div id='exploreMaps' ref='maps'>
+        <div id='exploreMaps' ref={x => this.maps = x}>
           <div style={ style }>
             { user ? <MapperCard user={ user } /> : null }
             { currentUser && !user && !(pending && maps.length === 0) ? <div className="map newMap"><a href="/maps/new"><div className="newMapImage"></div><span>Create new map...</span></a></div> : null }

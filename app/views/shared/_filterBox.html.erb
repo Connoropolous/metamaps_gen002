@@ -2,27 +2,27 @@
   # @file
   # this code generates the list of icons in the filter box in the upper right menu area
   #%>
-  
-<% 
+
+<%
   @mappers = []
   @synapses = []
   @metacodes = []
   @metacodelist = ''
   @mapperlist = ''
   @synapselist = ''
-# There are essentially three functions happening here one to fill data to 
-#@mappers with all people who have mapped on the selected map, which 
-#actually gets checked twice once for topics or within @metacodes and once 
-#for synapses on the map. @synapses get filled with all synapses on the map 
+# There are essentially three functions happening here one to fill data to
+#@mappers with all people who have mapped on the selected map, which
+#actually gets checked twice once for topics or within @metacodes and once
+#for synapses on the map. @synapses get filled with all synapses on the map
 #and metacodes is filled with all the metacodes that are being used on the map.
 
   if @map
-    @alltopics.each_with_index do |topic, index| 
+    @alltopics.each_with_index do |topic, index|
       if @metacodes.index(topic.metacode) == nil
         @metacodes.push(topic.metacode)
       end
-    end 
-    @allsynapses.each_with_index do |synapse, index| 
+    end
+    @allsynapses.each_with_index do |synapse, index|
       if @synapses.index{|s| s.desc == synapse.desc} == nil
         @synapses.push(synapse)
       end
@@ -32,16 +32,16 @@
         @mappers.push(mapping.user)
       end
     end
-  elsif @topic 
-    @alltopics.each_with_index do |topic, index| 
+  elsif @topic
+    @alltopics.each_with_index do |topic, index|
       if @metacodes.index(topic.metacode) == nil
         @metacodes.push(topic.metacode)
       end
       if @mappers.index(topic.user) == nil
         @mappers.push(topic.user)
       end
-    end 
-    @allsynapses.each_with_index do |synapse, index| 
+    end
+    @allsynapses.each_with_index do |synapse, index|
       if @synapses.index{|s| s.desc == synapse.desc} == nil
         @synapses.push(synapse)
       end
@@ -52,7 +52,7 @@
   end
 
   if @map || @topic
-    @metacodes.sort! {|x,y| 
+    @metacodes.sort! {|x,y|
       n1 = x.name || ""
       n2 = y.name || ""
       n1 <=> n2
@@ -62,24 +62,24 @@
       d2 = y.desc || ""
       d1 <=> d2
     }
-    @mappers.sort! {|x,y| 
+    @mappers.sort! {|x,y|
       n1 = x.name || ""
       n2 = y.name || ""
-      n1 <=> n2 
+      n1 <=> n2
     }
-    
-    @metacodes.each_with_index do |metacode, index| 
+
+    @metacodes.each_with_index do |metacode, index|
         @metacodelist += '<li data-id="' + metacode.id.to_s + '">'
         @metacodelist += '<img src="' + asset_path(metacode.icon) + '" data-id="' + metacode.id.to_s + '" alt="' + metacode.name + '" />'
         @metacodelist += '<p>' + metacode.name.downcase + '</p></li>'
     end
-    @synapses.each_with_index do |synapse, index| 
+    @synapses.each_with_index do |synapse, index|
         d = synapse.desc || ""
         @synapselist += '<li data-id="' + d + '">'
         @synapselist += '<img src="' + asset_path('synapse16.png') + '" alt="synapse icon" /><p>' + d
         @synapselist += '</p></li>'
-    end 
-    @mappers.each_with_index do |mapper, index| 
+    end
+    @mappers.each_with_index do |mapper, index|
         @mapperlist += '<li data-id="' + mapper.id.to_s + '">'
         @mapperlist += '<img src="' + mapper.image.url(:sixtyfour) + '" data-id="' + mapper.id.to_s + '" alt="' + mapper.name + '" />'
         @mapperlist += '<p>' + mapper.name + '</p></li>'
@@ -95,7 +95,7 @@
   <div class="clearfloat"></div>
   <ul>
     <%= @mapperlist.html_safe %>
-  </ul> 
+  </ul>
   <div class="clearfloat"></div>
 </div>
 
@@ -106,7 +106,7 @@
   <div class="clearfloat"></div>
   <ul>
     <%= @metacodelist.html_safe %>
-  </ul> 
+  </ul>
   <div class="clearfloat"></div>
 </div>
 
@@ -117,9 +117,8 @@
   <div class="clearfloat"></div>
   <ul>
     <%= @synapselist.html_safe %>
-  </ul> 
+  </ul>
   <div class="clearfloat"></div>
 </div>
 
 </div> <!-- end .filterBox -->
-

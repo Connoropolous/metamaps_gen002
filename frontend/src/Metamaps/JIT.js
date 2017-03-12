@@ -50,15 +50,6 @@ const JIT = {
    */
   init: function(serverData) {
     const self = JIT
-
-    $('.zoomIn').click(self.zoomIn)
-    $('.zoomOut').click(self.zoomOut)
-
-    const zoomExtents = function(event) {
-      self.zoomExtents(event, Visualize.mGraph.canvas)
-    }
-    $('.zoomExtents').click(zoomExtents)
-
     self.topicDescImage = new Image()
     self.topicDescImage.src = serverData['topic_description_signifier.png']
 

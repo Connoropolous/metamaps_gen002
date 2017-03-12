@@ -3,30 +3,42 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router, browserHistory } from 'react-router'
-
 import { merge } from 'lodash'
 
 import { notifyUser } from './index.js'
+import ImportDialog from './ImportDialog'
 import Active from '../Active'
 import DataModel from '../DataModel'
 import { ExploreMaps, ChatView, TopicCard } from '../Views'
 import Filter from '../Filter'
+import JIT from '../JIT'
 import Realtime from '../Realtime'
 import Map, { InfoBox } from '../Map'
 import Topic from '../Topic'
+import Visualize from '../Visualize'
 import makeRoutes from '../../components/makeRoutes'
 let routes
+
+// 220 wide + 16 padding on both sides
+const MAP_WIDTH = 252
+const MOBILE_VIEW_BREAKPOINT = 504
+const MOBILE_VIEW_PADDING = 40
+const MAX_COLUMNS = 4
 
 const ReactApp = {
   mapId: null,
   unreadNotificationsCount: 0,
-  mapIsStarred: false,
-  init: function(serverData) {
+  mapsWidth: 0,
+  mobile: false,
+  init: function(serverData, openLightbox) {
     const self = ReactApp
     self.unreadNotificationsCount = serverData.unreadNotificationsCount
-    self.mapIsStarred = serverData.mapIsStarred
+    self.openLightbox = openLightbox
     routes = makeRoutes()
+    self.resize()
+    self.setMobile()
     self.render()
+    window && window.addEventListener('resize', self.resize)
   },
   handleUpdate: function(location) {
     const self = ReactApp
@@ -59,7 +71,8 @@ const ReactApp = {
     const self = ReactApp
     return merge({
       unreadNotificationsCount: self.unreadNotificationsCount,
-      currentUser: Active.Mapper
+      currentUser: Active.Mapper,
+      mobile: self.mobile
     },
     self.getMapProps(),
     self.getTopicProps(),
@@ -72,13 +85,21 @@ const ReactApp = {
     return {
       mapId: self.mapId,
       map: Active.Map,
-      mapIsStarred: self.mapIsStarred,
+      mapIsStarred: Map.mapIsStarred,
       endActiveMap: Map.end,
       launchNewMap: Map.launch,
       toggleMapInfoBox: InfoBox.toggleBox,
+      infoBoxHtml: InfoBox.html,
       toggleFilterBox: Filter.toggleBox,
-      infoBoxHtml: InfoBox.html
-      // filters
+      filterBoxHtml: $('.filterBox')[0].outerHTML,
+      openImportLightbox: () => ImportDialog.show(),
+      forkMap: Map.fork,
+      openHelpLightbox: () => self.openLightbox('cheatsheet'),
+      onMapStar: Map.star,
+      onMapUnstar: Map.unstar,
+      onZoomExtents: event => JIT.zoomExtents(event, Visualize.mGraph.canvas),
+      onZoomIn: JIT.zoomIn,
+      onZoomOut: JIT.zoomOut
     }
   },
   getTopicCardProps: function() {
@@ -109,7 +130,8 @@ const ReactApp = {
       pending: ExploreMaps.pending,
       onStar: ExploreMaps.onStar,
       onRequest: ExploreMaps.onRequest,
-      onMapFollow: ExploreMaps.onMapFollow
+      onMapFollow: ExploreMaps.onMapFollow,
+      mapsWidth: ReactApp.mapsWidth
     }
   },
   getChatProps: function() {
@@ -132,6 +154,24 @@ const ReactApp = {
       inputFocus: ChatView.inputFocus,
       handleInputMessage: ChatView.handleInputMessage
     }
+  },
+  setMobile: function() {
+    const self = ReactApp
+    self.mobile = document && document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
+    self.render()
+  },
+  resize: function() {
+    const self = ReactApp
+    const maps = ExploreMaps.collection
+    const currentUser = Active.Mapper
+    const user = maps && maps.id === 'mapper' ? ExploreMaps.mapper : null
+    const numCards = (maps ? maps.length : 0) + (user || currentUser ? 1 : 0)
+    const mapSpaces = Math.floor(document.body.clientWidth / MAP_WIDTH)
+    const mapsWidth = document.body.clientWidth <= MOBILE_VIEW_BREAKPOINT
+                        ? document.body.clientWidth - MOBILE_VIEW_PADDING
+                        : Math.min(MAX_COLUMNS, Math.min(numCards, mapSpaces)) * MAP_WIDTH
+    self.mapsWidth = mapsWidth
+    self.render()
   }
 }
 

@@ -9,7 +9,7 @@ import Create from '../Create'
 import DataModel from '../DataModel'
 import DataModelMap from '../DataModel/Map'
 import Filter from '../Filter'
-import GlobalUI from '../GlobalUI'
+import GlobalUI, { ReactApp } from '../GlobalUI'
 import JIT from '../JIT'
 import Loading from '../Loading'
 import Realtime from '../Realtime'
@@ -25,25 +25,17 @@ const Map = {
   events: {
     editedByActiveMapper: 'Metamaps:Map:events:editedByActiveMapper'
   },
+  mapIsStarred: false,
   init: function(serverData) {
     var self = Map
+
+    self.mapIsStarred = serverData.mapIsStarred
 
     $('#wrapper').mousedown(function(e) {
       if (e.button === 1) return false
     })
 
-    $('.starMap').click(function() {
-      if ($(this).is('.starred')) self.unstar()
-      else self.star()
-    })
-
-    $('.sidebarFork').click(function() {
-      self.fork()
-    })
-
     GlobalUI.CreateMap.emptyForkMapForm = $('#fork_map').html()
-
-    self.updateStar()
 
     InfoBox.init(serverData, function updateThumbnail() {
       self.uploadMapScreenshot()
@@ -102,8 +94,6 @@ const Map = {
         $('.wrapper').addClass('commonsMap')
       }
 
-      Map.updateStar()
-
       // set filter mapper H3 text
       $('#filter_by_mapper h3').html('MAPPERS')
 
@@ -153,17 +143,6 @@ const Map = {
       $('.viewOnly').removeClass('isViewOnly')
     }
   },
-  updateStar: function() {
-    if (!Active.Mapper || !DataModel.Stars) return
-    // update the star/unstar icon
-    if (DataModel.Stars.find(function(s) { return s.user_id === Active.Mapper.id })) {
-      $('.starMap').addClass('starred')
-      $('.starMap .tooltipsAbove').html('Unstar')
-    } else {
-      $('.starMap').removeClass('starred')
-      $('.starMap .tooltipsAbove').html('Star')
-    }
-  },
   star: function() {
     var self = Map
 
@@ -172,7 +151,8 @@ const Map = {
     DataModel.Stars.push({ user_id: Active.Mapper.id, map_id: Active.Map.id })
     DataModel.Maps.Starred.add(Active.Map)
     GlobalUI.notifyUser('Map is now starred')
-    self.updateStar()
+    self.mapIsStarred = true
+    ReactApp.render()
   },
   unstar: function() {
     var self = Map
@@ -181,7 +161,8 @@ const Map = {
     $.post('/maps/' + Active.Map.id + '/unstar')
     DataModel.Stars = DataModel.Stars.filter(function(s) { return s.user_id !== Active.Mapper.id })
     DataModel.Maps.Starred.remove(Active.Map)
-    self.updateStar()
+    self.mapIsStarred = false
+    ReactApp.render()
   },
   fork: function() {
     GlobalUI.openLightbox('forkmap')

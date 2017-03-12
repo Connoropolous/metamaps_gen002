@@ -60,6 +60,7 @@ const ExploreMaps = {
   },
   render: function() {
     var self = ExploreMaps
+    ReactApp.resize()
     ReactApp.render()
     Loading.hide()
   },

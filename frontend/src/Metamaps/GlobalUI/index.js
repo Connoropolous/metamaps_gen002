@@ -18,7 +18,7 @@ const GlobalUI = {
   init: function(serverData) {
     const self = GlobalUI
 
-    self.ReactApp.init(serverData)
+    self.ReactApp.init(serverData, self.openLightbox)
     self.Search.init(serverData)
     self.CreateMap.init(serverData)
     self.Account.init(serverData)

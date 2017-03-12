@@ -19,7 +19,7 @@ const ImportDialog = {
     self.closeLightbox = closeLightbox
 
     $('#lightbox_content').append($(outdent`
-      <div class="lightboxContent" id="import-dialog-lightbox">
+      <div class="lightboxContent" id="import-dialog">
         <div class="importDialogWrapper" />
       </div>
     `))

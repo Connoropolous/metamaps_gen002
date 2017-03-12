@@ -26,8 +26,6 @@ const Filter = {
   init: function() {
     var self = Filter
 
-    $('.sidebarFilterIcon').click(self.toggleBox)
-
     $('.sidebarFilterBox .showAllMetacodes').click(self.filterNoMetacodes)
     $('.sidebarFilterBox .showAllSynapses').click(self.filterNoSynapses)
     $('.sidebarFilterBox .showAllMappers').click(self.filterNoMappers)

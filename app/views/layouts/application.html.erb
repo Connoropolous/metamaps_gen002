@@ -35,5 +35,6 @@
           Metamaps.ServerData.mapIsStarred = <%= @map && current_user.starred_map?(@map) ? true : false %>
         </script>
     <% end %>
+    <div class="hidden"><%= render :partial => 'shared/filterBox' %></div>
     <div id="loading"></div>
 <%= render :partial => 'layouts/foot' %>

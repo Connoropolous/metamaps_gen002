@@ -14,6 +14,7 @@ class MapView extends Component {
     map: PropTypes.object,
     mapIsStarred: PropTypes.bool,
     toggleFilterBox: PropTypes.func,
+    filterBoxHtml: PropTypes.string,
     toggleMapInfoBox: PropTypes.func,
     infoBoxHtml: PropTypes.string,
     currentUser: PropTypes.object,
@@ -62,7 +63,11 @@ class MapView extends Component {
   }
 
   render = () => {
-    const { map, mapIsStarred, currentUser, onOpen, onClose, toggleMapInfoBox, toggleFilterBox, infoBoxHtml } = this.props
+    const { map, currentUser, onOpen, onClose,
+            toggleMapInfoBox, toggleFilterBox, infoBoxHtml, filterBoxHtml,
+            openImportLightbox, forkMap, openHelpLightbox,
+            mapIsStarred, onMapStar, onMapUnstar,
+            onZoomExtents, onZoomIn, onZoomOut } = this.props
     const { filterBoxOpen, chatOpen } = this.state
     const onChatOpen = () => {
       this.setState({chatOpen: true})
@@ -72,17 +77,28 @@ class MapView extends Component {
       this.setState({chatOpen: false})
       onClose()
     }
+    const canEditMap = map && map.authorizeToEdit(currentUser)
     // TODO: stop using {...this.props} and make explicit
     return <div className="mapWrapper">
-      <MapButtons currentUser={currentUser} onFilterClick={toggleFilterBox} />
+      <MapButtons currentUser={currentUser}
+                  onImportClick={openImportLightbox}
+                  onFilterClick={toggleFilterBox}
+                  onForkClick={forkMap}
+                  canEditMap={canEditMap}
+                  filterBoxHtml={filterBoxHtml} />
       <DataVis />
       <TopicCard {...this.props} />
       <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} />
-      <MapControls />
+      <MapControls onClickZoomExtents={onZoomExtents}
+                   onClickZoomIn={onZoomIn}
+                   onClickZoomOut={onZoomOut} />
       <InfoAndHelp mapIsStarred={mapIsStarred}
                    currentUser={currentUser}
                    map={map}
                    onInfoClick={toggleMapInfoBox}
+                   onMapStar={onMapStar}
+                   onMapUnstar={onMapUnstar}
+                   onHelpClick={openHelpLightbox}
                    infoBoxHtml={infoBoxHtml} />
     </div>
   }

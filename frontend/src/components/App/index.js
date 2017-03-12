@@ -23,13 +23,13 @@ class App extends Component {
   }
 
   render () {
-    const { toast, currentUser, unreadNotificationsCount } = this.props
+    const { children, toast, currentUser, unreadNotificationsCount } = this.props
     return <div className="wrapper" id="wrapper">
       <UpperLeftUI currentUser={currentUser} />
       <UpperRightUI currentUser={currentUser} unreadNotificationsCount={unreadNotificationsCount} />
       <Toast message={toast} />
       {currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
-      {this.props.children}
+      {children}
     </div>
   }
 }
