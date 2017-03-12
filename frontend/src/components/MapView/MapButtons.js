@@ -10,7 +10,7 @@ class MapButtons extends Component {
 
   render () {
     const { currentUser, filterBoxOpen } = this.props
-    return <div className="mapElement upperRightEl upperRightMapButtons">
+    return <div className="mapElement upperRightEl upperRightMapButtons upperRightUI">
       {currentUser && <div className="importDialog upperRightEl upperRightIcon mapElement openLightbox" data-open="import-dialog-lightbox">
         <div className="tooltipsUnder">
           Import Data

@@ -10,6 +10,7 @@ import { notifyUser } from './index.js'
 import Active from '../Active'
 import DataModel from '../DataModel'
 import { ExploreMaps, ChatView, TopicCard } from '../Views'
+import Filter from '../Filter'
 import Realtime from '../Realtime'
 import Map, { InfoBox } from '../Map'
 import Topic from '../Topic'
@@ -75,6 +76,7 @@ const ReactApp = {
       endActiveMap: Map.end,
       launchNewMap: Map.launch,
       toggleMapInfoBox: InfoBox.toggleBox,
+      toggleFilterBox: Filter.toggleBox,
       infoBoxHtml: InfoBox.html
       // filters
     }
