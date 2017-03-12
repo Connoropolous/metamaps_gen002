@@ -25,14 +25,8 @@ class MapView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      filterBoxOpen: false,
       chatOpen: false
     }
-  }
-
-  componentDidMount() {
-    window && window.addEventListener('resize', this.resize)
-    this.resize()
   }
 
   endMap() {
@@ -54,21 +48,13 @@ class MapView extends Component {
     else if (oldMapId && !mapId) this.endMap()
   }
 
-  componentWillUnmount() {
-    window && window.removeEventListener('resize', this.resize)
-  }
-
-  resize = () => {
-
-  }
-
   render = () => {
     const { map, currentUser, onOpen, onClose,
             toggleMapInfoBox, toggleFilterBox, infoBoxHtml, filterBoxHtml,
             openImportLightbox, forkMap, openHelpLightbox,
             mapIsStarred, onMapStar, onMapUnstar,
             onZoomExtents, onZoomIn, onZoomOut } = this.props
-    const { filterBoxOpen, chatOpen } = this.state
+    const { chatOpen } = this.state
     const onChatOpen = () => {
       this.setState({chatOpen: true})
       onOpen()
