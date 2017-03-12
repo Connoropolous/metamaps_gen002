@@ -14,7 +14,8 @@ class App extends Component {
     mobile: PropTypes.bool,
     mobileTitle: PropTypes.string,
     mobileTitleWidth: PropTypes.number,
-    mobileTitleClick: PropTypes.func
+    mobileTitleClick: PropTypes.func,
+    openInviteLightbox: PropTypes.func
   }
 
   static childContextTypes = {
@@ -28,7 +29,7 @@ class App extends Component {
   }
 
   render () {
-    const { children, toast, currentUser, unreadNotificationsCount,
+    const { children, toast, currentUser, unreadNotificationsCount, openInviteLightbox,
             mobile, mobileTitle, mobileTitleWidth, mobileTitleClick } = this.props
     return <div className="wrapper" id="wrapper">
       {mobile && <MobileHeader currentUser={currentUser}
@@ -37,7 +38,9 @@ class App extends Component {
                                mobileTitleWidth={mobileTitleWidth}
                                onTitleClick={mobileTitleClick} />}
       <UpperLeftUI currentUser={currentUser} />
-      {!mobile && <UpperRightUI currentUser={currentUser} unreadNotificationsCount={unreadNotificationsCount} />}
+      {!mobile && <UpperRightUI currentUser={currentUser}
+                                unreadNotificationsCount={unreadNotificationsCount}
+                                openInviteLightbox={openInviteLightbox} />}
       <Toast message={toast} />
       {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}

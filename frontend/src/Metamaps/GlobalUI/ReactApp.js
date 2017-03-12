@@ -76,7 +76,8 @@ const ReactApp = {
       mobile: self.mobile,
       mobileTitle: self.mobileTitle,
       mobileTitleWidth: self.mobileTitleWidth,
-      mobileTitleClick: (e) => Active.Map && InfoBox.toggleBox(e)
+      mobileTitleClick: (e) => Active.Map && InfoBox.toggleBox(e),
+      openInviteLightbox: () => self.openLightbox('invite')
     },
     self.getMapProps(),
     self.getTopicProps(),

@@ -2,17 +2,19 @@ import React, { Component, PropTypes } from 'react'
 
 class AccountMenu extends Component {
   static propTypes = {
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    onInviteClick: PropTypes.func
   }
 
   render () {
+    const { currentUser, onInviteClick } = this.props
     return <div>
-      <img className="sidebarAccountImage" src="https://metamaps-live.s3.amazonaws.com/users/images/555/629/996/sixtyfour/11835c3.png?1417298429" alt="11835c3" width="48" height="48" />
-      <h3 className="accountHeader">Connor</h3>
+      <img className="sidebarAccountImage" src={currentUser.get('image')} width="48" height="48" />
+      <h3 className="accountHeader">{currentUser.get('name')}</h3>
       <ul>
         <li className="accountListItem accountSettings">
           <div className="accountIcon"></div>
-          <a href="https://metamaps.cc/users/555629996/edit">Settings</a>
+          <a href={`/users/${currentUser.id}/edit`}>Settings</a>
         </li>
         <li className="accountListItem accountAdmin">
           <div className="accountIcon"></div>
@@ -22,7 +24,7 @@ class AccountMenu extends Component {
           <div className="accountIcon"></div>
           <a href="/oauth/authorized_applications">Apps</a>
         </li>
-        <li className="accountListItem accountInvite openLightbox" data-open="invite">
+        <li className="accountListItem accountInvite" onClick={onInviteClick}>
           <div className="accountIcon"></div>
           <span>Share Invite</span>
         </li>

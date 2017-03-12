@@ -8,7 +8,8 @@ class UpperRightUI extends Component {
   static propTypes = {
     currentUser: PropTypes.object,
     signInPage: PropTypes.bool,
-    unreadNotificationsCount: PropTypes.number
+    unreadNotificationsCount: PropTypes.number,
+    openInviteLightbox: PropTypes.func
   }
 
   static contextTypes = {
@@ -16,7 +17,7 @@ class UpperRightUI extends Component {
   }
 
   render () {
-    const { currentUser, signInPage, unreadNotificationsCount } = this.props
+    const { currentUser, signInPage, unreadNotificationsCount, openInviteLightbox } = this.props
     return <div className="upperRightUI">
       {currentUser && <a href="/maps/new" target="_blank" className="addMap upperRightEl upperRightIcon">
         <div className="tooltipsUnder">
@@ -33,7 +34,9 @@ class UpperRightUI extends Component {
           {!currentUser && <div className="accountInnerArrow"></div>}
         </div>
         <div className="sidebarAccountBox upperRightBox">
-          {currentUser ? <AccountMenu /> : <LoginForm />}
+          {currentUser
+            ? <AccountMenu onInviteClick={openInviteLightbox} currentUser={currentUser} />
+            : <LoginForm />}
         </div>
       </div>}
       <div className="clearfloat"></div>
