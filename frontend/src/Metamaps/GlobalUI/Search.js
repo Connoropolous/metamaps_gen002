@@ -16,6 +16,7 @@ const Search = {
     self.userIconUrl = serverData['user.png']
 
     // this is similar to Metamaps.Loading, but it's for the search element
+    if (!document.getElementById('searchLoading')) return
     var loader = new CanvasLoader('searchLoading')
     loader.setColor('#4fb5c0') // default is '#000000'
     loader.setDiameter(24) // default is 40

@@ -37,7 +37,7 @@ const ReactApp = {
     self.unreadNotificationsCount = serverData.unreadNotificationsCount
     self.mobileTitle = serverData.mobileTitle
     self.openLightbox = openLightbox
-    routes = makeRoutes()
+    routes = makeRoutes(serverData.ActiveMapper)
     self.resize()
     window && window.addEventListener('resize', self.resize)
   },
@@ -47,14 +47,17 @@ const ReactApp = {
     switch (this.state.location.pathname.split('/')[1]) {
       case '':
       case 'explore':
+        $('#yield').hide()
         ExploreMaps.updateFromPath(this.state.location.pathname)
         self.mapId = null
         Active.Map = null
         Active.Topic = null
         break
       case 'topics':
+        $('#yield').hide()
         break
       case 'maps':
+        $('#yield').hide()
         self.mapId = this.state.location.pathname.split('/')[2]
         break
     }

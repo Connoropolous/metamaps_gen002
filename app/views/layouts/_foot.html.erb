@@ -1,15 +1,6 @@
 <%= render :partial => 'layouts/lightboxes' %>
 <%= render :partial => 'layouts/templates' %>
 <%= render :partial => 'shared/metacodeBgColors' %>
-<script type="text/javascript" charset="utf-8">
-  <% if current_user %>
-    Metamaps.ServerData.ActiveMapper = <%= current_user.to_json({follows: true, email: true, follow_settings: true}).html_safe %>
-  <% else %>
-    Metamaps.ServerData.ActiveMapper = null
-  <% end %>
-
-  Metamaps.Loading.setup()
-</script>
 <%= render :partial => 'layouts/googleanalytics' if ENV["GA_TRACKING_CODE"].present? %>
 </body>
 </html>

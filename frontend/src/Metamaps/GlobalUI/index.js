@@ -19,12 +19,13 @@ const GlobalUI = {
     const self = GlobalUI
 
     self.ReactApp.init(serverData, self.openLightbox)
-    self.Search.init(serverData)
     self.CreateMap.init(serverData)
     self.Account.init(serverData)
     self.ImportDialog.init(serverData, self.openLightbox, self.closeLightbox)
+    self.Search.init(serverData)
 
-    if ($('#toast').html().trim()) self.notifyUser($('#toast').html())
+    const toastHtml = $('#toast').html()
+    if (toastHtml && toastHtml.trim()) self.notifyUser(toastHtml)
 
     // bind lightbox clicks
     $('.openLightbox').click(function(event) {

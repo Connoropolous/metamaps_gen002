@@ -7,9 +7,8 @@
 
 <%= render :partial => 'layouts/head' %>
 <body class="<%= authenticated? ? "authenticated" : "unauthenticated" %> controller-<%= controller_name %> action-<%= action_name %>">
-    <%= content_tag :div, class: "main", id: "react-app" do %>
-      <%= yield %>
-    <% end %>
+    <div class="main" id="react-app"></div>
+    <%= yield %>
     <% if devise_error_messages? %>
       <%= devise_error_messages! %>
     <% end %>
@@ -29,14 +28,14 @@
         <%= render :partial => 'maps/newsynapse' %>
         <% # for populating the change metacode list on the topic card %>
         <%= render :partial => 'shared/metacodeoptions' %>
-        <script type="text/javascript">
-          Metamaps.ServerData.unreadNotificationsCount = <%= user_unread_notification_count %>
-          Metamaps.ServerData.mapIsStarred = <%= @map && current_user.starred_map?(@map) ? true : false %>
-        </script>
     <% end %>
-<script type="text/javascript">
-  Metamaps.ServerData.mobileTitle = "<%= yield(:mobile_title) %>"
-</script>
     <div class="hidden"><%= render :partial => 'shared/filterBox' %></div>
     <div id="loading"></div>
+<script type="text/javascript">
+  Metamaps.ServerData.unreadNotificationsCount = <%= current_user ? user_unread_notification_count : 0 %>
+  Metamaps.ServerData.mapIsStarred = <%= current_user && @map && current_user.starred_map?(@map) ? true : false %>
+  Metamaps.ServerData.mobileTitle = "<%= yield(:mobile_title) %>"
+  Metamaps.ServerData.ActiveMapper = <%= current_user ? current_user.to_json({follows: true, email: true, follow_settings: true}).html_safe : nil %>
+  Metamaps.Loading.setup()
+</script>
 <%= render :partial => 'layouts/foot' %>

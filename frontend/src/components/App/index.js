@@ -30,17 +30,20 @@ class App extends Component {
 
   render () {
     const { children, toast, currentUser, unreadNotificationsCount, openInviteLightbox,
-            mobile, mobileTitle, mobileTitleWidth, mobileTitleClick } = this.props
+            mobile, mobileTitle, mobileTitleWidth, mobileTitleClick, location } = this.props
+    const { pathname } = location || {}
+    const unauthedHome = pathname === '/' && !currentUser
     return <div className="wrapper" id="wrapper">
       {mobile && <MobileHeader currentUser={currentUser}
                                unreadNotificationsCount={unreadNotificationsCount}
                                mobileTitle={mobileTitle}
                                mobileTitleWidth={mobileTitleWidth}
                                onTitleClick={mobileTitleClick} />}
-      <UpperLeftUI currentUser={currentUser} />
+      {!unauthedHome && <UpperLeftUI currentUser={currentUser} />}
       {!mobile && <UpperRightUI currentUser={currentUser}
                                 unreadNotificationsCount={unreadNotificationsCount}
-                                openInviteLightbox={openInviteLightbox} />}
+                                openInviteLightbox={openInviteLightbox}
+                                signInPage={pathname === '/login'} />}
       <Toast message={toast} />
       {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}
