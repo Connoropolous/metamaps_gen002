@@ -15,7 +15,8 @@ class App extends Component {
     mobileTitle: PropTypes.string,
     mobileTitleWidth: PropTypes.number,
     mobileTitleClick: PropTypes.func,
-    openInviteLightbox: PropTypes.func
+    openInviteLightbox: PropTypes.func,
+    toggleAccountBox: PropTypes.func
   }
 
   static childContextTypes = {
@@ -30,7 +31,8 @@ class App extends Component {
 
   render () {
     const { children, toast, currentUser, unreadNotificationsCount, openInviteLightbox,
-            mobile, mobileTitle, mobileTitleWidth, mobileTitleClick, location } = this.props
+            mobile, mobileTitle, mobileTitleWidth, mobileTitleClick, location,
+            toggleAccountBox } = this.props
     const { pathname } = location || {}
     const unauthedHome = pathname === '/' && !currentUser
     return <div className="wrapper" id="wrapper">
@@ -43,7 +45,8 @@ class App extends Component {
       {!mobile && <UpperRightUI currentUser={currentUser}
                                 unreadNotificationsCount={unreadNotificationsCount}
                                 openInviteLightbox={openInviteLightbox}
-                                signInPage={pathname === '/login'} />}
+                                signInPage={pathname === '/login'}
+                                onClickAccount={toggleAccountBox} />}
       <Toast message={toast} />
       {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}

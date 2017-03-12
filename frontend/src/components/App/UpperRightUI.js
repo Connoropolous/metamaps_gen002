@@ -9,7 +9,8 @@ class UpperRightUI extends Component {
     currentUser: PropTypes.object,
     signInPage: PropTypes.bool,
     unreadNotificationsCount: PropTypes.number,
-    openInviteLightbox: PropTypes.func
+    openInviteLightbox: PropTypes.func,
+    onClickAccount: PropTypes.func
   }
 
   static contextTypes = {
@@ -17,7 +18,7 @@ class UpperRightUI extends Component {
   }
 
   render () {
-    const { currentUser, signInPage, unreadNotificationsCount, openInviteLightbox } = this.props
+    const { currentUser, signInPage, unreadNotificationsCount, openInviteLightbox, onClickAccount } = this.props
     return <div className="upperRightUI">
       {currentUser && <a href="/maps/new" target="_blank" className="addMap upperRightEl upperRightIcon">
         <div className="tooltipsUnder">
@@ -28,7 +29,8 @@ class UpperRightUI extends Component {
         <NotificationIcon unreadNotificationsCount={unreadNotificationsCount} />
       </span>}
       {!signInPage && <div className="sidebarAccount upperRightEl">
-        <div className="sidebarAccountIcon"><div className="tooltipsUnder">Account</div>
+        <div className="sidebarAccountIcon" onClick={onClickAccount}>
+          <div className="tooltipsUnder">Account</div>
           {currentUser && <img src={currentUser.get('image')} />}
           {!currentUser && 'SIGN IN'}
           {!currentUser && <div className="accountInnerArrow"></div>}

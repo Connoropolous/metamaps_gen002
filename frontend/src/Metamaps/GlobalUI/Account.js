@@ -7,7 +7,6 @@ const Account = {
   changing: false,
   init: function() {
     var self = Account
-    $('.sidebarAccountIcon').click(self.toggleBox)
     $('body').click(self.close)
   },
   toggleBox: function(event) {
