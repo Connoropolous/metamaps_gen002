@@ -26,14 +26,17 @@ class Maps extends Component {
     location: PropTypes.object
   }
 
-  componentDidMount() {
-    this.maps && this.maps.addEventListener('scroll', throttle(this.scroll, 500, { leading: true, trailing: false }))
+  mapsDidMount = (node) => {
+    if (node) {
+      this.mapsDiv = node
+      node.addEventListener('scroll', throttle(this.scroll, 500, { leading: true, trailing: false }))
+    }
   }
 
   scroll = () => {
     const { loadMore, moreToLoad, pending } = this.props
-    const { maps } = this.refs
-    if (moreToLoad && !pending && maps.scrollTop + maps.offsetHeight > maps.scrollHeight - 300) {
+    const { mapsDiv } = this
+    if (moreToLoad && !pending && mapsDiv.scrollTop + mapsDiv.offsetHeight > mapsDiv.scrollHeight - 300) {
       loadMore()
     }
   }
@@ -46,7 +49,7 @@ class Maps extends Component {
 
     return (
       <div>
-        <div id='exploreMaps' ref={x => this.maps = x}>
+        <div id='exploreMaps' ref={this.mapsDidMount}>
           <div style={ style }>
             { user ? <MapperCard user={ user } /> : null }
             { currentUser && !user && !(pending && maps.length === 0) ? <div className="map newMap"><a href="/maps/new"><div className="newMapImage"></div><span>Create new map...</span></a></div> : null }
