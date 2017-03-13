@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 
 import MobileHeader from './MobileHeader'
-import Toast from './Toast'
 import UpperLeftUI from './UpperLeftUI'
 import UpperRightUI from './UpperRightUI'
 
@@ -16,7 +15,12 @@ class App extends Component {
     mobileTitleWidth: PropTypes.number,
     mobileTitleClick: PropTypes.func,
     openInviteLightbox: PropTypes.func,
-    toggleAccountBox: PropTypes.func
+    toggleAccountBox: PropTypes.func,
+    map: PropTypes.object,
+    userRequested: PropTypes.bool,
+    requestAnswered: PropTypes.bool,
+    requestApproved: PropTypes.bool,
+    onRequestAccess: PropTypes.func
   }
 
   static childContextTypes = {
@@ -32,7 +36,8 @@ class App extends Component {
   render () {
     const { children, toast, currentUser, unreadNotificationsCount, openInviteLightbox,
             mobile, mobileTitle, mobileTitleWidth, mobileTitleClick, location,
-            toggleAccountBox } = this.props
+            toggleAccountBox, map, userRequested, requestAnswered, requestApproved,
+            onRequestAccess } = this.props
     const { pathname } = location || {}
     const unauthedHome = pathname === '/' && !currentUser
     return <div className="wrapper" id="wrapper">
@@ -41,13 +46,17 @@ class App extends Component {
                                mobileTitle={mobileTitle}
                                mobileTitleWidth={mobileTitleWidth}
                                onTitleClick={mobileTitleClick} />}
-      {!unauthedHome && <UpperLeftUI currentUser={currentUser} />}
+      {!unauthedHome && <UpperLeftUI currentUser={currentUser}
+                                     map={map}
+                                     userRequested={userRequested}
+                                     requestAnswered={requestAnswered}
+                                     requestApproved={requestApproved}
+                                     onRequestClick={onRequestAccess} />}
       {!mobile && <UpperRightUI currentUser={currentUser}
                                 unreadNotificationsCount={unreadNotificationsCount}
                                 openInviteLightbox={openInviteLightbox}
                                 signInPage={pathname === '/login'}
                                 onClickAccount={toggleAccountBox} />}
-      <Toast message={toast} />
       {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}
     </div>

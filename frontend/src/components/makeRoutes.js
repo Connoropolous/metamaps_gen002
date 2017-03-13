@@ -23,6 +23,7 @@ export default function makeRoutes (currentUser) {
     <Route path="maps/:id">
       <IndexRoute component={MapView} />
       <Route path="conversation" component={MapView} />
+      <Route path="request_access" component={nullComponent} />
     </Route>
     <Route path="login" component={nullComponent} />
     <Route path="join" component={nullComponent} />

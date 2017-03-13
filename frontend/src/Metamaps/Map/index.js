@@ -26,110 +26,108 @@ const Map = {
     editedByActiveMapper: 'Metamaps:Map:events:editedByActiveMapper'
   },
   mapIsStarred: false,
+  requests: [],
+  userRequested: false,
+  requestAnswered: false,
+  requestApproved: false,
   init: function(serverData) {
     var self = Map
-
     self.mapIsStarred = serverData.mapIsStarred
-
+    self.requests = serverData.requests
+    self.setAccessRequest()
     $('#wrapper').mousedown(function(e) {
       if (e.button === 1) return false
     })
-
     GlobalUI.CreateMap.emptyForkMapForm = $('#fork_map').html()
-
     InfoBox.init(serverData, function updateThumbnail() {
       self.uploadMapScreenshot()
     })
     CheatSheet.init(serverData)
-
-    $('.viewOnly .requestAccess').click(self.requestAccess)
-
     $(document).on(Map.events.editedByActiveMapper, self.editedByActiveMapper)
   },
   requestAccess: function() {
-    $('.viewOnly').removeClass('sendRequest').addClass('sentRequest')
+    const self = Map
+    self.requests.push({
+      user_id: Active.Mapper.id,
+      answered: false,
+      approved: false
+    })
+    self.setAccessRequest()
     const mapId = Active.Map.id
     $.post({
       url: `/maps/${mapId}/access_request`
     })
     GlobalUI.notifyUser('Map creator will be notified of your request')
   },
-  setAccessRequest: function(requests, activeMapper) {
-    let className = 'isViewOnly '
-    if (activeMapper) {
-      const request = _find(requests, r => r.user_id === activeMapper.id)
-      if (!request) className += 'sendRequest'
-      else if (request && !request.answered) className += 'sentRequest'
-      else if (request && request.answered && !request.approved) className += 'requestDenied'
+  setAccessRequest: function() {
+    const self = Map
+    if (Active.Mapper) {
+      const request = _find(self.requests, r => r.user_id === Active.Mapper.id)
+      if (!request) {
+        self.userRequested = false
+        self.requestAnswered = false
+        self.requestApproved = false
+      }
+      else if (request && !request.answered) {
+        self.userRequested = true
+        self.requestAnswered = false
+        self.requestApproved = false
+      }
+      else if (request && request.answered && !request.approved) {
+        self.userRequested = true
+        self.requestAnswered = true
+        self.requestApproved = false
+      }
     }
-    $('.viewOnly').removeClass('sendRequest sentRequest requestDenied').addClass(className)
+    ReactApp.render()
   },
   launch: function(id) {
-    var start = function(data) {
-      Active.Map = new DataModelMap(data.map)
-      DataModel.Mappers = new DataModel.MapperCollection(data.mappers)
-      DataModel.Collaborators = new DataModel.MapperCollection(data.collaborators)
-      DataModel.Topics = new DataModel.TopicCollection(data.topics)
-      DataModel.Synapses = new DataModel.SynapseCollection(data.synapses)
-      DataModel.Mappings = new DataModel.MappingCollection(data.mappings)
-      DataModel.Messages = data.messages
-      DataModel.Stars = data.stars
-      DataModel.attachCollectionEvents()
-
-      var map = Active.Map
-      var mapper = Active.Mapper
-
-      document.title = map.get('name') + ' | Metamaps'
-
-      // add class to .wrapper for specifying whether you can edit the map
-      if (map.authorizeToEdit(mapper)) {
-        $('.wrapper').addClass('canEditMap')
-      } else {
-        Map.setAccessRequest(data.requests, mapper)
-      }
-
-      // add class to .wrapper for specifying if the map can
-      // be collaborated on
-      if (map.get('permission') === 'commons') {
-        $('.wrapper').addClass('commonsMap')
-      }
-
-      // set filter mapper H3 text
-      $('#filter_by_mapper h3').html('MAPPERS')
-
-      // build and render the visualization
+    const self = Map
+    var start = function() {
+      document.title = Active.Map.get('name') + ' | Metamaps'
+      Map.setAccessRequest()
+      $('#filter_by_mapper h3').html('MAPPERS') // TODO: rewrite filter box in react
       Visualize.type = 'ForceDirected'
       JIT.prepareVizData()
-
-      // update filters
       Filter.reset()
-
-      // reset selected arrays
       Selected.reset()
-
-      // set the proper mapinfobox content
       InfoBox.load()
-
-      // these three update the actual filter box with the right list items
       Filter.checkMetacodes()
       Filter.checkSynapses()
       Filter.checkMappers()
-
       Realtime.startActiveMap()
       Loading.hide()
-
-      // for mobile
-      $('#header_content').html(map.get('name'))
+      $('#header_content').html(Active.Map.get('name')) // TODO: make this use ReactApp.mobileTitle to set this
     }
-    Loading.show()
-    $.ajax({
-      url: '/maps/' + id + '/contains.json',
-      success: start
-    })
+    function isLoaded() {
+      if (InfoBox.generateBoxHTML) start()
+      else setTimeout(() => isLoaded(), 50)
+    }
+    if (Active.Map && Active.Map.id == id) {
+      isLoaded()
+    }
+    else {
+      Loading.show()
+      $.ajax({
+        url: '/maps/' + id + '/contains.json',
+        success: function(data) {
+          Active.Map = new DataModelMap(data.map)
+          DataModel.Mappers = new DataModel.MapperCollection(data.mappers)
+          DataModel.Collaborators = new DataModel.MapperCollection(data.collaborators)
+          DataModel.Topics = new DataModel.TopicCollection(data.topics)
+          DataModel.Synapses = new DataModel.SynapseCollection(data.synapses)
+          DataModel.Mappings = new DataModel.MappingCollection(data.mappings)
+          DataModel.Messages = data.messages
+          DataModel.Stars = data.stars
+          DataModel.attachCollectionEvents()
+          self.requests = data.requests
+          isLoaded()
+        }
+      })
+    }
   },
   end: function() {
     if (Active.Map) {
-      $('.wrapper').removeClass('canEditMap commonsMap')
       AutoLayout.resetSpiral()
 
       $('.rightclickmenu').remove()

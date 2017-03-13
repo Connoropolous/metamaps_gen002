@@ -82,7 +82,7 @@ class MapView extends Component {
                   filterBoxHtml={filterBoxHtml} />
       <DataVis />
       <TopicCard {...this.props} />
-      <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} />
+      {currentUser && <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} />}
       <MapControls onClickZoomExtents={onZoomExtents}
                    onClickZoomIn={onZoomIn}
                    onClickZoomOut={onZoomOut} />

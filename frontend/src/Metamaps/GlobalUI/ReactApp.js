@@ -101,6 +101,10 @@ const ReactApp = {
     return {
       mapId: self.mapId,
       map: Active.Map,
+      userRequested: Map.userRequested,
+      requestAnswered: Map.requestAnswered,
+      requestApproved: Map.requestApproved,
+      onRequestAccess: Map.requestAccess,
       mapIsStarred: Map.mapIsStarred,
       endActiveMap: Map.end,
       launchNewMap: Map.launch,

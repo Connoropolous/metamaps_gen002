@@ -10,7 +10,6 @@ class InfoAndHelp extends Component {
     onHelpClick: PropTypes.func,
     onMapStar: PropTypes.func,
     onMapUnstar: PropTypes.func,
-
     onInfoClick: PropTypes.func,
     infoBoxhtml: PropTypes.string
   }
@@ -22,9 +21,9 @@ class InfoAndHelp extends Component {
     const onStarClick = mapIsStarred ? onMapUnstar : onMapStar
     return <div className="infoAndHelp">
       <MapInfoBox map={map} currentUser={currentUser} infoBoxHtml={infoBoxHtml} />
-      <div className={`starMap infoElement mapElement ${starclassName}`} onClick={onStarClick}>
+      {currentUser && <div className={`starMap infoElement mapElement ${starclassName}`} onClick={onStarClick}>
         <div className="tooltipsAbove">{tooltip}</div>
-      </div>
+      </div>}
       <div className="mapInfoIcon infoElement mapElement" onClick={onInfoClick}>
         <div className="tooltipsAbove">Map Info</div>
       </div>
