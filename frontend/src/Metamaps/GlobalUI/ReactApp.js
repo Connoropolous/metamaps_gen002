@@ -44,18 +44,21 @@ const ReactApp = {
   },
   handleUpdate: function(location) {
     const self = ReactApp
+    const pathname = this.state.location.pathname
     // TODO: also handle page title updates
-    switch (this.state.location.pathname.split('/')[1]) {
+    switch (pathname.split('/')[1]) {
       case '':
-        if (Active.Mapper) $('#yield').hide()
-        ExploreMaps.updateFromPath(this.state.location.pathname)
-        self.mapId = null
-        Active.Map = null
-        Active.Topic = null
+        if (Active.Mapper) {
+          $('#yield').hide()
+          ExploreMaps.updateFromPath(pathname)
+          self.mapId = null
+          Active.Map = null
+          Active.Topic = null
+        }
         break
       case 'explore':
         $('#yield').hide()
-        ExploreMaps.updateFromPath(this.state.location.pathname)
+        ExploreMaps.updateFromPath(pathname)
         self.mapId = null
         Active.Map = null
         Active.Topic = null
@@ -64,8 +67,13 @@ const ReactApp = {
         $('#yield').hide()
         break
       case 'maps':
-        $('#yield').hide()
-        self.mapId = this.state.location.pathname.split('/')[2]
+        if (!pathname.includes('request_access')) {
+          $('#yield').hide()
+          self.mapId = pathname.split('/')[2]
+        }
+        break
+      default:
+        $('#yield').show()
         break
     }
     self.render()

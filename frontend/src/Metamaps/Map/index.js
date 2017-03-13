@@ -2,6 +2,7 @@
 
 import outdent from 'outdent'
 import { find as _find } from 'lodash'
+import { browserHistory } from 'react-router'
 
 import Active from '../Active'
 import AutoLayout from '../AutoLayout'
@@ -84,7 +85,6 @@ const Map = {
   launch: function(id) {
     const self = Map
     var start = function() {
-      document.title = Active.Map.get('name') + ' | Metamaps'
       Map.setAccessRequest()
       $('#filter_by_mapper h3').html('MAPPERS') // TODO: rewrite filter box in react
       Visualize.type = 'ForceDirected'
@@ -97,7 +97,9 @@ const Map = {
       Filter.checkMappers()
       Realtime.startActiveMap()
       Loading.hide()
-      $('#header_content').html(Active.Map.get('name')) // TODO: make this use ReactApp.mobileTitle to set this
+      document.title = Active.Map.get('name') + ' | Metamaps'
+      ReactApp.mobileTitle = Active.Map.get('name')
+      ReactApp.render()
     }
     function isLoaded() {
       if (InfoBox.generateBoxHTML) start()
@@ -210,7 +212,7 @@ const Map = {
     var map = Active.Map
     DataModel.Maps.Active.remove(map)
     DataModel.Maps.Featured.remove(map)
-    // TODO: navigate home
+    browserHistory.push('/')
     GlobalUI.notifyUser('Sorry! That map has been changed to Private.')
   },
   cantEditNow: function() {
@@ -223,7 +225,7 @@ const Map = {
     confirmString += 'Do you want to reload and enable realtime collaboration?'
     var c = window.confirm(confirmString)
     if (c) {
-      // TODO: reload the map somehow
+      window.location.reload()
     }
   },
   editedByActiveMapper: function() {

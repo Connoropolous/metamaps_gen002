@@ -1,5 +1,7 @@
 /* global $, Hogan, Bloodhound, CanvasLoader */
 
+import { browserHistory } from 'react-router'
+
 import Active from '../Active'
 
 const Search = {
@@ -189,11 +191,11 @@ const Search = {
 
     if (['topic', 'map', 'mapper'].indexOf(datum.rtype) !== -1) {
       if (datum.rtype === 'topic') {
-        // TODO: navigate to topic datum.id
+        browserHistory.push(`/topics/${datum.id}`)
       } else if (datum.rtype === 'map') {
-        // TODO: navigate to map datum.id
+        browserHistory.push(`/maps/${datum.id}`)
       } else if (datum.rtype === 'mapper') {
-        // TODO: navigate to mapper section datum.id
+        browserHistory.push(`/explore/mapper/${datum.id}`)
       }
     }
   },
