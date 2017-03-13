@@ -109,6 +109,7 @@ const ReactApp = {
     return {
       mapId: self.mapId,
       map: Active.Map,
+      hasLearnedTopicCreation: Map.hasLearnedTopicCreation,
       userRequested: Map.userRequested,
       requestAnswered: Map.requestAnswered,
       requestApproved: Map.requestApproved,

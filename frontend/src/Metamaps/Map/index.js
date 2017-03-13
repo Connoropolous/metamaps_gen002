@@ -31,6 +31,7 @@ const Map = {
   userRequested: false,
   requestAnswered: false,
   requestApproved: false,
+  hasLearnedTopicCreation: true,
   init: function(serverData) {
     var self = Map
     self.mapIsStarred = serverData.mapIsStarred
@@ -45,6 +46,11 @@ const Map = {
     })
     CheatSheet.init(serverData)
     $(document).on(Map.events.editedByActiveMapper, self.editedByActiveMapper)
+  },
+  setHasLearnedTopicCreation: function(value) {
+    const self = Map
+    self.hasLearnedTopicCreation = value
+    ReactApp.render()
   },
   requestAccess: function() {
     const self = Map
@@ -140,6 +146,8 @@ const Map = {
       Filter.close()
       InfoBox.close()
       Realtime.endActiveMap()
+      self.requests = []
+      self.hasLearnedTopicCreation = true
     }
   },
   star: function() {

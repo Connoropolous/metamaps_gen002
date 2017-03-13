@@ -61,7 +61,7 @@ const Control = {
     }
 
     if (DataModel.Topics.length === 0) {
-      GlobalUI.showDiv('#instructions')
+      Map.setHasLearnedTopicCreation(false)
     }
   },
   deleteSelectedNodes: function() { // refers to deleting topics permanently

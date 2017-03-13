@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import DataVis from './DataVis'
 import MapButtons from './MapButtons'
 import InfoAndHelp from './InfoAndHelp'
+import Instructions from './Instructions'
 import MapControls from './MapControls'
 import MapChat from './MapChat'
 import TopicCard from '../TopicCard'
@@ -28,7 +29,8 @@ class MapView extends Component {
     openHelpLightbox: PropTypes.func,
     onZoomExtents: PropTypes.func,
     onZoomIn: PropTypes.func,
-    onZoomOut: PropTypes.func
+    onZoomOut: PropTypes.func,
+    hasLearnedTopicCreation: PropTypes.bool
   }
 
   constructor(props) {
@@ -58,11 +60,11 @@ class MapView extends Component {
   }
 
   render = () => {
-    const { map, currentUser, onOpen, onClose,
+    const { mobile, map, currentUser, onOpen, onClose,
             toggleMapInfoBox, toggleFilterBox, infoBoxHtml, filterBoxHtml,
             openImportLightbox, forkMap, openHelpLightbox,
             mapIsStarred, onMapStar, onMapUnstar,
-            onZoomExtents, onZoomIn, onZoomOut } = this.props
+            onZoomExtents, onZoomIn, onZoomOut, hasLearnedTopicCreation } = this.props
     const { chatOpen } = this.state
     const onChatOpen = () => {
       this.setState({chatOpen: true})
@@ -83,6 +85,7 @@ class MapView extends Component {
                   filterBoxHtml={filterBoxHtml} />
       <DataVis />
       <TopicCard {...this.props} />
+      {currentUser && <Instructions mobile={mobile} hasLearnedTopicCreation={hasLearnedTopicCreation} />}
       {currentUser && <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} ref={x => this.mapChat = x} />}
       <MapControls onClickZoomExtents={onZoomExtents}
                    onClickZoomIn={onZoomIn}
@@ -100,34 +103,3 @@ class MapView extends Component {
 }
 
 export default MapView
-
-/*
-
-<% if authenticated? %>
-    <% # for creating and pulling in topics and synapses %>
-    <% if controller_name == 'maps' && action_name == "conversation" %>
-      <%= render :partial => 'maps/newtopicsecret' %>
-    <% else %>
-      <%= render :partial => 'maps/newtopic' %>
-    <% end %>
-    <%= render :partial => 'maps/newsynapse' %>
-    <% # for populating the change metacode list on the topic card %>
-    <%= render :partial => 'shared/metacodeoptions' %>
-<% end %>
-<%= render :partial => 'layouts/lowermapelements' %>
-
-<div id="loading"></div>
-
-<div id="instructions">
-  <div className="addTopic">
-    Double-click to<br>add a topic
-  </div>
-  <div className="tabKey">
-    Use Tab & Shift+Tab to select a metacode
-  </div>
-  <div className="enterKey">
-    Press Enter to add the topic
-  </div>
-</div>
-
-*/

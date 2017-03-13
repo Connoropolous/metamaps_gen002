@@ -130,18 +130,11 @@ const JIT = {
       if (DataModel.Mappings) DataModel.Mappings.remove(mapping)
     })
 
-    // set up addTopic instructions in case they delete all the topics
-    // i.e. if there are 0 topics at any time, it should have instructions again
-    $('#instructions div').hide()
-    if (Active.Map && Active.Map.authorizeToEdit(Active.Mapper)) {
-      $('#instructions div.addTopic').show()
-    }
-
     if (self.vizData.length === 0) {
-      GlobalUI.showDiv('#instructions')
+      Map.setHasLearnedTopicCreation(false)
       Visualize.loadLater = true
     } else {
-      GlobalUI.hideDiv('#instructions')
+      Map.setHasLearnedTopicCreation(true)
     }
 
     Visualize.render()

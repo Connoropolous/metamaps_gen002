@@ -291,8 +291,7 @@ const Topic = {
       return
     }
 
-    // hide the 'double-click to add a topic' message
-    GlobalUI.hideDiv('#instructions')
+    Map.setHasLearnedTopicCreation(true)
 
     $(document).trigger(Map.events.editedByActiveMapper)
 
@@ -325,8 +324,7 @@ const Topic = {
   getTopicFromAutocomplete: function(id) {
     var self = Topic
 
-    // hide the 'double-click to add a topic' message
-    GlobalUI.hideDiv('#instructions')
+    Map.setHasLearnedTopicCreation(true)
 
     $(document).trigger(Map.events.editedByActiveMapper)
 
