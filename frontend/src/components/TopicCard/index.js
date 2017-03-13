@@ -9,10 +9,13 @@ import Util from '../../Metamaps/Util'
 
 class ReactTopicCard extends Component {
   render = () => {
-    const { currentUser, onTopicFollow } = this.props
+    const { currentUser, onTopicFollow, updateTopic } = this.props
     const topic = this.props.openTopic
 
     if (!topic) return null
+
+    const wrappedUpdateTopic = obj => updateTopic(topic, obj)
+    const wrappedTopicFollow = () => onTopicFollow(topic)
 
     const authorizedToEdit = topic.authorizeToEdit(currentUser)
     const isFollowing = topic.isFollowedBy(currentUser)
@@ -32,23 +35,23 @@ class ReactTopicCard extends Component {
           <div className={`CardOnGraph ${hasAttachment ? 'hasAttachment' : ''}`} id={`topic_${topic.id}`}>
             <Title name={topic.get('name')}
               authorizedToEdit={authorizedToEdit}
-              onChange={this.props.updateTopic}
+              onChange={wrappedUpdateTopic}
             />
             <Links topic={topic}
               ActiveMapper={this.props.currentUser}
-              updateTopic={this.props.updateTopic}
+              updateTopic={wrappedUpdateTopic}
               metacodeSets={this.props.metacodeSets}
               redrawCanvas={this.props.redrawCanvas}
             />
             <Desc desc={topic.get('desc')}
               authorizedToEdit={authorizedToEdit}
-              onChange={this.props.updateTopic}
+              onChange={wrappedUpdateTopic}
             />
             <Attachments topic={topic}
               authorizedToEdit={authorizedToEdit}
-              updateTopic={this.props.updateTopic}
+              updateTopic={wrappedUpdateTopic}
             />
-          {Util.isTester(currentUser) && <Follow isFollowing={isFollowing} onTopicFollow={onTopicFollow} />}
+          {Util.isTester(currentUser) && <Follow isFollowing={isFollowing} onTopicFollow={wrappedTopicFollow} />}
             <div className="clearfloat"></div>
           </div>
         </div>
