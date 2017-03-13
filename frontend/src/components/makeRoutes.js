@@ -3,6 +3,7 @@ import { Route, IndexRoute } from 'react-router'
 import App from './App'
 import Maps from './Maps'
 import MapView from './MapView'
+import TopicView from './TopicView'
 
 function nullComponent(props) {
   return null
@@ -25,6 +26,7 @@ export default function makeRoutes (currentUser) {
       <Route path="conversation" component={MapView} />
       <Route path="request_access" component={nullComponent} />
     </Route>
+    <Route path="topics/:id" component={TopicView} />
     <Route path="login" component={nullComponent} />
     <Route path="join" component={nullComponent} />
     <Route path="request" component={nullComponent} />
