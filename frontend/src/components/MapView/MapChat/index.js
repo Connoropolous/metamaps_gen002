@@ -26,7 +26,6 @@ class MapChat extends Component {
     super(props)
 
     this.state = {
-      unreadMessages: 0,
       messageText: '',
       alertSound: true, // whether to play sounds on arrival of new messages or not
       cursorsShowing: true,
@@ -34,9 +33,14 @@ class MapChat extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { messages } = this.props
+    const prevMessages = prevProps.messages
+    if (messages.length !== prevMessages.length) setTimeout(() => this.scroll(), 50)
+  }
+
   reset = () => {
     this.setState({
-      unreadMessages: 0,
       messageText: '',
       alertSound: true, // whether to play sounds on arrival of new messages or not
       cursorsShowing: true,
@@ -46,22 +50,16 @@ class MapChat extends Component {
 
   close = () => {
     this.props.onClose()
-    this.messageInput.blur()
   }
 
   open = () => {
-    this.scroll()
-    this.setState({unreadMessages: 0})
     this.props.onOpen()
-    this.messageInput.focus()
-  }
-
-  newMessage = () => {
-    if (!this.state.open) this.setState({unreadMessages: this.state.unreadMessages + 1})
+    setTimeout(() => this.scroll(), 50)
   }
 
   scroll = () => {
-    this.messagesDiv.scrollTop = this.messagesDiv.scrollHeight
+    // hack: figure out how to do this right
+    this.messagesDiv.scrollTop = this.messagesDiv.scrollHeight + 100
   }
 
   toggleDrawer = () => {
@@ -99,14 +97,10 @@ class MapChat extends Component {
     }
   }
 
-  focusMessageInput = () => {
-    if (!this.messageInput) return
-    this.messageInput.focus()
-  }
-
   render = () => {
-    const { chatOpen, conversationLive, isParticipating, participants, messages, inviteACall, inviteToJoin } = this.props
-    const { videosShowing, cursorsShowing, alertSound, unreadMessages } = this.state
+    const { unreadMessages, chatOpen, conversationLive,
+            isParticipating, participants, messages, inviteACall, inviteToJoin } = this.props
+    const { videosShowing, cursorsShowing, alertSound } = this.state
     const rightOffset = chatOpen ? '0' : '-300px'
     return (
       <div id="chat-box-wrapper">
@@ -153,7 +147,7 @@ class MapChat extends Component {
             handleChange={this.handleChange('messageText')}
             textAreaProps={{
               className: 'chat-input',
-              ref: textarea => { this.messageInput = textarea },
+              ref: textarea => { textarea && textarea.focus() },
               placeholder: 'Send a message...',
               onKeyUp: this.handleTextareaKeyUp,
               onFocus: this.props.inputFocus,
@@ -167,6 +161,7 @@ class MapChat extends Component {
 }
 
 MapChat.propTypes = {
+  unreadMessages: PropTypes.number,
   chatOpen: PropTypes.bool,
   conversationLive: PropTypes.bool,
   isParticipating: PropTypes.bool,

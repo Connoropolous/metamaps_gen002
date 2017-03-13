@@ -43,7 +43,6 @@ const TopicCard = {
     var self = TopicCard
     var topic = node.getData('topic')
     self.openTopic = topic
-    // populate the card that's about to show with the right topics data
     self.render()
     $('.showcard').fadeIn('fast', () => {
       $('.showcard').draggable({

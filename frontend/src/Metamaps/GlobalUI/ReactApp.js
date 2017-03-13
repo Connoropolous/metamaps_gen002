@@ -157,6 +157,7 @@ const ReactApp = {
   getChatProps: function() {
     const self = ReactApp
     return {
+      unreadMessages: ChatView.unreadMessages,
       conversationLive: ChatView.conversationLive,
       isParticipating: ChatView.isParticipating,
       onOpen: ChatView.onOpen,
