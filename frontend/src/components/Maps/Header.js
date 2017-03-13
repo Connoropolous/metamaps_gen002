@@ -19,7 +19,7 @@ const MapLink = props => {
 
 class Header extends Component {
   render = () => {
-    const { signedIn, section } = this.props
+    const { signedIn, section, user } = this.props
 
     const activeClass = (title) => {
       let forClass = 'exploreMapsButton'
@@ -65,8 +65,8 @@ class Header extends Component {
 
               {mapper ? (
                 <div className='exploreMapsButton active mapperButton'>
-                  <img className='exploreMapperImage' width='24' height='24' src={this.props.user.image} />
-                  <div className='exploreMapperName'>{this.props.user.name}&rsquo;s Maps</div>
+                  {user && <img className='exploreMapperImage' width='24' height='24' src={user.image} />}
+                  {user && <div className='exploreMapperName'>{user.name}&rsquo;s Maps</div>}
                   <div className='clearfloat'></div>
                 </div>
               ) : null }
