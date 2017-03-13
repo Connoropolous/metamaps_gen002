@@ -193,10 +193,6 @@ button.button.btn-no:hover {
     display: block;
     width: 830px;
 }
-.requestInvite {
-    display: block;
-    margin: -720px auto 0;
-}
 .new_session,
 .new_user,
 .edit_user,
@@ -3071,14 +3067,16 @@ and it won't be important on password protected instances */
 
 /* request */
 
-#wrapper .requestInvite {
+.requestInvite {
     width: 700px;
-    margin: 0 auto;
-    padding: 0 0 60px 0;
     background: #FFFFFF;
     color: white;
-    height: 100%;
-    overflow: hidden;
+    height: calc(100% - 52px);
+    z-index: 1;
+    position: relative;
+    left: 50%;
+    margin-left: -350px;
+    margin-top: 52px;
 }
 
 .home_bg {
