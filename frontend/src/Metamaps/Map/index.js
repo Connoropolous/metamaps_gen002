@@ -140,7 +140,6 @@ const Map = {
       Filter.close()
       InfoBox.close()
       Realtime.endActiveMap()
-      $('.viewOnly').removeClass('isViewOnly')
     }
   },
   star: function() {
