@@ -30,6 +30,7 @@ const ReactApp = {
   mapId: null,
   unreadNotificationsCount: 0,
   mapsWidth: 0,
+  toast: '',
   mobile: false,
   mobileTitle: '',
   mobileTitleWidth: 0,
@@ -48,7 +49,7 @@ const ReactApp = {
     // TODO: also handle page title updates
     switch (pathname.split('/')[1]) {
       case '':
-        if (Active.Mapper) {
+        if (Active.Mapper && Active.Mapper.id) {
           $('#yield').hide()
           ExploreMaps.updateFromPath(pathname)
           self.mapId = null
@@ -91,6 +92,7 @@ const ReactApp = {
     return merge({
       unreadNotificationsCount: self.unreadNotificationsCount,
       currentUser: Active.Mapper,
+      toast: self.toast,
       mobile: self.mobile,
       mobileTitle: self.mobileTitle,
       mobileTitleWidth: self.mobileTitleWidth,

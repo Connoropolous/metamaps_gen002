@@ -24,8 +24,7 @@ const GlobalUI = {
     self.ImportDialog.init(serverData, self.openLightbox, self.closeLightbox)
     self.Search.init(serverData)
 
-    const toastHtml = $('#toast').html()
-    if (toastHtml && toastHtml.trim()) self.notifyUser(toastHtml)
+    if (serverData.toast) self.notifyUser(serverData.toast)
 
     // bind lightbox clicks
     $('.openLightbox').click(function(event) {
@@ -113,10 +112,9 @@ const GlobalUI = {
   _notifyUser: function(message, opts = {}) {
     const self = GlobalUI
 
-    const { leaveOpen = false, timeOut = 8000 } = opts
-
-    $('#toast').html(message)
-    self.showDiv('#toast')
+    const { leaveOpen = false, timeOut = 5000 } = opts
+    ReactApp.toast = message
+    ReactApp.render()
     clearTimeout(self.notifyTimeOut)
 
     if (!leaveOpen) {
@@ -135,7 +133,8 @@ const GlobalUI = {
       const { message, opts } = self.notifyQueue.shift()
       self._notifyUser(message, opts)
     } else {
-      self.hideDiv('#toast')
+      ReactApp.toast = null
+      ReactApp.render()
       self.notifying = false
     }
   },

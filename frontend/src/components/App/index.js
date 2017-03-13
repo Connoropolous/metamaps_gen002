@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import MobileHeader from './MobileHeader'
 import UpperLeftUI from './UpperLeftUI'
 import UpperRightUI from './UpperRightUI'
+import Toast from './Toast'
 
 class App extends Component {
   static propTypes = {
@@ -34,11 +35,13 @@ class App extends Component {
   }
 
   render () {
-    const { children, toast, currentUser, unreadNotificationsCount, openInviteLightbox,
+    const { children, toast, unreadNotificationsCount, openInviteLightbox,
             mobile, mobileTitle, mobileTitleWidth, mobileTitleClick, location,
             toggleAccountBox, map, userRequested, requestAnswered, requestApproved,
             onRequestAccess } = this.props
     const { pathname } = location || {}
+    // this fixes a bug that happens otherwise when you logout
+    const currentUser = this.props.currentUser && this.props.currentUser.id ? this.props.currentUser : null
     const unauthedHome = pathname === '/' && !currentUser
     return <div className="wrapper" id="wrapper">
       {mobile && <MobileHeader currentUser={currentUser}
@@ -57,6 +60,7 @@ class App extends Component {
                                 openInviteLightbox={openInviteLightbox}
                                 signInPage={pathname === '/login'}
                                 onClickAccount={toggleAccountBox} />}
+      <Toast message={toast} />
       {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}
     </div>

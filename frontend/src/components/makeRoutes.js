@@ -10,7 +10,7 @@ function nullComponent(props) {
 }
 
 export default function makeRoutes (currentUser) {
-  const homeComponent = currentUser ? Maps : nullComponent
+  const homeComponent = currentUser && currentUser.id ? Maps : nullComponent
   return <Route path="/" component={App} >
     <IndexRoute component={homeComponent} />
     <Route path="explore">
