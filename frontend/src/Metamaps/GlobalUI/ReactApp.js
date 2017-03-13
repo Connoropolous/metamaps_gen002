@@ -122,7 +122,7 @@ const ReactApp = {
       toggleMapInfoBox: InfoBox.toggleBox,
       infoBoxHtml: InfoBox.html,
       toggleFilterBox: Filter.toggleBox,
-      filterBoxHtml: $('.filterBox')[0].outerHTML,
+      filterBoxHtml: $('.filterBox')[0] && $('.filterBox')[0].outerHTML,
       openImportLightbox: () => ImportDialog.show(),
       forkMap: Map.fork,
       openHelpLightbox: () => self.openLightbox('cheatsheet'),

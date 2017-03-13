@@ -34,7 +34,11 @@ export default function makeRoutes (currentUser) {
       <IndexRoute component={nullComponent} />
       <Route path=":id" component={nullComponent} />
     </Route>
-    <Route path="users/:id/edit" component={nullComponent} />
+    <Route path="users">
+      <Route path=":id/edit" component={nullComponent} />
+      <Route path="password/new" component={nullComponent} />
+      <Route path="password/edit" component={nullComponent} />
+    </Route>
     <Route path="metacodes">
       <IndexRoute component={nullComponent} />
       <Route path="new" component={nullComponent} />
@@ -44,6 +48,23 @@ export default function makeRoutes (currentUser) {
       <IndexRoute component={nullComponent} />
       <Route path="new" component={nullComponent} />
       <Route path=":id/edit" component={nullComponent} />
+    </Route>
+    <Route path="oauth">
+      <Route path="token/info" component={nullComponent} />
+      <Route path="authorize">
+        <IndexRoute component={nullComponent} />
+        <Route path=":code" component={nullComponent} />
+      </Route>
+      <Route path="authorized_applications">
+        <IndexRoute component={nullComponent} />
+        <Route path=":id" component={nullComponent} />
+      </Route>
+      <Route path="applications">
+        <IndexRoute component={nullComponent} />
+        <Route path="new" component={nullComponent} />
+        <Route path=":id" component={nullComponent} />
+        <Route path=":id/edit" component={nullComponent} />
+      </Route>
     </Route>
   </Route>
 }
