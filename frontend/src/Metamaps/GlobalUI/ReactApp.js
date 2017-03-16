@@ -46,7 +46,6 @@ const ReactApp = {
   handleUpdate: function(location) {
     const self = ReactApp
     const pathname = this.state.location.pathname
-    // TODO: also handle page title updates
     switch (pathname.split('/')[1]) {
       case '':
         if (Active.Mapper && Active.Mapper.id) {

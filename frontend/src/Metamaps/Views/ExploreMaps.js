@@ -16,15 +16,37 @@ const ExploreMaps = {
   mapper: null,
   updateFromPath: function(path) {
     const self = ExploreMaps
-    const test = path.split('/')[1]
-    const section = path.split('/')[2]
-    const id = path.split('/')[3]
+    const [_unused, generalSection, specificSection, id] = path.split('/')
 
-    if (test === 'explore') {
-      const capitalize = section.charAt(0).toUpperCase() + section.slice(1)
+    if (generalSection === 'explore') {
+      const capitalize = specificSection.charAt(0).toUpperCase() + specificSection.slice(1)
       self.setCollection(DataModel.Maps[capitalize])
-    } else if (test === '') {
+      switch (capitalize) {
+        case 'Active':
+          document.title = 'Explore Active Maps | Metamaps'
+          ReactApp.mobileTitle='Recently Active'
+          break
+        case 'Featured':
+          document.title = 'Explore Featured Maps | Metamaps'
+          ReactApp.mobileTitle='Featured Maps'
+          break
+        case 'Starred':
+          document.title = 'Starred Maps | Metamaps'
+          ReactApp.mobileTitle='Starred Maps'
+          break
+        case 'Shared':
+          document.title = 'Shared Maps | Metamaps'
+          ReactApp.mobileTitle='Shared With Me'
+          break
+        case 'Mine':
+          document.title = 'My Maps | Metamaps'
+          ReactApp.mobileTitle = 'My Maps'
+          break
+      }
+    } else if (generalSection === '') {
       self.setCollection(DataModel.Maps.Active)
+      document.title = 'Explore Active Maps | Metamaps'
+      ReactApp.mobileTitle='Recently Active'
     }
 
     if (id) {
@@ -98,6 +120,8 @@ const ExploreMaps = {
       url: '/users/' + self.collection.mapperId + '/details.json',
       success: function(response) {
         self.mapper = response
+        document.title = self.mapper.name + ' | Metamaps'
+        ReactApp.mobileTitle = self.mapper.name
         self.render()
       },
       error: function() {

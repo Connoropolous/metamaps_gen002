@@ -25,13 +25,12 @@ class App extends Component {
   }
 
   static childContextTypes = {
-    currentUser: PropTypes.object,
     location: PropTypes.object
   }
 
   getChildContext () {
-    const { route, location } = this.props
-    return {currentUser: route.currentUser, location}
+    const { location } = this.props
+    return {location}
   }
 
   render () {
