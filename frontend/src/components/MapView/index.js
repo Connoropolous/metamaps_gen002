@@ -47,6 +47,10 @@ export default class MapView extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.endMap()
+  }
+
   endMap() {
     this.setState({
       chatOpen: false

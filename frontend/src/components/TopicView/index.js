@@ -30,6 +30,10 @@ export default class TopicView extends Component {
     onZoomOut: PropTypes.func
   }
 
+  componentWillUnmount() {
+    this.endTopic()
+  }
+
   endTopic() {
     this.upperOptions.reset()
     this.props.endActiveTopic()

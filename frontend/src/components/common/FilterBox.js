@@ -41,7 +41,7 @@ class FilterBox extends Component {
                               + (allForFiltering.synapses.length === visibleForFiltering.synapses.length ? ' active' : '')
     const synapseNoneClass = "hideAll hideAllSynapses"
                               + (visibleForFiltering.synapses.length === 0 ? ' active' : '')
-    return <div className="sidebarFilterBox upperRightBox" style={style}>
+    return map || topic ? <div className="sidebarFilterBox upperRightBox" style={style}>
       <div className="filterBox">
         <h2>FILTER BY</h2>
         <div id="filter_by_mapper" className="filterBySection">
@@ -90,7 +90,7 @@ class FilterBox extends Component {
           <div className="clearfloat"></div>
         </div>
       </div>
-    </div>
+    </div> : null
   }
 }
 

@@ -135,8 +135,8 @@ const Map = {
   },
   end: function() {
     if (Active.Map) {
+      $('.main').removeClass('compressed')
       AutoLayout.resetSpiral()
-
       $('.rightclickmenu').remove()
       TopicCard.hideCard()
       SynapseCard.hideCard()
