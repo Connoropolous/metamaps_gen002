@@ -77,8 +77,7 @@ const ReactApp = {
         break
     }
     self.render()
-    // track using google analytics here
-    //window.ga && window.ga('send', 'pageview', location.pathname, {title: document.title})
+    window.ga && window.ga('send', 'pageview', pathname)
   },
   render: function() {
     const self = ReactApp
