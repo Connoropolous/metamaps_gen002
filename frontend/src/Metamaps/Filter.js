@@ -11,9 +11,9 @@ import Visualize from './Visualize'
 
 const Filter = {
   dataForPresentation: {
-    metacodes: [],
-    mappers: [],
-    synapses: []
+    metacodes: {},
+    mappers: {},
+    synapses: {}
   },
   filters: {
     metacodes: [],
@@ -35,9 +35,9 @@ const Filter = {
     self.visible.metacodes = []
     self.visible.mappers = []
     self.visible.synapses = []
-    self.dataForPresentation.metacodes = []
-    self.dataForPresentation.mappers = []
-    self.dataForPresentation.synapses = []
+    self.dataForPresentation.metacodes = {}
+    self.dataForPresentation.mappers = {}
+    self.dataForPresentation.synapses = {}
     ReactApp.render()
   },
   // an abstraction function for checkMetacodes, checkMappers, checkSynapses to reduce
