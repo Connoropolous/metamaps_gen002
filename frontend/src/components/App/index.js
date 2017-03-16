@@ -16,7 +16,6 @@ class App extends Component {
     mobileTitleWidth: PropTypes.number,
     mobileTitleClick: PropTypes.func,
     openInviteLightbox: PropTypes.func,
-    toggleAccountBox: PropTypes.func,
     map: PropTypes.object,
     userRequested: PropTypes.bool,
     requestAnswered: PropTypes.bool,
@@ -36,7 +35,7 @@ class App extends Component {
   render () {
     const { children, toast, unreadNotificationsCount, openInviteLightbox,
             mobile, mobileTitle, mobileTitleWidth, mobileTitleClick, location,
-            toggleAccountBox, map, userRequested, requestAnswered, requestApproved,
+            map, userRequested, requestAnswered, requestApproved,
             onRequestAccess } = this.props
     const { pathname } = location || {}
     // this fixes a bug that happens otherwise when you logout
@@ -57,8 +56,7 @@ class App extends Component {
       {!mobile && <UpperRightUI currentUser={currentUser}
                                 unreadNotificationsCount={unreadNotificationsCount}
                                 openInviteLightbox={openInviteLightbox}
-                                signInPage={pathname === '/login'}
-                                onClickAccount={toggleAccountBox} />}
+                                signInPage={pathname === '/login'} />}
       <Toast message={toast} />
       {!mobile && currentUser && <a className='feedback-icon' target='_blank' href='https://hylo.com/c/metamaps'></a>}
       {children}

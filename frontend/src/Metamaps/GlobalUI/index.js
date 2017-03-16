@@ -7,7 +7,6 @@ import Create from '../Create'
 import ReactApp from './ReactApp'
 import Search from './Search'
 import CreateMap from './CreateMap'
-import Account from './Account'
 import ImportDialog from './ImportDialog'
 
 const GlobalUI = {
@@ -20,7 +19,6 @@ const GlobalUI = {
 
     self.ReactApp.init(serverData, self.openLightbox)
     self.CreateMap.init(serverData)
-    self.Account.init(serverData)
     self.ImportDialog.init(serverData, self.openLightbox, self.closeLightbox)
     self.Search.init(serverData)
 
@@ -153,5 +151,5 @@ const GlobalUI = {
   }
 }
 
-export { ReactApp, Search, CreateMap, Account, ImportDialog }
+export { ReactApp, Search, CreateMap, ImportDialog }
 export default GlobalUI

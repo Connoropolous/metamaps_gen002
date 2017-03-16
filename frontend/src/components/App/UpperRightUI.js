@@ -9,16 +9,25 @@ class UpperRightUI extends Component {
     currentUser: PropTypes.object,
     signInPage: PropTypes.bool,
     unreadNotificationsCount: PropTypes.number,
-    openInviteLightbox: PropTypes.func,
-    onClickAccount: PropTypes.func
+    openInviteLightbox: PropTypes.func
   }
 
-  static contextTypes = {
-    location: PropTypes.object
+  constructor(props) {
+    super(props)
+    this.state = {accountBoxOpen: false}
+  }
+
+  reset = () => {
+    this.setState({accountBoxOpen: false})
+  }
+
+  toggleAccountBox = () => {
+    this.setState({accountBoxOpen: !this.state.accountBoxOpen})
   }
 
   render () {
-    const { currentUser, signInPage, unreadNotificationsCount, openInviteLightbox, onClickAccount } = this.props
+    const { currentUser, signInPage, unreadNotificationsCount, openInviteLightbox } = this.props
+    const { accountBoxOpen } = this.state
     return <div className="upperRightUI">
       {currentUser && <a href="/maps/new" target="_blank" className="addMap upperRightEl upperRightIcon">
         <div className="tooltipsUnder">
@@ -29,17 +38,17 @@ class UpperRightUI extends Component {
         <NotificationIcon unreadNotificationsCount={unreadNotificationsCount} />
       </span>}
       {!signInPage && <div className="sidebarAccount upperRightEl">
-        <div className="sidebarAccountIcon" onClick={onClickAccount}>
+        <div className="sidebarAccountIcon ignore-react-onclickoutside" onClick={this.toggleAccountBox}>
           <div className="tooltipsUnder">Account</div>
           {currentUser && <img src={currentUser.get('image')} />}
           {!currentUser && 'SIGN IN'}
           {!currentUser && <div className="accountInnerArrow"></div>}
         </div>
-        <div className="sidebarAccountBox upperRightBox">
+        {accountBoxOpen && <div className="sidebarAccountBox upperRightBox">
           {currentUser
-            ? <AccountMenu onInviteClick={openInviteLightbox} currentUser={currentUser} />
-            : <LoginForm />}
-        </div>
+            ? <AccountMenu onInviteClick={openInviteLightbox} currentUser={currentUser} closeBox={this.reset} />
+            : <LoginForm closeBox={this.reset} />}
+        </div>}
       </div>}
       <div className="clearfloat"></div>
     </div>

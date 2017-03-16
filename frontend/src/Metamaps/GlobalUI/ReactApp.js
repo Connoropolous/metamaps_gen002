@@ -7,7 +7,6 @@ import { merge } from 'lodash'
 
 import { notifyUser } from './index.js'
 import ImportDialog from './ImportDialog'
-import Account from './Account'
 import Active from '../Active'
 import DataModel from '../DataModel'
 import { ExploreMaps, ChatView, TopicCard } from '../Views'
@@ -103,8 +102,7 @@ const ReactApp = {
       mobileTitle: self.mobileTitle,
       mobileTitleWidth: self.mobileTitleWidth,
       mobileTitleClick: (e) => Active.Map && InfoBox.toggleBox(e),
-      openInviteLightbox: () => self.openLightbox('invite'),
-      toggleAccountBox: Account.toggleBox
+      openInviteLightbox: () => self.openLightbox('invite')
     },
     self.getMapProps(),
     self.getTopicProps(),

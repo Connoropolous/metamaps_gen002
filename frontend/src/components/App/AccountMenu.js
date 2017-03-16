@@ -1,9 +1,16 @@
 import React, { Component, PropTypes } from 'react'
 
+import onClickOutsideAddon from 'react-onclickoutside'
+
 class AccountMenu extends Component {
   static propTypes = {
     currentUser: PropTypes.object,
-    onInviteClick: PropTypes.func
+    onInviteClick: PropTypes.func,
+    closeBox: PropTypes.func
+  }
+
+  handleClickOutside = () => {
+    this.props.closeBox()
   }
 
   render () {
@@ -37,4 +44,4 @@ class AccountMenu extends Component {
   }
 }
 
-export default AccountMenu
+export default onClickOutsideAddon(AccountMenu)
