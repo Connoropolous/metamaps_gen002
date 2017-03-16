@@ -90,6 +90,7 @@ const ReactApp = {
     const self = ReactApp
     const createElement = (Component, props) => <Component {...props} {...self.getProps()}/>
     const app = <Router createElement={createElement} routes={routes} history={browserHistory} onUpdate={self.handleUpdate} />
+    console.log('rendering')
     ReactDOM.render(app, document.getElementById('react-app'))
   },
   getProps: function() {
