@@ -36,7 +36,7 @@ const Topic = {
     } else callback(DataModel.Topics.get(id))
   },
   launch: function(id) {
-    var start = function() {
+    var dataIsReadySetupTopic = function() {
       Visualize.type = 'RGraph'
       JIT.prepareVizData()
       Selected.reset()
@@ -49,7 +49,7 @@ const Topic = {
       ReactApp.render()
     }
     if (Active.Topic && Active.Topic.id === id) {
-      start()
+      dataIsReadySetupTopic()
     }
     else {
       Loading.show()
@@ -61,7 +61,7 @@ const Topic = {
           DataModel.Topics = new DataModel.TopicCollection([data.topic].concat(data.relatives))
           DataModel.Synapses = new DataModel.SynapseCollection(data.synapses)
           DataModel.attachCollectionEvents()
-          start()
+          dataIsReadySetupTopic()
         }
       })
     }

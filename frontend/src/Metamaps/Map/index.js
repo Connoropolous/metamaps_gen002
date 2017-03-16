@@ -90,7 +90,7 @@ const Map = {
   },
   launch: function(id) {
     const self = Map
-    var start = function() {
+    var dataIsReadySetupMap = function() {
       Map.setAccessRequest()
       Visualize.type = 'ForceDirected'
       JIT.prepareVizData()
@@ -107,7 +107,7 @@ const Map = {
       ReactApp.render()
     }
     function isLoaded() {
-      if (InfoBox.generateBoxHTML) start()
+      if (InfoBox.generateBoxHTML) dataIsReadySetupMap()
       else setTimeout(() => isLoaded(), 50)
     }
     if (Active.Map && Active.Map.id === id) {
