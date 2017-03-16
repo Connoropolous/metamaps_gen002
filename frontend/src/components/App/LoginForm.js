@@ -5,10 +5,20 @@ class LoginForm extends Component {
     loginFormAuthToken: PropTypes.string
   }
 
+  constructor(props) {
+    super(props)
+    this.state = { token: '' }
+  }
+
+  componentDidMount() {
+    const token = document.head.getElementsByTagName('meta')['csrf-token'].content
+    this.setState({token})
+  }
+
   render () {
     return <form className="loginAnywhere" id="new_user" action="/login" acceptCharset="UTF-8" method="post">
       <input name="utf8" type="hidden" value="✓" />
-      <input type="hidden" name="authenticity_token" value="9z5D3vUGKM5ExKJ0CmhweE8qysvUqjFMwgMvbYXIlrnvg9sqJWIWgCt9lq28NZgyCaNudF+w+dRPD1pybeT4mg==" />
+      <input type="hidden" name="authenticity_token" value={this.state.token} />
       <div className="accountImage"></div>
       <div className="accountInput accountEmail">
         <input placeholder="Email" type="email" name="user[email]" id="user_email" />
