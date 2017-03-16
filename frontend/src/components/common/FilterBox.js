@@ -51,10 +51,10 @@ class FilterBox extends Component {
           <span className={mapperAllClass} onClick={() => filterAllMappers(true)}>ALL</span>
           <div className="clearfloat"></div>
           <ul>
-            {allForFiltering.mappers.map(m => {
-              const data = filterData.mappers[m]
-              const isVisible = visibleForFiltering.mappers.indexOf(m) > -1
-              return <Mapper visible={isVisible} id={m} image={data.image} name={data.name} toggle={toggleMapper} />
+            {allForFiltering.mappers.map(mapperId => {
+              const data = filterData.mappers[mapperId]
+              const isVisible = visibleForFiltering.mappers.indexOf(mapperId) > -1
+              return <Mapper visible={isVisible} id={mapperId} image={data.image} name={data.name} toggle={toggleMapper} />
             })}
           </ul>
           <div className="clearfloat"></div>
@@ -66,10 +66,10 @@ class FilterBox extends Component {
           <span className={metacodeAllClass} onClick={() => filterAllMetacodes(true)}>ALL</span>
           <div className="clearfloat"></div>
           <ul>
-            {allForFiltering.metacodes.map(m => {
-              const data = filterData.metacodes[m]
-              const isVisible = visibleForFiltering.metacodes.indexOf(m) > -1
-              return <Metacode visible={isVisible} id={m} icon={data.icon} name={data.name} toggle={toggleMetacode} />
+            {allForFiltering.metacodes.map(metacodeId => {
+              const data = filterData.metacodes[metacodeId]
+              const isVisible = visibleForFiltering.metacodes.indexOf(metacodeId) > -1
+              return <Metacode visible={isVisible} id={metacodeId} icon={data.icon} name={data.name} toggle={toggleMetacode} />
             })}
           </ul>
           <div className="clearfloat"></div>
@@ -81,10 +81,10 @@ class FilterBox extends Component {
           <span className={synapseAllClass} onClick={() => filterAllSynapses(true)}>ALL</span>
           <div className="clearfloat"></div>
           <ul>
-            {allForFiltering.synapses.map(s => {
-              const data = filterData.synapses[s]
-              const isVisible = visibleForFiltering.synapses.indexOf(s) > -1
-              return <Synapse visible={isVisible} desc={s} icon={data.icon} toggle={toggleSynapse} />
+            {allForFiltering.synapses.map(synapseDesc => {
+              const data = filterData.synapses[synapseDesc]
+              const isVisible = visibleForFiltering.synapses.indexOf(synapseDesc) > -1
+              return <Synapse visible={isVisible} desc={synapseDesc} icon={data.icon} toggle={toggleSynapse} />
             })}
           </ul>
           <div className="clearfloat"></div>
