@@ -9,6 +9,7 @@ class MapButtons extends Component {
     onImportClick: PropTypes.func,
     onForkClick: PropTypes.func,
     onFilterClick: PropTypes.func,
+    filterData: PropTypes.object,
     allForFiltering: PropTypes.object,
     visibleForFiltering: PropTypes.object,
     toggleMetacode: PropTypes.func,
