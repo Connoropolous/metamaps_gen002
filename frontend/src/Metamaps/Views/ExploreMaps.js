@@ -1,15 +1,9 @@
 /* global $ */
 
-import React from 'react'
-import ReactDOM from 'react-dom' // TODO ensure this isn't a double import
-
 import Active from '../Active'
 import DataModel from '../DataModel'
-import GlobalUI from '../GlobalUI'
-import { ReactApp } from '../GlobalUI'
-import Realtime from '../Realtime'
+import GlobalUI, { ReactApp } from '../GlobalUI'
 import Loading from '../Loading'
-import Maps from '../../components/Maps'
 
 const ExploreMaps = {
   pending: false,
@@ -24,19 +18,19 @@ const ExploreMaps = {
       switch (capitalize) {
         case 'Active':
           document.title = 'Explore Active Maps | Metamaps'
-          ReactApp.mobileTitle='Recently Active'
+          ReactApp.mobileTitle = 'Recently Active'
           break
         case 'Featured':
           document.title = 'Explore Featured Maps | Metamaps'
-          ReactApp.mobileTitle='Featured Maps'
+          ReactApp.mobileTitle = 'Featured Maps'
           break
         case 'Starred':
           document.title = 'Starred Maps | Metamaps'
-          ReactApp.mobileTitle='Starred Maps'
+          ReactApp.mobileTitle = 'Starred Maps'
           break
         case 'Shared':
           document.title = 'Shared Maps | Metamaps'
-          ReactApp.mobileTitle='Shared With Me'
+          ReactApp.mobileTitle = 'Shared With Me'
           break
         case 'Mine':
           document.title = 'My Maps | Metamaps'
@@ -46,7 +40,7 @@ const ExploreMaps = {
     } else if (generalSection === '') {
       self.setCollection(DataModel.Maps.Active)
       document.title = 'Explore Active Maps | Metamaps'
-      ReactApp.mobileTitle='Recently Active'
+      ReactApp.mobileTitle = 'Recently Active'
     }
 
     if (id) {
@@ -69,7 +63,6 @@ const ExploreMaps = {
   },
   setCollection: function(collection) {
     var self = ExploreMaps
-
     if (self.collection) {
       self.collection.off('add', self.render)
       self.collection.off('successOnFetch', self.handleSuccess)
@@ -81,7 +74,6 @@ const ExploreMaps = {
     self.collection.on('errorOnFetch', self.handleError)
   },
   render: function() {
-    var self = ExploreMaps
     ReactApp.resize()
     ReactApp.render()
     Loading.hide()
