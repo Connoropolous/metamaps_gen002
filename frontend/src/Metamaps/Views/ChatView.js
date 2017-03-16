@@ -127,7 +127,7 @@ const ChatView = {
     if (!isInitial && !self.isOpen) self.unreadMessages += 1
     if (!wasMe && !isInitial && self.alertSound) self.sound.play('receivechat')
     self.messages.add(message)
-    self.render()
+    if (!isInitial && self.isOpen) self.render()
   },
   sendChatMessage: message => {
     var self = ChatView
