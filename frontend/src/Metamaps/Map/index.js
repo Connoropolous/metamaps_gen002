@@ -92,7 +92,6 @@ const Map = {
     const self = Map
     var start = function() {
       Map.setAccessRequest()
-      $('#filter_by_mapper h3').html('MAPPERS') // TODO: rewrite filter box in react
       Visualize.type = 'ForceDirected'
       JIT.prepareVizData()
       Filter.reset()

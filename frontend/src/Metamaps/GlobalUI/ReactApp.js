@@ -102,6 +102,7 @@ const ReactApp = {
     },
     self.getMapProps(),
     self.getTopicProps(),
+    self.getFilterProps(),
     self.getMapsProps(),
     self.getTopicCardProps(),
     self.getChatProps())
@@ -121,8 +122,6 @@ const ReactApp = {
       launchNewMap: Map.launch,
       toggleMapInfoBox: InfoBox.toggleBox,
       infoBoxHtml: InfoBox.html,
-      toggleFilterBox: Filter.toggleBox,
-      filterBoxHtml: $('.filterBox')[0] && $('.filterBox')[0].outerHTML,
       openImportLightbox: () => ImportDialog.show(),
       forkMap: Map.fork,
       openHelpLightbox: () => self.openLightbox('cheatsheet'),
@@ -185,6 +184,21 @@ const ReactApp = {
       inputBlur: ChatView.inputBlur,
       inputFocus: ChatView.inputFocus,
       handleInputMessage: ChatView.handleInputMessage
+    }
+  },
+  getFilterProps: function() {
+    const self = ReactApp
+    return {
+      filterData: Filter.dataForPresentation,
+      toggleFilterBox: Filter.toggleBox,
+      allForFiltering: Filter.filters,
+      visibleForFiltering: Filter.visible,
+      toggleMetacode: Filter.toggleMetacode,
+      toggleMapper: Filter.toggleMapper,
+      toggleSynapse: Filter.toggleSynapse,
+      filterAllMetacodes: Filter.filterAllMetacodes,
+      filterAllMappers: Filter.filterAllMappers,
+      filterAllSynapses: Filter.filterAllSynapses
     }
   },
   resize: function() {

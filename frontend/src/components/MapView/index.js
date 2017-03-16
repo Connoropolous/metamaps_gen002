@@ -18,7 +18,15 @@ class MapView extends Component {
     onMapStar: PropTypes.func,
     onMapUnstar: PropTypes.func,
     toggleFilterBox: PropTypes.func,
-    filterBoxHtml: PropTypes.string,
+    filterData: PropTypes.object,
+    allForFiltering: PropTypes.object,
+    visibleForFiltering: PropTypes.object,
+    toggleMetacode: PropTypes.func,
+    toggleMapper: PropTypes.func,
+    toggleSynapse: PropTypes.func,
+    filterAllMetacodes: PropTypes.func,
+    filterAllMappers: PropTypes.func,
+    filterAllSynapses: PropTypes.func,
     toggleMapInfoBox: PropTypes.func,
     infoBoxHtml: PropTypes.string,
     currentUser: PropTypes.object,
@@ -61,7 +69,9 @@ class MapView extends Component {
 
   render = () => {
     const { mobile, map, currentUser, onOpen, onClose,
-            toggleMapInfoBox, toggleFilterBox, infoBoxHtml, filterBoxHtml,
+            toggleMapInfoBox, infoBoxHtml, toggleFilterBox, allForFiltering, visibleForFiltering,
+            toggleMetacode, toggleMapper, toggleSynapse, filterAllMetacodes,
+            filterAllMappers, filterAllSynapses, filterData,
             openImportLightbox, forkMap, openHelpLightbox,
             mapIsStarred, onMapStar, onMapUnstar,
             onZoomExtents, onZoomIn, onZoomOut, hasLearnedTopicCreation } = this.props
@@ -79,10 +89,18 @@ class MapView extends Component {
     return <div className="mapWrapper">
       <MapButtons currentUser={currentUser}
                   onImportClick={openImportLightbox}
-                  onFilterClick={toggleFilterBox}
                   onForkClick={forkMap}
                   canEditMap={canEditMap}
-                  filterBoxHtml={filterBoxHtml} />
+                  onFilterClick={toggleFilterBox}
+                  filterData={filterData}
+                  allForFiltering={allForFiltering}
+                  visibleForFiltering={visibleForFiltering}
+                  toggleMetacode={toggleMetacode}
+                  toggleMapper={toggleMapper}
+                  toggleSynapse={toggleSynapse}
+                  filterAllMetacodes={filterAllMetacodes}
+                  filterAllMappers={filterAllMappers}
+                  filterAllSynapses={filterAllSynapses} />
       <DataVis />
       <TopicCard {...this.props} />
       {currentUser && <Instructions mobile={mobile} hasLearnedTopicCreation={hasLearnedTopicCreation} />}
