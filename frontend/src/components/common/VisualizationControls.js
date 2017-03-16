@@ -1,18 +1,19 @@
 import React, { Component, PropTypes } from 'react'
 
-class MapControls extends Component {
+export default class VisualizationControls extends Component {
   static propTypes = {
+    map: PropTypes.object,
     onClickZoomExtents: PropTypes.func,
     onClickZoomIn: PropTypes.func,
     onClickZoomOut: PropTypes.func
   }
 
   render () {
-    const { onClickZoomExtents, onClickZoomIn, onClickZoomOut } = this.props
+    const { map, onClickZoomExtents, onClickZoomIn, onClickZoomOut } = this.props
     return <div className="mapControls mapElement">
-      <div className="zoomExtents mapControl" onClick={onClickZoomExtents}>
+      {map && <div className="zoomExtents mapControl" onClick={onClickZoomExtents}>
         <div className="tooltips">Center View</div>
-      </div>
+      </div>}
       <div className="zoomIn mapControl" onClick={onClickZoomIn}>
         <div className="tooltips">Zoom In</div>
       </div>
@@ -22,5 +23,3 @@ class MapControls extends Component {
     </div>
   }
 }
-
-export default MapControls

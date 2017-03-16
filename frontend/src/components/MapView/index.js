@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 
-import DataVis from './DataVis'
-import MapButtons from './MapButtons'
-import InfoAndHelp from './InfoAndHelp'
+import DataVis from '../common/DataVis'
+import UpperOptions from '../common/UpperOptions'
+import InfoAndHelp from '../common/InfoAndHelp'
 import Instructions from './Instructions'
-import MapControls from './MapControls'
+import VisualizationControls from '../common/VisualizationControls'
 import MapChat from './MapChat'
 import TopicCard from '../TopicCard'
 
-class MapView extends Component {
+export default class MapView extends Component {
 
   static propTypes = {
     mobile: PropTypes.bool,
@@ -52,7 +52,7 @@ class MapView extends Component {
       chatOpen: false
     })
     this.mapChat.reset()
-    this.mapButtons.reset()
+    this.upperOptions.reset()
     this.props.endActiveMap()
   }
 
@@ -87,27 +87,29 @@ class MapView extends Component {
     const canEditMap = map && map.authorizeToEdit(currentUser)
     // TODO: stop using {...this.props} and make explicit
     return <div className="mapWrapper">
-      <MapButtons ref={x => this.mapButtons = x}
-                  currentUser={currentUser}
-                  onImportClick={openImportLightbox}
-                  onForkClick={forkMap}
-                  canEditMap={canEditMap}
-                  filterData={filterData}
-                  allForFiltering={allForFiltering}
-                  visibleForFiltering={visibleForFiltering}
-                  toggleMetacode={toggleMetacode}
-                  toggleMapper={toggleMapper}
-                  toggleSynapse={toggleSynapse}
-                  filterAllMetacodes={filterAllMetacodes}
-                  filterAllMappers={filterAllMappers}
-                  filterAllSynapses={filterAllSynapses} />
+      <UpperOptions ref={x => this.upperOptions = x}
+                    map={map}
+                    currentUser={currentUser}
+                    onImportClick={openImportLightbox}
+                    onForkClick={forkMap}
+                    canEditMap={canEditMap}
+                    filterData={filterData}
+                    allForFiltering={allForFiltering}
+                    visibleForFiltering={visibleForFiltering}
+                    toggleMetacode={toggleMetacode}
+                    toggleMapper={toggleMapper}
+                    toggleSynapse={toggleSynapse}
+                    filterAllMetacodes={filterAllMetacodes}
+                    filterAllMappers={filterAllMappers}
+                    filterAllSynapses={filterAllSynapses} />
       <DataVis />
       <TopicCard {...this.props} />
       {currentUser && <Instructions mobile={mobile} hasLearnedTopicCreation={hasLearnedTopicCreation} />}
       {currentUser && <MapChat {...this.props} onOpen={onChatOpen} onClose={onChatClose} chatOpen={chatOpen} ref={x => this.mapChat = x} />}
-      <MapControls onClickZoomExtents={onZoomExtents}
-                   onClickZoomIn={onZoomIn}
-                   onClickZoomOut={onZoomOut} />
+      <VisualizationControls map={map}
+                             onClickZoomExtents={onZoomExtents}
+                             onClickZoomIn={onZoomIn}
+                             onClickZoomOut={onZoomOut} />
       <InfoAndHelp mapIsStarred={mapIsStarred}
                    currentUser={currentUser}
                    map={map}
@@ -119,5 +121,3 @@ class MapView extends Component {
     </div>
   }
 }
-
-export default MapView

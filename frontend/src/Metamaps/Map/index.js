@@ -94,9 +94,9 @@ const Map = {
       Map.setAccessRequest()
       Visualize.type = 'ForceDirected'
       JIT.prepareVizData()
-      Filter.reset()
       Selected.reset()
       InfoBox.load()
+      Filter.reset()
       Filter.checkMetacodes()
       Filter.checkSynapses()
       Filter.checkMappers()
@@ -110,7 +110,7 @@ const Map = {
       if (InfoBox.generateBoxHTML) start()
       else setTimeout(() => isLoaded(), 50)
     }
-    if (Active.Map && Active.Map.id == id) {
+    if (Active.Map && Active.Map.id === id) {
       isLoaded()
     }
     else {

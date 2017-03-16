@@ -4,6 +4,8 @@ import onClickOutsideAddon from 'react-onclickoutside'
 
 class FilterBox extends Component {
   static propTypes = {
+    topic: PropTypes.object,
+    map: PropTypes.object,
     filterData: PropTypes.object,
     allForFiltering: PropTypes.object,
     visibleForFiltering: PropTypes.object,
@@ -21,8 +23,9 @@ class FilterBox extends Component {
   }
 
   render () {
-    const { filterData, allForFiltering, visibleForFiltering, toggleMetacode, toggleMapper, toggleSynapse,
-            filterAllMetacodes, filterAllMappers, filterAllSynapses } = this.props
+    const { topic, map, filterData, allForFiltering, visibleForFiltering, toggleMetacode,
+            toggleMapper, toggleSynapse, filterAllMetacodes,
+            filterAllMappers, filterAllSynapses } = this.props
     const style = {
       maxHeight: document.body.clientHeight - 108 + 'px'
     }
@@ -42,7 +45,8 @@ class FilterBox extends Component {
       <div className="filterBox">
         <h2>FILTER BY</h2>
         <div id="filter_by_mapper" className="filterBySection">
-          <h3>MAPPERS</h3>
+          {map && <h3>MAPPERS</h3>}
+          {topic && <h3>CREATORS</h3>}
           <span className={mapperNoneClass} onClick={() => filterAllMappers()}>NONE</span>
           <span className={mapperAllClass} onClick={() => filterAllMappers(true)}>ALL</span>
           <div className="clearfloat"></div>

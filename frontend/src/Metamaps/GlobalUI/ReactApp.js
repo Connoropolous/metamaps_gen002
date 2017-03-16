@@ -28,6 +28,7 @@ const MAX_COLUMNS = 4
 
 const ReactApp = {
   mapId: null,
+  topicId: null,
   unreadNotificationsCount: 0,
   mapsWidth: 0,
   toast: '',
@@ -60,15 +61,21 @@ const ReactApp = {
         $('#yield').hide()
         ExploreMaps.updateFromPath(pathname)
         self.mapId = null
+        self.topicId = null
         Active.Map = null
         Active.Topic = null
         break
       case 'topics':
         $('#yield').hide()
+        Active.Map = null
+        self.mapId = null
+        self.topicId = pathname.split('/')[2]
         break
       case 'maps':
         if (!pathname.includes('request_access')) {
           $('#yield').hide()
+          Active.Topic = null
+          self.topicId = null
           self.mapId = pathname.split('/')[2]
         }
         break
@@ -101,6 +108,7 @@ const ReactApp = {
     self.getMapProps(),
     self.getTopicProps(),
     self.getFilterProps(),
+    self.getCommonProps(),
     self.getMapsProps(),
     self.getTopicCardProps(),
     self.getChatProps())
@@ -122,9 +130,14 @@ const ReactApp = {
       infoBoxHtml: InfoBox.html,
       openImportLightbox: () => ImportDialog.show(),
       forkMap: Map.fork,
-      openHelpLightbox: () => self.openLightbox('cheatsheet'),
       onMapStar: Map.star,
-      onMapUnstar: Map.unstar,
+      onMapUnstar: Map.unstar
+    }
+  },
+  getCommonProps: function() {
+    const self = ReactApp
+    return {
+      openHelpLightbox: () => self.openLightbox('cheatsheet'),
       onZoomExtents: event => JIT.zoomExtents(event, Visualize.mGraph.canvas),
       onZoomIn: JIT.zoomIn,
       onZoomOut: JIT.zoomOut
@@ -143,7 +156,10 @@ const ReactApp = {
   getTopicProps: function() {
     const self = ReactApp
     return {
-      topic: Active.Topic
+      topicId: self.topicId,
+      topic: Active.Topic,
+      endActiveTopic: Topic.end,
+      launchNewTopic: Topic.launch
     }
   },
   getMapsProps: function() {

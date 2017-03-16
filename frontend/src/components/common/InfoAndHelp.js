@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 
-import MapInfoBox from './MapInfoBox'
+import MapInfoBox from '../MapView/MapInfoBox'
 
 class InfoAndHelp extends Component {
   static propTypes = {
@@ -20,13 +20,13 @@ class InfoAndHelp extends Component {
     const tooltip = mapIsStarred ? 'Unstar' : 'Star'
     const onStarClick = mapIsStarred ? onMapUnstar : onMapStar
     return <div className="infoAndHelp">
-      <MapInfoBox map={map} currentUser={currentUser} infoBoxHtml={infoBoxHtml} />
-      {currentUser && <div className={`starMap infoElement mapElement ${starclassName}`} onClick={onStarClick}>
+      {map && <MapInfoBox map={map} currentUser={currentUser} infoBoxHtml={infoBoxHtml} />}
+      {map && currentUser && <div className={`starMap infoElement mapElement ${starclassName}`} onClick={onStarClick}>
         <div className="tooltipsAbove">{tooltip}</div>
       </div>}
-      <div className="mapInfoIcon infoElement mapElement" onClick={onInfoClick}>
+      {map && <div className="mapInfoIcon infoElement mapElement" onClick={onInfoClick}>
         <div className="tooltipsAbove">Map Info</div>
-      </div>
+      </div>}
       <div className="openCheatsheet infoElement mapElement" onClick={onHelpClick}>
         <div className="tooltipsAbove">Help</div>
       </div>

@@ -7,8 +7,9 @@ import AutoLayout from './AutoLayout'
 import Create from './Create'
 import DataModel from './DataModel'
 import Filter from './Filter'
-import GlobalUI from './GlobalUI'
+import GlobalUI, { ReactApp } from './GlobalUI'
 import JIT from './JIT'
+import Loading from './Loading'
 import Map from './Map'
 import Selected from './Selected'
 import Settings from './Settings'
@@ -35,41 +36,35 @@ const Topic = {
     } else callback(DataModel.Topics.get(id))
   },
   launch: function(id) {
-    var start = function(data) {
-      Active.Topic = new DataModel.Topic(data.topic)
-      DataModel.Creators = new DataModel.MapperCollection(data.creators)
-      DataModel.Topics = new DataModel.TopicCollection([data.topic].concat(data.relatives))
-      DataModel.Synapses = new DataModel.SynapseCollection(data.synapses)
-      DataModel.attachCollectionEvents()
-
-      document.title = Active.Topic.get('name') + ' | Metamaps'
-
-      // set filter mapper H3 text
-      $('#filter_by_mapper h3').html('CREATORS')
-
-      // build and render the visualization
+    var start = function() {
       Visualize.type = 'RGraph'
       JIT.prepareVizData()
-
-      // update filters
-      Filter.reset()
-
-      // reset selected arrays
       Selected.reset()
-
-      // these three update the actual filter box with the right list items
+      Filter.reset()
       Filter.checkMetacodes()
       Filter.checkSynapses()
       Filter.checkMappers()
-
-      // for mobile
-      $('#header_content').html(Active.Topic.get('name'))
+      document.title = Active.Topic.get('name') + ' | Metamaps'
+      ReactApp.mobileTitle = Active.Topic.get('name')
+      ReactApp.render()
     }
-
-    $.ajax({
-      url: '/topics/' + id + '/network.json',
-      success: start
-    })
+    if (Active.Topic && Active.Topic.id === id) {
+      start()
+    }
+    else {
+      Loading.show()
+      $.ajax({
+        url: '/topics/' + id + '/network.json',
+        success: function(data) {
+          Active.Topic = new DataModel.Topic(data.topic)
+          DataModel.Creators = new DataModel.MapperCollection(data.creators)
+          DataModel.Topics = new DataModel.TopicCollection([data.topic].concat(data.relatives))
+          DataModel.Synapses = new DataModel.SynapseCollection(data.synapses)
+          DataModel.attachCollectionEvents()
+          start()
+        }
+      })
+    }
   },
   end: function() {
     if (Active.Topic) {
