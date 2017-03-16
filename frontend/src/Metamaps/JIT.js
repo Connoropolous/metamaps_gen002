@@ -115,29 +115,25 @@ const JIT = {
     const self = JIT
     let mapping
 
-    // reset/empty vizData
     self.vizData = []
     Visualize.loadLater = false
-
-    const results = self.convertModelsToJIT(DataModel.Topics, DataModel.Synapses)
-
-    self.vizData = results[0]
-
-    // clean up the synapses array in case of any faulty data
-    _.each(results[1], function(synapse) {
-      mapping = synapse.getMapping()
-      DataModel.Synapses.remove(synapse)
-      if (DataModel.Mappings) DataModel.Mappings.remove(mapping)
-    })
-
-    if (self.vizData.length === 0) {
-      Map.setHasLearnedTopicCreation(false)
-      Visualize.loadLater = true
-    } else {
-      Map.setHasLearnedTopicCreation(true)
-    }
-
-    Visualize.render()
+    setTimeout(() => {
+      const results = self.convertModelsToJIT(DataModel.Topics, DataModel.Synapses)
+      self.vizData = results[0]
+      // clean up the synapses array in case of any faulty data
+      _.each(results[1], function(synapse) {
+        mapping = synapse.getMapping()
+        DataModel.Synapses.remove(synapse)
+        if (DataModel.Mappings) DataModel.Mappings.remove(mapping)
+      })
+      if (self.vizData.length === 0) {
+        Map.setHasLearnedTopicCreation(false)
+        Visualize.loadLater = true
+      } else {
+        Map.setHasLearnedTopicCreation(true)
+      }
+      Visualize.render()
+    }, 1)
   }, // prepareVizData
   edgeRender: function(adj, canvas) {
     // get nodes cartesian coordinates
