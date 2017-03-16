@@ -17,7 +17,6 @@ class MapView extends Component {
     mapIsStarred: PropTypes.bool,
     onMapStar: PropTypes.func,
     onMapUnstar: PropTypes.func,
-    toggleFilterBox: PropTypes.func,
     filterData: PropTypes.object,
     allForFiltering: PropTypes.object,
     visibleForFiltering: PropTypes.object,
@@ -53,6 +52,7 @@ class MapView extends Component {
       chatOpen: false
     })
     this.mapChat.reset()
+    this.mapButtons.reset()
     this.props.endActiveMap()
   }
 
@@ -69,7 +69,7 @@ class MapView extends Component {
 
   render = () => {
     const { mobile, map, currentUser, onOpen, onClose,
-            toggleMapInfoBox, infoBoxHtml, toggleFilterBox, allForFiltering, visibleForFiltering,
+            toggleMapInfoBox, infoBoxHtml, allForFiltering, visibleForFiltering,
             toggleMetacode, toggleMapper, toggleSynapse, filterAllMetacodes,
             filterAllMappers, filterAllSynapses, filterData,
             openImportLightbox, forkMap, openHelpLightbox,
@@ -87,11 +87,11 @@ class MapView extends Component {
     const canEditMap = map && map.authorizeToEdit(currentUser)
     // TODO: stop using {...this.props} and make explicit
     return <div className="mapWrapper">
-      <MapButtons currentUser={currentUser}
+      <MapButtons ref={x => this.mapButtons = x}
+                  currentUser={currentUser}
                   onImportClick={openImportLightbox}
                   onForkClick={forkMap}
                   canEditMap={canEditMap}
-                  onFilterClick={toggleFilterBox}
                   filterData={filterData}
                   allForFiltering={allForFiltering}
                   visibleForFiltering={visibleForFiltering}

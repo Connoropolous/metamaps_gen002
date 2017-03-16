@@ -1010,7 +1010,6 @@ const JIT = {
       Create.newTopic.open()
     } else if (!Mouse.didPan) {
       // SINGLE CLICK, no pan
-      Filter.close()
       TopicCard.hideCard()
       SynapseCard.hideCard()
       Create.newTopic.hide()

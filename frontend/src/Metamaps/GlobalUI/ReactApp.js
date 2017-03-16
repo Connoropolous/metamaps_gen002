@@ -188,7 +188,6 @@ const ReactApp = {
     const self = ReactApp
     return {
       filterData: Filter.dataForPresentation,
-      toggleFilterBox: Filter.toggleBox,
       allForFiltering: Filter.filters,
       visibleForFiltering: Filter.visible,
       toggleMetacode: Filter.toggleMetacode,

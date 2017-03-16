@@ -17,7 +17,6 @@ const Account = {
   },
   open: function() {
     var self = Account
-    Filter.close()
     $('.sidebarAccountIcon .tooltipsUnder').addClass('hide')
     if (!self.isOpen && !self.changing) {
       self.changing = true

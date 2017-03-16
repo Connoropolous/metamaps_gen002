@@ -76,7 +76,6 @@ const Topic = {
       $('.rightclickmenu').remove()
       TopicCard.hideCard()
       SynapseCard.hideCard()
-      Filter.close()
     }
   },
   centerOn: function(nodeid, callback) {

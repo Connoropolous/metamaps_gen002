@@ -27,43 +27,6 @@ const Filter = {
   },
   isOpen: false,
   changing: false,
-  toggleBox: function(event) {
-    var self = Filter
-
-    if (self.isOpen) self.close()
-    else self.open()
-
-    event.stopPropagation()
-  },
-  open: function() {
-    var self = Filter
-
-    GlobalUI.Account.close()
-    $('.sidebarFilterIcon div').addClass('hide')
-
-    if (!self.isOpen && !self.changing) {
-      self.changing = true
-
-      var height = $(document).height() - 108
-      $('.sidebarFilterBox').css('max-height', height + 'px').fadeIn(200, function() {
-        self.changing = false
-        self.isOpen = true
-      })
-    }
-  },
-  close: function() {
-    var self = Filter
-    $('.sidebarFilterIcon div').removeClass('hide')
-
-    if (!self.changing) {
-      self.changing = true
-
-      $('.sidebarFilterBox').fadeOut(200, function() {
-        self.changing = false
-        self.isOpen = false
-      })
-    }
-  },
   reset: function() {
     var self = Filter
     self.filters.metacodes = []

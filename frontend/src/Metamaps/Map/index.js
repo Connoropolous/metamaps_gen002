@@ -142,7 +142,6 @@ const Map = {
       SynapseCard.hideCard()
       Create.newTopic.hide(true) // true means force (and override pinned)
       Create.newSynapse.hide()
-      Filter.close()
       InfoBox.close()
       Realtime.endActiveMap()
       self.requests = []

@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
+import onClickOutsideAddon from 'react-onclickoutside'
+
 class FilterBox extends Component {
   static propTypes = {
     filterData: PropTypes.object,
@@ -10,13 +12,20 @@ class FilterBox extends Component {
     toggleSynapse: PropTypes.func,
     filterAllMetacodes: PropTypes.func,
     filterAllMappers: PropTypes.func,
-    filterAllSynapses: PropTypes.func
+    filterAllSynapses: PropTypes.func,
+    closeBox: PropTypes.func
+  }
+
+  handleClickOutside = () => {
+    this.props.closeBox()
   }
 
   render () {
     const { filterData, allForFiltering, visibleForFiltering, toggleMetacode, toggleMapper, toggleSynapse,
             filterAllMetacodes, filterAllMappers, filterAllSynapses } = this.props
-
+    const style = {
+      maxHeight: document.body.clientHeight - 108 + 'px'
+    }
     const mapperAllClass = "showAll showAllMappers"
                               + (allForFiltering.mappers.length === visibleForFiltering.mappers.length ? ' active' : '')
     const mapperNoneClass = "hideAll hideAllMappers"
@@ -29,7 +38,7 @@ class FilterBox extends Component {
                               + (allForFiltering.synapses.length === visibleForFiltering.synapses.length ? ' active' : '')
     const synapseNoneClass = "hideAll hideAllSynapses"
                               + (visibleForFiltering.synapses.length === 0 ? ' active' : '')
-    return <div className="sidebarFilterBox upperRightBox">
+    return <div className="sidebarFilterBox upperRightBox" style={style}>
       <div className="filterBox">
         <h2>FILTER BY</h2>
         <div id="filter_by_mapper" className="filterBySection">
@@ -96,10 +105,10 @@ function Metacode({ visible, name, id, icon, toggle }) {
 }
 
 function Synapse({ visible, desc, icon, toggle }) {
-  return <li onClick={() => toggle(desc)} key={desc} className={visible ? '' : 'toggledOff'}>
+  return <li onClick={() => toggle(desc)} key={desc.replace(/ /g, '')} className={visible ? '' : 'toggledOff'}>
     <img src={icon} alt="synapse icon" />
     <p>{desc}</p>
   </li>
 }
 
-export default FilterBox
+export default onClickOutsideAddon(FilterBox)
