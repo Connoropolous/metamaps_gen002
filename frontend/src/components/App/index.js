@@ -68,20 +68,3 @@ class App extends Component {
 }
 
 export default App
-
-/*
-<% classes = action_name == "home" ? "homePage" : ""
-   classes += action_name == "home" && authenticated? ? " explorePage" : ""
-   classes += controller_name == "maps" && action_name == "index" ? " explorePage" : ""
-   if controller_name == "maps" && action_name == "show"
-     classes += " mapPage"
-     if policy(@map).update?
-       classes += " canEditMap"
-     end
-     if @map.permission == "commons"
-       classes += " commonsMap"
-     end
-   end
-   classes += controller_name == "topics" && action_name == "show" ? " topicPage" : ""
-   %>
-*/
