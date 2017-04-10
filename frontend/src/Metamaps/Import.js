@@ -388,6 +388,36 @@ const Import = {
       }
     )
   },
+  
+  handleTEXT: function(text, opts = {}) {
+    let coords = opts.coords
+    if (!coords || coords.x === undefined || coords.y === undefined) {
+      coords = AutoLayout.getNextCoord({ mappings: DataModel.Mappings })
+    }
+
+    const name = text
+    const url = ""
+    const metacode = opts.metacode || 'Wildcard'
+    const importId = opts.importId || null // don't store a cidMapping
+    const permission = opts.permission || null // use default
+    const desc = opts.desc || ""
+
+    Import.createTopicWithParameters(
+      name,
+      metacode,
+      permission,
+      desc,
+      url,
+      coords.x,
+      coords.y,
+      importId,
+      {
+        success: function(topic) {
+          return
+        }
+      }
+    )
+  },
 
   /*
    * helper functions
