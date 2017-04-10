@@ -68,11 +68,9 @@ const PasteInput = {
     } else if (text[0] === '{') {
       Import.handleJSON(text)
     } else if (text.match(/[Tt]opics\t/) || text.match(/[Ss]ynapses\t/)) {
-      console.log("Tab sep!")
       Import.handleTSV(text)
     } else {
       //Handle as plain text
-      console.log("The text is:",text,"!")
       let textItems = text.split("\n")
       if (textItems.length === 1){
         if(textItems[0].trim() !== ""){
