@@ -388,7 +388,7 @@ const Import = {
     )
   },
 
-  handleTEXT: function(text, opts = {}) {
+  handleText: function(text, opts = {}) {
     let coords = opts.coords
     if (!coords || coords.x === undefined || coords.y === undefined) {
       coords = AutoLayout.getNextCoord({ mappings: DataModel.Mappings })
@@ -409,12 +409,7 @@ const Import = {
       url,
       coords.x,
       coords.y,
-      importId,
-      {
-        success: function(topic) {
-          return
-        }
-      }
+      importId
     )
   },
 

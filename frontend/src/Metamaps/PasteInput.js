@@ -72,7 +72,7 @@ const PasteInput = {
       let textItems = text.split('\n')
       if (textItems.length === 1) {
         if (textItems[0].trim() !== '') {
-          Import.handleTEXT(textItems[0].trim(), coords)
+          Import.handleText(textItems[0].trim(), coords)
         }
       } else if (window.confirm('Are you sure you want to create ' + textItems.length + ' new topics?')) {
         textItems.forEach(item => {
