@@ -3,11 +3,9 @@
 import Import from './Import'
 import Util from './Util'
 import Visualize from './Visualize'
+import URL_REGEX from '../patched/regex-weburl'
 
 const PasteInput = {
-  // thanks to https://github.com/kevva/url-regex
-  // eslint-disable-next-line no-useless-escape
-  URL_REGEX: new RegExp(/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/,"i"),
   init: function() {
     var self = PasteInput
 
@@ -63,7 +61,7 @@ const PasteInput = {
   handle: function(text, coords = {}) {
     var self = PasteInput
 
-    if (text.match(self.URL_REGEX)) {
+    if (text.match(URL_REGEX)) {
       Import.handleURL(text, coords)
     } else if (text[0] === '{') {
       Import.handleJSON(text)
