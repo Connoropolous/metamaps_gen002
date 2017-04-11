@@ -1,3 +1,4 @@
+/* eslint-disable */
 // START METAMAPS CODE
 // From https://gist.github.com/dperini/729294. Retrieved April 11 2017.
 // Minor modifications made to make it exportable by devvmh.
@@ -107,3 +108,4 @@ export default new RegExp(
     "(?:[/?#]\\S*)?" +
   "$", "i"
 );
+/* eslint-enable */
