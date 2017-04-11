@@ -6,7 +6,6 @@ import _ from 'lodash'
 import Active from './Active'
 import AutoLayout from './AutoLayout'
 import DataModel from './DataModel'
-import GlobalUI from './GlobalUI'
 import Map from './Map'
 import Synapse from './Synapse'
 import Topic from './Topic'
@@ -388,7 +387,7 @@ const Import = {
       }
     )
   },
-  
+
   handleTEXT: function(text, opts = {}) {
     let coords = opts.coords
     if (!coords || coords.x === undefined || coords.y === undefined) {
@@ -396,11 +395,11 @@ const Import = {
     }
 
     const name = text
-    const url = ""
+    const url = ''
     const metacode = opts.metacode || 'Wildcard'
     const importId = opts.importId || null // don't store a cidMapping
     const permission = opts.permission || null // use default
-    const desc = opts.desc || ""
+    const desc = opts.desc || ''
 
     Import.createTopicWithParameters(
       name,

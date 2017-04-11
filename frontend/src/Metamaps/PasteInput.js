@@ -19,7 +19,7 @@ const PasteInput = {
       e = e || window.event
 
       // prevent conflict with react-dropzone file uploader
-      if (event.target.id !== 'infovis-canvas') return
+      if (e.target.id !== 'infovis-canvas') return
 
       e.preventDefault()
       var coords = Util.pixelsToCoords(Visualize.mGraph, { x: e.clientX, y: e.clientY })
@@ -29,7 +29,7 @@ const PasteInput = {
       // OMG import bookmarks 😍 (Or just text :P)
       if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
         e.dataTransfer.items[0].getAsString(function(text) {
-          self.handle(text,coords)
+          self.handle(text, coords)
         })
       }
     }, false)
@@ -68,17 +68,16 @@ const PasteInput = {
     } else if (text.match(/^[Tt]opics\t/) || text.match(/^[Ss]ynapses\t/)) {
       Import.handleTSV(text)
     } else {
-      //Handle as plain text
-      let textItems = text.split("\n")
-      if (textItems.length === 1){
-        if(textItems[0].trim() !== ""){
-            Import.handleTEXT(textItems[0].trim(),coords)
+      // Handle as plain text
+      let textItems = text.split('\n')
+      if (textItems.length === 1) {
+        if (textItems[0].trim() !== '') {
+          Import.handleTEXT(textItems[0].trim(), coords)
         }
-      }
-      else if (window.confirm('Are you sure you want to create ' + textItems.length + ' new topics?')) {
+      } else if (window.confirm('Are you sure you want to create ' + textItems.length + ' new topics?')) {
         textItems.forEach(item => {
-          if(item.trim() !== ""){
-            self.handle(item.trim(),coords)
+          if (item.trim() !== '') {
+            self.handle(item.trim(), coords)
           }
         })
       }
