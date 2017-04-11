@@ -65,7 +65,7 @@ const PasteInput = {
       Import.handleURL(text, coords)
     } else if (text[0] === '{') {
       Import.handleJSON(text)
-    } else if (text.match(/[Tt]opics\t/) || text.match(/[Ss]ynapses\t/)) {
+    } else if (text.match(/^[Tt]opics\t/) || text.match(/^[Ss]ynapses\t/)) {
       Import.handleTSV(text)
     } else {
       //Handle as plain text
