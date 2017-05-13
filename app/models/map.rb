@@ -86,10 +86,14 @@ class Map < ApplicationRecord
     user&.stars&.where(map: self)&.exists? || false # return false, not nil
   end
 
+  def fork_children_ids
+    Map.where(source_id: id).map(&:id)
+  end
+
   def as_json(_options = {})
     json = super(
       methods: [:user_name, :user_image, :star_count, :topic_count, :synapse_count,
-                :contributor_count, :collaborator_ids, :screenshot_url],
+                :contributor_count, :collaborator_ids, :screenshot_url, :fork_children_ids],
       except: [:screenshot_content_type, :screenshot_file_size, :screenshot_file_name,
                :screenshot_updated_at]
     )
