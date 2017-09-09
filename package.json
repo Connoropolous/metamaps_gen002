@@ -51,7 +51,7 @@
     "react-router": "4.2.0",
     "redux": "3.7.2",
     "riek": "1.1.0",
-    "simplewebrtc": "3.0.1",
+    "simplewebrtc": "2.2.2",
     "socket.io": "1.3.7",
     "webpack": "3.5.6"
   },
@@ -69,7 +69,7 @@
     "mocha": "^3.5.0",
     "mocha-webpack": "^0.7.0",
     "react-addons-test-utils": "^15.6.0",
-    "sinon": "^3.2.1"
+    "sinon": "2.2.0"
   },
   "optionalDependencies": {
     "raml2html": "6.4.1"
