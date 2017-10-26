@@ -1,7 +1,7 @@
 /* global $ */
 
 import outdent from 'outdent'
-import { find as _find } from 'lodash'
+import _, { find as _find } from 'lodash'
 import { browserHistory } from 'react-router'
 
 import Active from '../Active'
@@ -89,12 +89,31 @@ const Map = {
     }
     ReactApp.render()
   },
+  cleanUpSynapses: function () {
+    const synapsesToRemove = []
+    const topics = DataModel.Topics
+    DataModel.Synapses.each(function(s) {
+      if (topics.get(s.get('topic1_id')) === undefined || topics.get(s.get('topic2_id')) === undefined) {
+        // this means it's an invalid synapse
+        synapsesToRemove.push(s)
+      }
+    })
+    // clean up the synapses array in case of any faulty data
+    _.each(synapsesToRemove, function(synapse) {
+      mapping = synapse.getMapping()
+      DataModel.Synapses.remove(synapse)
+      if (DataModel.Mappings) DataModel.Mappings.remove(mapping)
+    })
+  },
   launch: function(id) {
     const self = Map
     var dataIsReadySetupMap = function() {
+      if (DataModel.Topics.length === 0) {
+        Map.setHasLearnedTopicCreation(false)
+      } else {
+        Map.setHasLearnedTopicCreation(true)
+      }
       Map.setAccessRequest()
-      Visualize.type = 'ForceDirected'
-      JIT.prepareVizData()
       Selected.reset()
       InfoBox.load()
       Filter.reset()
@@ -127,6 +146,7 @@ const Map = {
           DataModel.Mappings = new DataModel.MappingCollection(data.mappings)
           DataModel.Messages = data.messages
           DataModel.Stars = data.stars
+          Map.cleanUpSynapses()
           DataModel.attachCollectionEvents()
           self.requests = data.requests
           isLoaded()

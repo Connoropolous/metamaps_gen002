@@ -2,10 +2,13 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
 import { Router, browserHistory } from 'react-router'
 import { merge } from 'lodash'
 import apply from 'async/apply'
 
+import reducers from '../../reducers'
 import { notifyUser } from './index.js'
 import ImportDialog from './ImportDialog'
 import Notifications from './Notifications'
@@ -20,6 +23,11 @@ import Topic from '../Topic'
 import Visualize from '../Visualize'
 import makeRoutes from '../../routes/makeRoutes'
 let routes
+
+let store = createStore(
+  reducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 // 220 wide + 16 padding on both sides
 const MAP_WIDTH = 252
@@ -92,12 +100,15 @@ const ReactApp = {
   render: function() {
     const self = ReactApp
     const createElement = (Component, props) => <Component {...props} {...self.getProps()}/>
-    const app = <Router createElement={createElement} routes={routes} history={browserHistory} onUpdate={self.handleUpdate} />
+    const app = <Provider store={store}>
+      <Router createElement={createElement} routes={routes} history={browserHistory} onUpdate={self.handleUpdate} />
+    </Provider>
     ReactDOM.render(app, document.getElementById('react-app'))
   },
   getProps: function() {
     const self = ReactApp
     return merge({
+      DataModel: DataModel,
       unreadNotificationsCount: Notifications.unreadNotificationsCount,
       currentUser: Active.Mapper,
       toast: self.toast,
