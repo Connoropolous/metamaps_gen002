@@ -71,8 +71,10 @@ describe('TopicCard/Desc', function() {
       describe('desc is not present', function() {
         const textArea = render({ authorizedToEdit: true, desc: null })
           .find('.riek_desc')
-        expect(textArea.prop('defaultProps').dangerouslySetInnerHTML.__html)
-          .to.equal('<p class="emptyDesc">Edit the description... (supports markdown)</p>')
+        it('renders placeholder message', function() {
+          expect(textArea.prop('defaultProps').dangerouslySetInnerHTML.__html)
+            .to.equal('<p class="emptyDesc">Edit the description... (supports markdown)</p>')
+        })
       })
     })
 
