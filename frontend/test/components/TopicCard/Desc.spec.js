@@ -83,7 +83,7 @@ describe('TopicCard/Desc', function() {
       const target = { value: 'new value' }
       it('does not call onChange on Shift+Enter', function() {
         textArea.prop('editProps').onKeyPress({
-          shiftKey: true, which: ENTER 
+          shiftKey: true, which: ENTER
         })
         expect(onChange.notCalled).to.equal(true)
       })
