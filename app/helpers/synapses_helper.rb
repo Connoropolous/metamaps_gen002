@@ -13,7 +13,7 @@ module SynapsesHelper
     synapses.map do |s|
       {
         id: s.id,
-        label: s.desc.presence || '(no description)',
+        label: s.desc.blank? ? '(no description)' : s.desc,
         value: s.desc,
         permission: s.permission,
         mapCount: s.maps.count,

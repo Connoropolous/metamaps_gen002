@@ -21,7 +21,11 @@ class Metacode < ApplicationRecord
   end
 
   def icon(*args)
-    manual_icon.presence || aws_icon(*args)
+    if manual_icon.present?
+      manual_icon
+    else
+      aws_icon(*args)
+    end
   end
 
   def as_json(options = {})
@@ -53,7 +57,9 @@ class Metacode < ApplicationRecord
 
   def manual_icon_https
     if manual_icon.present?
-      errors.add(:base, 'Manual icon must begin with https') unless manual_icon.starts_with? 'https'
+      unless manual_icon.starts_with? 'https'
+        errors.add(:base, 'Manual icon must begin with https')
+      end
     end
   end
 end

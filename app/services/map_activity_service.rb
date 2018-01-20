@@ -5,7 +5,7 @@ class MapActivityService
     'Activity on map ' + map.name
   end
 
-  def self.summarize_data(map, user, until_moment = DateTime.current)
+  def self.summarize_data(map, user, until_moment = DateTime.now)
     results = {
       stats: {}
     }
@@ -18,13 +18,15 @@ class MapActivityService
     message_count = Message.where(resource: map)
                            .where('created_at > ? AND created_at < ?', since, until_moment)
                            .where.not(user: user).count
-    results[:stats][:messages_sent] = message_count if message_count.positive?
+    results[:stats][:messages_sent] = message_count if message_count > 0
 
     moved_count = Event.where(kind: 'topic_moved_on_map', map: map)
                        .where('created_at > ? AND created_at < ?', since, until_moment)
                        .where(eventable_id: scoped_topic_ids)
                        .where.not(user: user).group(:eventable_id).count
-    results[:stats][:topics_moved] = moved_count.keys.length unless moved_count.keys.empty?
+    unless moved_count.keys.empty?
+      results[:stats][:topics_moved] = moved_count.keys.length
+    end
 
     topics_added_events = Event.where(kind: 'topic_added_to_map', map: map)
                                .where('created_at > ? AND created_at < ?', since, until_moment)
