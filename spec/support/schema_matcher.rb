@@ -15,7 +15,7 @@ RSpec::Matchers.define :match_json_schema do |schema_name|
 end
 
 def get_json_example(resource)
-  filepath = "#{Rails.root}/doc/api/examples/#{resource}.json"
+  filepath = Rails.root.join('doc', 'api', 'examples', "#{resource}.json")
   OpenStruct.new(body: File.read(filepath))
 end
 
@@ -25,7 +25,7 @@ def update_file_refs(schema)
     schema[key] = if value.is_a? Hash
                     update_file_refs(value)
                   elsif key == '$ref'
-                    "#{Rails.root}/doc/api/schemas/#{value}"
+                    Rails.root.join('doc', 'api', 'schemas', value.to_s)
                   else
                     value
                   end

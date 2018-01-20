@@ -21,9 +21,7 @@ module MapsHelper
   end
 
   def first_contributor_image(map)
-    if map.contributors.count.positive?
-      return map.contributors[0].image.url(:thirtytwo)
-    end
+    return map.contributors[0].image.url(:thirtytwo) if map.contributors.count.positive?
     'https://s3.amazonaws.com/metamaps-assets/site/user.png'
   end
 
