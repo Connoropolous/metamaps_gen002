@@ -10,13 +10,13 @@ class TopicPolicy < ApplicationPolicy
     private
 
     def authenticated_scope
-      scope.where(permission: %w(public commons))
+      scope.where(permission: %w[public commons])
            .or(scope.where(defer_to_map_id: user.all_accessible_maps.map(&:id)))
            .or(scope.where(user_id: user.id))
     end
 
     def unauthenticated_scope
-      scope.where(permission: %w(public commons))
+      scope.where(permission: %w[public commons])
     end
   end
 
@@ -32,7 +32,7 @@ class TopicPolicy < ApplicationPolicy
     if record.defer_to_map.present?
       map_policy.show?
     else
-      record.permission.in?(%w(commons public)) || record.user == user
+      record.permission.in?(%w[commons public]) || record.user == user
     end
   end
 

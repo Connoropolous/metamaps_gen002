@@ -13,7 +13,7 @@ class UserPreference
   private
 
   def init_metacodes
-    %w(Action Aim Idea Question Note Wildcard Subject).map do |m|
+    %w[Action Aim Idea Question Note Wildcard Subject].map do |m|
       begin
         metacode = Metacode.find_by(name: m)
         metacode.id.to_s if metacode

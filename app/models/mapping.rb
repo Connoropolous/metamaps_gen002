@@ -25,7 +25,7 @@ class Mapping < ApplicationRecord
   end
 
   def as_json(_options = {})
-    super(methods: %i(user_name user_image))
+    super(methods: %i[user_name user_image])
   end
 
   def after_created
@@ -57,8 +57,8 @@ class Mapping < ApplicationRecord
     meta = { 'x': xloc, 'y': yloc, 'mapping_id': id }
     Events::TopicMovedOnMap.publish!(mappable, map, updated_by, meta)
     ActionCable.server.broadcast('map_' + map.id.to_s, type: 'topicMoved',
-                                 id: mappable.id, mapping_id: id,
-                                 x: xloc, y: yloc)
+                                                       id: mappable.id, mapping_id: id,
+                                                       x: xloc, y: yloc)
   end
 
   def after_updated_async

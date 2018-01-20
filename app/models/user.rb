@@ -137,7 +137,7 @@ class User < ApplicationRecord
 
   def has_map_open(map)
     latest_event = Event.where(map: map, user: self)
-                        .where(kind: %w(user_present_on_map user_not_present_on_map))
+                        .where(kind: %w[user_present_on_map user_not_present_on_map])
                         .order(:created_at)
                         .last
     latest_event && latest_event.kind == 'user_present_on_map'
