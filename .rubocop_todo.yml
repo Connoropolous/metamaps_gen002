@@ -1,12 +1,3 @@
-# Offense count: 6
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'app/models/event.rb'
-    - 'app/models/follow.rb'
-    - 'app/models/mapping.rb'
-    - 'app/models/synapse.rb'
-    - 'app/models/topic.rb'
-
 # Offense count: 50
 Metrics/AbcSize:
   Max: 128
@@ -24,12 +15,6 @@ Metrics/ClassLength:
 # Offense count: 13
 Metrics/CyclomaticComplexity:
   Max: 15
-
-# Offense count: 2
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  Max: 146
 
 # Offense count: 45
 # Configuration parameters: CountComments.
@@ -74,24 +59,6 @@ Style/GlobalVars:
   Exclude:
     - 'app/models/user.rb'
     - 'config/initializers/access_codes.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: line_count_dependent, lambda, literal
-Style/Lambda:
-  Exclude:
-    - 'app/models/follow.rb'
-    - 'app/models/synapse.rb'
-    - 'app/models/topic.rb'
-
-# Offense count: 3
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: snake_case, camelCase
-Style/MethodName:
-  Exclude:
-    - 'app/models/metacode.rb'
-    - 'app/models/topic.rb'
 
 # Offense count: 6
 # Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.

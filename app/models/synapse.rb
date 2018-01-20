@@ -22,9 +22,9 @@ class Synapse < ApplicationRecord
 
   validates :category, inclusion: { in: ['from-to', 'both'], allow_nil: true }
 
-  scope :for_topic, ->(topic_id = nil) {
+  scope :for_topic, (lambda do |topic_id = nil|
     where(topic1_id: topic_id).or(where(topic2_id: topic_id))
-  }
+  end)
 
   before_create :set_perm_by_defer
   after_create :after_created_async

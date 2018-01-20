@@ -39,13 +39,13 @@ class Topic < ApplicationRecord
     topics1.or(topics2)
   end
 
-  scope :relatives, ->(topic_id = nil, user = nil) {
+  scope :relatives, (lambda do |topic_id = nil, user = nil|
     # should only see topics through *visible* synapses
     # e.g. Topic A (commons) -> synapse (private) -> Topic B (commons) must be filtered out
     topic_ids = Pundit.policy_scope(user, Synapse.where(topic1_id: topic_id)).pluck(:topic2_id)
     topic_ids += Pundit.policy_scope(user, Synapse.where(topic2_id: topic_id)).pluck(:topic1_id)
     where(id: topic_ids.uniq)
-  }
+  end)
 
   delegate :name, to: :user, prefix: true
 
@@ -65,13 +65,13 @@ class Topic < ApplicationRecord
     Pundit.policy_scope(user, maps).map(&:name)
   end
 
-  def inmapsLinks(user)
+  def inmaps_links(user)
     Pundit.policy_scope(user, maps).map(&:id)
   end
 
   def as_json(options = {})
     super(methods: %i[user_name user_image collaborator_ids])
-      .merge(inmaps: inmaps(options[:user]), inmapsLinks: inmapsLinks(options[:user]),
+      .merge(inmaps: inmaps(options[:user]), inmapsLinks: inmaps_links(options[:user]),
              map_count: map_count(options[:user]), synapse_count: synapse_count(options[:user]))
   end
 

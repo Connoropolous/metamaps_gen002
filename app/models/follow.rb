@@ -11,9 +11,7 @@ class Follow < ApplicationRecord
 
   after_create :add_subsetting
 
-  scope :active, -> {
-    where(muted: false)
-  }
+  scope :active, (-> { where(muted: false) })
 
   private
 

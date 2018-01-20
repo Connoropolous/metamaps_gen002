@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Mapping < ApplicationRecord
-  scope :topicmapping, -> { where(mappable_type: :Topic) }
-  scope :synapsemapping, -> { where(mappable_type: :Synapse) }
+  scope :topicmapping, (-> { where(mappable_type: :Topic) })
+  scope :synapsemapping, (-> { where(mappable_type: :Synapse) })
 
   belongs_to :mappable, polymorphic: true
   belongs_to :map, class_name: 'Map', foreign_key: 'map_id', touch: true

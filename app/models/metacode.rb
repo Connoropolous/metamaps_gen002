@@ -6,9 +6,7 @@ class Metacode < ApplicationRecord
   has_many :topics
 
   # This method associates the attribute ":aws_icon" with a file attachment
-  has_attached_file :aws_icon, styles: {
-    ninetysix: ['96x96#', :png]
-  },
+  has_attached_file :aws_icon, styles: { ninetysix: ['96x96#', :png] },
                                default_url: 'https://s3.amazonaws.com/metamaps-assets/metacodes/generics/96px/gen_wildcard.png'
 
   # Validate the attached icon is image/jpg, image/png, etc
@@ -31,15 +29,13 @@ class Metacode < ApplicationRecord
   def as_json(options = {})
     default = super(options)
     default[:icon] = icon
-    default.except('aws_icon_file_name', 'aws_icon_content_type', 'aws_icon_file_size', 'aws_icon_updated_at', 'manual_icon')
+    default.except(
+      'aws_icon_file_name', 'aws_icon_content_type', 'aws_icon_file_size', 'aws_icon_updated_at',
+      'manual_icon'
+    )
   end
 
-  def hasSelected(user)
-    return true if user.settings.metacodes.include? id.to_s
-    false
-  end
-
-  def inMetacodeSet(metacode_set)
+  def in_metacode_set(metacode_set)
     return true if metacode_sets.include? metacode_set
     false
   end
