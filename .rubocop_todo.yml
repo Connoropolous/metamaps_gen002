@@ -1,0 +1,108 @@
+# Offense count: 6
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'app/models/event.rb'
+    - 'app/models/follow.rb'
+    - 'app/models/mapping.rb'
+    - 'app/models/synapse.rb'
+    - 'app/models/topic.rb'
+
+# Offense count: 50
+Metrics/AbcSize:
+  Max: 128
+
+# Offense count: 36
+# Configuration parameters: CountComments, ExcludedMethods.
+Metrics/BlockLength:
+  Max: 350
+
+# Offense count: 7
+# Configuration parameters: CountComments.
+Metrics/ClassLength:
+  Max: 171
+
+# Offense count: 13
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+# Offense count: 2
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+# URISchemes: http, https
+Metrics/LineLength:
+  Max: 146
+
+# Offense count: 45
+# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Max: 82
+
+# Offense count: 11
+Metrics/PerceivedComplexity:
+  Max: 18
+
+# Offense count: 41
+# Configuration parameters: Blacklist.
+# Blacklist: decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'app/models/access_request.rb'
+    - 'app/models/user_map.rb'
+    - 'app/services/follow_service.rb'
+    - 'spec/services/map_activity_service_spec.rb'
+
+# Offense count: 1
+Style/AccessorMethodName:
+  Exclude:
+    - 'app/models/user.rb'
+
+# Offense count: 7
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: nested, compact
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'app/models/webhooks/slack/conversation_started_on_map.rb'
+    - 'app/models/webhooks/slack/synapse_added_to_map.rb'
+    - 'app/models/webhooks/slack/synapse_removed_from_map.rb'
+    - 'app/models/webhooks/slack/topic_added_to_map.rb'
+    - 'app/models/webhooks/slack/topic_moved_on_map.rb'
+    - 'app/models/webhooks/slack/topic_removed_from_map.rb'
+    - 'app/models/webhooks/slack/user_present_on_map.rb'
+
+# Offense count: 4
+# Configuration parameters: AllowedVariables.
+Style/GlobalVars:
+  Exclude:
+    - 'app/models/user.rb'
+    - 'config/initializers/access_codes.rb'
+
+# Offense count: 3
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: line_count_dependent, lambda, literal
+Style/Lambda:
+  Exclude:
+    - 'app/models/follow.rb'
+    - 'app/models/synapse.rb'
+    - 'app/models/topic.rb'
+
+# Offense count: 3
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: snake_case, camelCase
+Style/MethodName:
+  Exclude:
+    - 'app/models/metacode.rb'
+    - 'app/models/topic.rb'
+
+# Offense count: 6
+# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
+# NamePrefix: is_, has_, have_
+# NamePrefixBlacklist: is_, has_, have_
+# NameWhitelist: is_a?
+Style/PredicateName:
+  Exclude:
+    - 'spec/**/*'
+    - 'app/models/follow_reason.rb'
+    - 'app/models/user.rb'
+    - 'app/serializers/api/v2/user_serializer.rb'
+    - 'app/serializers/webhook_serializer.rb'
+    - 'config/initializers/internal_testers.rb'

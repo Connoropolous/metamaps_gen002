@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   TargetRubyVersion: 2.3
   Exclude:
@@ -11,14 +13,19 @@ AllCops:
 Rails:
   Enabled: true
 
-Metrics/LineLength:
-  Max: 120
-
-Metrics/AbcSize:
-  Max: 16
+#Metrics/LineLength:
+#  Max: 120
+#
+#Metrics/AbcSize:
+#  Max: 16
 
 Style/Documentation:
   Enabled: false
 
 Style/EmptyMethod:
   EnforcedStyle: expanded
+
+# I like this cop, but occasionally code is more readable without a guard clause,
+# and I don't want to write rubocop:disable comments every time that happens
+Style/GuardClause:
+  Enabled: false

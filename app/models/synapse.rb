@@ -73,7 +73,7 @@ class Synapse < ApplicationRecord
   protected
 
   def set_perm_by_defer
-    permission = defer_to_map.permission if defer_to_map
+    defer_to_map&.permission
   end
 
   def after_created_async

@@ -19,6 +19,7 @@ class FollowService
     def unfollow(entity, user)
       follow = Follow.where(followed: entity, user: user).first
       return unless follow
+
       unless follow.update(muted: true)
         raise follow.errors.full_messages.join("\n")
       end
