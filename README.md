@@ -1,62 +1,82 @@
-Metamaps
-=======
+[![Build Status](https://travis-ci.org/metamaps/metamaps-ui.svg?branch=master)](https://travis-ci.org/metamaps/metamaps-ui)
 
-[![Build Status](https://travis-ci.org/metamaps/metamaps.svg?branch=develop)](https://travis-ci.org/metamaps/metamaps)
-[![Code Climate](https://codeclimate.com/github/metamaps/metamaps/badges/gpa.svg)](https://codeclimate.com/github/metamaps/metamaps)
+Make sure you're running a good up to date LTS version of `node`, like 8.9.4
 
-## What is Metamaps?
+Make sure you have `node-sass` installed
+`$ npm install -g node-sass`
 
-Metamaps is a free and open-source technology for changemakers, innovators, educators and students. It enables individuals and communities to build and visualize their shared knowledge and unlock their collective intelligence.
+Run the following at the same time, in TWO SEPARATE terminals. We tell the server where the backend process is running with the API environment variable
+JS files, and CSS will rebuild automatically, just refresh the page
+If coding the server itself, you will have to use nodemon, or kill and restart the server process manually
+```
+$ API=http://localhost:3001 node server.js
+$ node-sass -w sass/application.scss public/css/application.css
+```
 
-You can find a version of this software running at [metamaps.cc][site-beta], where the technology is being tested in an open beta.
+To make sure the css files get built, use the following in another terminal
+```
+touch sass/application.scss
+```
 
-Metamaps is developed and maintained by a distributed, nomadic community comprised of technologists, artists and storytellers. You can get in touch by using whichever of these channels you prefer:
+Run the metamaps api in another terminal using (on port 3001, so the UI can talk to it)
+For now, make sure you are running on the `add-user-route` branch of Metamaps, and that it's up to date with the latest on that branch
+`$ rails s -p 3001`
 
-## How do I learn more?
-     
-- Contact: [team@metamaps.cc](mailto:team@metamaps.cc) or [@metamapps](https://twitter.com/metamapps) on Twitter
-- User Documentation: [docs.metamaps.cc](https://docs.metamaps.cc)
-- User Community: [hylo.com/c/metamaps](https://www.hylo.com/c/metamaps)
-- To see what we're developing, or to weigh in on what you'd like to see developed, see our [Metamaps Feedback and Features](https://trello.com/b/uFOA6a2x/metamaps-feedback-feature-ideas-requests) board on trello
-- To follow along with, or contribute,to our design process, see our [Metamaps Design](https://trello.com/b/8HlCikOX/metamaps-design) board on trello
-- To follow along with, or contribute to, our development process, see our [Github Issues and Pull Requests](https://github.com/metamaps/metamaps/issues)
-- Request an invite to the open beta [here](https://metamaps.cc/request)
+open up http://localhost:3000 and start coding!
 
-<!-- markdown hack to split two lists -->
+Checklist
+- [x] Get the Import lightbox working, and not conflicting on screen
+- [x] Handling CSRF
+- [x] Fix images referenced in the JS
+- [x] Figure out how authentication of requests from the frontend to the API works
+- [x] Figure out how to combine the nodejs realtime server into server.js
+- [x] Notifications: make sure loading states are working for popup and page
+- [x] Request unreadNotificationCount
+- [x] Request invite code
+- [x] Request user object itself
+- [x] Load the metacodes
+- [x] move ImportDialog lightbox into main app
+- [x] create topic form
+- [x] Fork map lightbox / component
 
-- To send us a personal message get in touch with us via email, Twitter, or Hylo
-- If you would like to report a bug, please check the [issues][contributing-issues] section in our [contributing instructions][contributing].
-- If you would like to get set up as a developer, that's great! Read on for help getting your development environment set up.
+- [ ] fix other places where metacode sets are used
+- [ ] make newtopic form load metacodes from users selected ones
+- [ ] create synapse form
+- [ ] replace old loader with react loader
+- [ ] ensure exports of maps work
+- [ ] Notifications: make sure notifications either look nice, or redirect
+- [ ] Notifications: pagination
+- [ ] Notifications: Request unreadNotificationCount
+- [ ] Notifications: CSS fixes related to 'controller-x' in body classes
+- [ ] Make sure loading state for explore maps pages work
+- [ ] Get actioncable working
+- [ ] lightboxes
+- [ ] About lightbox
+- [ ] Switch Metacodes lightbox / component
+- [ ] break up index.html into parts
+- [ ] Handle CSS metacode colors
+- [ ] Fix Request An Invite page
+- [ ] Make 'new map' action work
+- [ ] Modify the remaining rails templates into JSX templates
+  - [x] notifications list
+  - [x] notification page
+  - [x] list metacodes
+  - [x] new metacode
+  - [x] edit metacode
+  - [x] list metacode_sets
+  - [x] new metacode set
+  - [x] edit metacode set
+  - [ ] authorized apps
+  - [ ] registered apps
+  - [ ] authorize
+  - [ ] user passwords
+- [ ] Modify the RubyOnRails app to only serve JSON responses, no HTML pages anymore
+- [ ] Modify the frontend to request that data from the API which is necessary at first to load the page
+  - [x] Load the metacode sets
 
-## Installation for local use or development of Metamaps
-
-First off is getting the code downloaded to your computer. You can download a zip file from github, but if you've got `git` you can just run `git clone https://github.com/metamaps/metamaps` in your terminal.
-
-There are instructions for setup on various platforms, with particular support for Mac and Ubuntu, which can be found here:
-- [Mac Install Walkthrough][mac-installation]
-- [Ubuntu Install Walkthrough][ubuntu-installation]
-
-If you prefer to isolate your install in a virtual machine, you may find it simpler to setup using Vagrant:
-- [Vagrant installation][vagrant-installation]
-
-We don't promise support for Windows, but at one point we had it running and we've kept those docs available for reference
-- [Outdated Windows Walkthrough][windows-installation]
-
-## Licensing information
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-
-The license can be read [here][license].
-
-Copyright (c) 2017 Connor Turland
-
-[site-beta]: http://metamaps.cc
-[license]: https://github.com/metamaps/metamaps/blob/develop/LICENSE
-[contributing]: https://github.com/metamaps/metamaps/blob/develop/doc/CONTRIBUTING.md
-[contributing-issues]: https://github.com/metamaps/metamaps/blob/develop/doc/CONTRIBUTING.md#reporting-bugs-and-other-issues
-[mac-installation]: https://github.com/metamaps/metamaps/blob/develop/doc/MacInstallation.md
-[ubuntu-installation]: https://github.com/metamaps/metamaps/blob/develop/doc/UbuntuInstallation.md
-[vagrant-installation]: https://github.com/metamaps/metamaps/blob/develop/doc/VagrantInstallation.md
-[windows-installation]: https://github.com/metamaps/metamaps/blob/develop/doc/WindowsInstallation.md
+To run the server as a daemon that will be re-run if it crashes, you can
+use the forever node package.
+```
+$ npm install -g forever
+$ forever start server.js
+```

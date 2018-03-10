@@ -1,0 +1,295 @@
+@media only screen and (max-width : 752px) and (min-width : 504px) {
+  .sidebarSearch .tt-hint, .sidebarSearch .sidebarSearchField {
+    width: 160px !important;
+  }
+}
+
+/* when this switches to two lines */
+@media only screen and (max-width : 728px) {
+  .controller-notifications .notificationsPage .notification .notification-read-unread a {
+    margin-top: -20px !important;
+  }
+}
+
+@media only screen and (max-width : 390px) {
+  .map .mapCard .mobileMetadata {
+    width: 190px;
+  }
+}
+@media only screen and (min-width : 390px) {
+  .map .mapCard .mobileMetadata {
+    width: 390px;
+  }
+}
+/* 800 is the max-width for centerContent */
+@media only screen and (max-width : 800px) {
+  .centerContent.withPadding {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+
+/* Smartphones (portrait and landscape) ----------- the minimum space that two map cards can fit side by side */
+@media only screen and (max-width : 504px) {
+  .upperLeftUI, .upperRightUI, .openCheatsheet, .mapInfoIcon, .feedback-icon, .chat-box, #navBar {
+    display: none !important;
+  }
+
+  .notificationsPage .page-header {
+    display: none;
+  }
+
+  .controller-notifications .notificationsPage .notification .notification-read-unread {
+    display: block !important;
+  }
+  .controller-notifications .notificationsPage .notification .notification-date {
+    display: none;
+  }
+
+  .homeWrapper {
+    width: 96%;
+    padding: 0 2%;
+  }
+  .homeWrapper.homeText {
+    margin-top: 80px;
+  }
+  .homeTitle {
+    text-align: left;
+  }
+  .homeIntro {
+    text-align: left;
+  }
+  .fullWidthWrapper.withVideo {
+    height: auto;
+  }
+  .homeVideo {
+    width: 100% !important;
+    height: auto;
+  }
+  .fullWidthWrapper.withPartners {
+    display: none;
+  }
+  .learnMoreCTA {
+    display: none !important;
+  }
+
+  #yield {
+    padding-top: 50px;
+  }
+
+  .new_session, .new_user, .edit_user, .login, .forgotPassword {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 78%;
+    padding: 16px 10%;
+    margin: 0 auto;
+  }
+
+  .centerGreyForm input[type="text"], .centerGreyForm input[type="email"], .centerGreyForm input[type="password"] {
+    width: 100%;
+  }
+
+  .wrapper .mapInfoBox {
+    position: fixed;
+    top: 50px;
+    right: 0px;
+    bottom: auto;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .requestInviteHeader {
+    display: none;
+  }
+  .requestInvite {
+    width: 100%;
+    height: calc(100% - 50px);
+    z-index: 1;
+    position: relative;
+    left: 0;
+    margin-left: 0px;
+    margin-top: 50px;
+  }
+
+  #exploreMaps > div {
+    margin-top: 70px;
+  }
+
+  .mapper {
+    width: 100%;
+    margin: 0 0 30px 0;
+  }
+
+  .map.newMap {
+    a {
+      height: auto;
+    }
+
+    .newMapImage {
+      position: relative;
+      display: inline-block;
+      height: 40px;
+      width: 40px;
+      left: auto;
+      top: auto;
+      margin: 0 0 0 8px;
+      background-size: 40px 80px;
+      vertical-align: middle;
+    }
+
+    span {
+      vertical-align: middle;
+      padding: 16px;
+      display: inline-block;
+    }
+  }
+  .map.newMap:hover .newMapImage {
+    background-position: 0 -40px;
+  }
+
+  .map {
+    width: 100%;
+    margin: 0 0 30px 0;
+    height: auto;
+
+    .mapCard {
+      height: auto;
+      padding: 0;
+
+      &:hover {
+        .mainContent {
+          filter: none;
+        }
+      }
+      .mobileHasMapper, .mobileHasConversation {
+        .mapperList {
+          padding: 8px 16px;
+          list-style-type: none;
+
+          li {
+            &.live {
+              height: 32px;
+              padding-left: 32px;
+              font-size: 16px;
+            }
+
+            img {
+              width: 24px;
+              height: 24px;
+              border-radius: 12px;
+              display: inline-block;
+              vertical-align: middle;
+            }
+            span {
+              padding-left: 10px;
+              font-size: 14px;
+            }
+          }
+        }
+      }
+      .mobileHasMapper {
+        background: url('/images/junto.png') no-repeat 12px 0;
+      }
+      .mobileHasConversation {
+        background: url('/images/junto.gif') no-repeat 12px 0;
+      }
+      .mobileMetadata {
+        margin: 0 auto;
+      }
+      .title {
+        text-align: left;
+        display: block;
+        height: auto;
+        padding: 16px;
+      }
+      .desc {
+        padding: 0 16px;
+      }
+    }
+  }
+}
+
+#mobile_header {
+  height: 50px;
+  background: #EEE;
+  width: 100%;
+  box-shadow: 0px 3px 3px rgba(0,0,0,0.23), 0 3px 3px rgba(0,0,0,0.16);
+  position: fixed;
+  z-index: 1;
+}
+
+#menu_icon {
+  width: 50px;
+  height: 50px;
+  border-right: 1px solid #DDD;
+  position: absolute;
+  background: #EEE url('/images/menu-alt-256.png') no-repeat center center;
+  background-size: 30px;
+}
+
+#header_content {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px 0 60px;
+  font-size: 24px;
+  line-height: 50px;
+}
+
+#mobile_header #menu_icon .unread-notifications-dot {
+  top: 5px;
+  left: 29px;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #eee;
+  border-radius: 9px;
+}
+
+#mobile_menu {
+  background: #EEE;
+  position: fixed;
+  top: 50px;
+  border-top: 1px solid #DDD;
+  padding: 10px;
+  width: 200px;
+  box-shadow: 3px 3px 3px rgba(0,0,0,0.23), 3px 3px 3px rgba(0,0,0,0.16);
+  z-index: 2;
+
+  li {
+    padding: 7px 10px;
+    list-style: none;
+    font-family: 'din-regular', arial, sans-serif;
+
+    .sprite {
+      margin-right: 6px;
+      margin-top: -2px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    &.notifications {
+      position: relative;
+
+      .unread-notifications-dot {
+        top: 50%;
+        left: 0px;
+        margin-top: -4px;
+      }
+    }
+  }
+}
+
+li.mobileMenuUser {
+  border-bottom: 1px solid #BBB;
+}
+
+.mobileMenuUser img {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  border-radius: 16px;
+}
