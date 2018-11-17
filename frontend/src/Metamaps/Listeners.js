@@ -4,6 +4,7 @@ import Active from './Active'
 import Create from './Create'
 import Control from './Control'
 import DataModel from './DataModel'
+import Export from './Export'
 import JIT from './JIT'
 import Realtime from './Realtime'
 import Selected from './Selected'
@@ -30,9 +31,26 @@ const Listeners = {
         case 27: // if esc key is pressed
           JIT.escKeyHandler()
           break
-        case 38: // if UP key is pressed
+        case 37: // if Left arrow key is pressed
+          if (e.target.tagName === 'BODY') {
+            Visualize.mGraph.canvas.translate(-20, 0)
+          }
+          break
+        case 38: // if Up arrow key is pressed
           if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
             Control.selectNeighbors()
+          } else if (e.target.tagName === 'BODY') {
+            Visualize.mGraph.canvas.translate(0, -20)
+          }
+          break
+        case 39: // if Right arrow key is pressed
+          if (e.target.tagName === 'BODY') {
+            Visualize.mGraph.canvas.translate(20, 0)
+          }
+          break
+        case 40: // if Down arrow key is pressed
+          if (e.target.tagName === 'BODY') {
+            Visualize.mGraph.canvas.translate(0, 20)
           }
           break
         case 46: // if DEL is pressed
@@ -72,6 +90,12 @@ const Listeners = {
             Visualize.mGraph.plot()
           }
 
+          break
+        case 67: // if c or C is pressed
+          // metaKey is OSX command key for Cmd+C
+          if ((e.ctrlKey || e.metaKey) && e.target.tagName === 'BODY') {
+            Export.copySelection()
+          }
           break
         case 68: // if d or D is pressed
           if (e.ctrlKey || e.metaKey) {
