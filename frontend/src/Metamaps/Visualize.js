@@ -1,6 +1,6 @@
-/* global $ */
+/* global $, window */
 
-import _ from 'lodash'
+import { find as _find, indexOf as _indexOf, uniq as _uniq, debounce } from 'lodash'
 
 import $jit from '../patched/JIT'
 
@@ -9,6 +9,7 @@ import DataModel from './DataModel'
 import JIT from './JIT'
 import Loading from './Loading'
 import TopicCard from './Views/TopicCard'
+import Util from './Util'
 
 const Visualize = {
   mGraph: null, // a reference to the graph object.
@@ -148,6 +149,40 @@ const Visualize = {
       self.mGraph.graph.empty()
     }
 
+    // monkey patch scale function
+    const oldScale = self.mGraph.canvas.scale
+    const cachedPathname = window.location.pathname
+    const updateScaleInUrl = debounce(() => {
+      Util.updateQueryParams({ scale: self.mGraph.canvas.scaleOffsetX.toFixed(2) }, cachedPathname)
+    }, 200)
+    self.mGraph.canvas.scale = function(x, y, disablePlot) {
+      const returnValue = oldScale.apply(self.mGraph.canvas, arguments)
+      updateScaleInUrl()
+      return returnValue
+    }
+
+    // monkey patch translate function
+    const oldTranslate = self.mGraph.canvas.translate
+    const updateTranslateInUrl = debounce(() => {
+      const newX = self.mGraph.canvas.translateOffsetX.toFixed(2)
+      const newY = self.mGraph.canvas.translateOffsetY.toFixed(2)
+      Util.updateQueryParams({ translate: `${newX},${newY}` }, cachedPathname)
+    }, 200)
+    self.mGraph.canvas.translate = function(x, y, disablePlot) {
+      const returnValue = oldTranslate.apply(self.mGraph.canvas, arguments)
+      updateTranslateInUrl()
+    }
+
+    const queryParams = Util.queryParams()
+    const scale = parseFloat(queryParams.scale) || 1.0
+    if (typeof queryParams.translate === 'string') {
+      const [x, y] = queryParams.translate.split(',').map(n => parseFloat(n) || 0)
+      self.mGraph.canvas.translate(x / scale, y / scale)
+    }
+    if (typeof queryParams.scale === 'string') {
+      self.mGraph.canvas.scale(scale, scale)
+    }
+
     function runAnimation() {
       Loading.hide()
       // load JSON data, if it's not empty
@@ -155,10 +190,10 @@ const Visualize = {
         // load JSON data.
         var rootIndex = 0
         if (Active.Topic) {
-          var node = _.find(JIT.vizData, function(node) {
+          var node = _find(JIT.vizData, function(node) {
             return node.id === Active.Topic.id
           })
-          rootIndex = _.indexOf(JIT.vizData, node)
+          rootIndex = _indexOf(JIT.vizData, node)
         }
         self.mGraph.loadJSON(JIT.vizData, rootIndex)
         // compute positions and plot.
@@ -177,11 +212,11 @@ const Visualize = {
     // hold for a maximum of 80 passes, or 4 seconds of waiting time
     var tries = 0
     function hold() {
-      const unique = _.uniq(DataModel.Topics.models, function(metacode) { return metacode.get('metacode_id') })
-      const requiredMetacodes = _.map(unique, function(metacode) { return metacode.get('metacode_id') })
+      const unique = _uniq(DataModel.Topics.models, function(metacode) { return metacode.get('metacode_id') })
+      const requiredMetacodes = unique.map(metacode => metacode.get('metacode_id'))
       let loadedCount = 0
 
-      _.each(requiredMetacodes, function(metacodeId) {
+      requiredMetacodes.forEach(metacodeId => {
         const metacode = DataModel.Metacodes.get(metacodeId)
         const img = metacode ? metacode.get('image') : false
 
